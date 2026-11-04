@@ -190,7 +190,7 @@ namespace karaoke
 
         private void btnPhong_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new FrmLogin());
+            OpenChildForm(new FrmQuanLyPhong());
         }
         private void btnTrangChu_Click(object sender, EventArgs e)
         {

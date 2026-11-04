@@ -109,5 +109,9 @@
   <ItemGroup>
     <Folder Include="Images\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Sql\01_CreateTables.sql" />
+    <Content Include="Sql\02_SampleData.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
