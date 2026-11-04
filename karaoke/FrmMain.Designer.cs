@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.panelContent = new System.Windows.Forms.Panel();
             this.panelDashboard = new System.Windows.Forms.Panel();
@@ -242,29 +242,29 @@
             // 
             this.chart1.BackColor = System.Drawing.Color.Transparent;
             this.chart1.BorderlineColor = System.Drawing.Color.Transparent;
-            chartArea1.AxisX.Interval = 1D;
-            chartArea1.AxisX.MajorGrid.Enabled = false;
-            chartArea1.AxisX.Maximum = 12D;
-            chartArea1.AxisX.Minimum = 1D;
-            chartArea1.AxisX.Title = "Tháng";
-            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            chartArea1.AxisY.Interval = 10D;
-            chartArea1.AxisY.MajorGrid.Enabled = false;
-            chartArea1.AxisY.Minimum = 0D;
-            chartArea1.AxisY.Title = "Doanh Thu (Triệu)";
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            legend1.Enabled = false;
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
+            chartArea3.AxisX.Interval = 1D;
+            chartArea3.AxisX.MajorGrid.Enabled = false;
+            chartArea3.AxisX.Maximum = 12D;
+            chartArea3.AxisX.Minimum = 1D;
+            chartArea3.AxisX.Title = "Tháng";
+            chartArea3.AxisX.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            chartArea3.AxisY.Interval = 10D;
+            chartArea3.AxisY.MajorGrid.Enabled = false;
+            chartArea3.AxisY.Minimum = 0D;
+            chartArea3.AxisY.Title = "Doanh Thu (Triệu)";
+            chartArea3.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea3);
+            legend3.Enabled = false;
+            legend3.Name = "Legend1";
+            this.chart1.Legends.Add(legend3);
             this.chart1.Location = new System.Drawing.Point(26, 309);
             this.chart1.Name = "chart1";
             this.chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series1.ChartArea = "ChartArea1";
-            series1.Color = System.Drawing.Color.SkyBlue;
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
+            series3.ChartArea = "ChartArea1";
+            series3.Color = System.Drawing.Color.SkyBlue;
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            this.chart1.Series.Add(series3);
             this.chart1.Size = new System.Drawing.Size(827, 360);
             this.chart1.TabIndex = 11;
             this.chart1.Text = "chart1";
@@ -308,6 +308,7 @@
             this.btnMain.TabIndex = 13;
             this.btnMain.Text = "Trang chủ";
             this.btnMain.UseVisualStyleBackColor = false;
+            this.btnMain.Click += new System.EventHandler(this.btnTrangChu_Click);
             // 
             // btnThongKe
             // 
@@ -390,6 +391,7 @@
             this.btnPhong.TabIndex = 1;
             this.btnPhong.Text = "Quản lý phòng";
             this.btnPhong.UseVisualStyleBackColor = false;
+            this.btnPhong.Click += new System.EventHandler(this.btnPhong_Click);
             // 
             // FrmMain
             // 

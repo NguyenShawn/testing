@@ -164,5 +164,49 @@ namespace karaoke
             area.AxisY.Title = "Doanh thu (triệu đồng)";
             area.AxisY.MajorGrid.LineColor = Color.Gainsboro;
         }
+
+        private Form currentChildForm = null;
+
+        private void OpenChildForm(Form childForm)
+        {
+            if (currentChildForm != null)
+            {
+                currentChildForm.Close();
+                currentChildForm.Dispose();
+            }
+
+            panelDashboard.Visible = false;
+
+            currentChildForm = childForm;
+
+            childForm.TopLevel = false;
+            childForm.FormBorderStyle = FormBorderStyle.None;
+            childForm.Dock = DockStyle.Fill;
+
+            panelContent.Controls.Add(childForm);
+            childForm.BringToFront();
+            childForm.Show();
+        }
+
+        private void btnPhong_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmLogin());
+        }
+        private void btnTrangChu_Click(object sender, EventArgs e)
+        {
+            if (currentChildForm != null)
+            {
+                currentChildForm.Close();
+                currentChildForm.Dispose();
+                currentChildForm = null;
+            }
+
+            panelDashboard.Visible = true;
+            panelDashboard.BringToFront();
+
+            LoadDashboard();
+            LoadChartDoanhThu();
+        }
     }
+
 }
