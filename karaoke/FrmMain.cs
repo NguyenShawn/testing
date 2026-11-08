@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Drawing;
 using System.Linq;
@@ -226,6 +226,24 @@ namespace karaoke
             }
         }
 
+        private void btnDichVu_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmQuanLyDichVu());
+            SetActiveSidebar(btnDichVu);
+        }
+
+        private void btnDatPhong_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmDanhSachDatPhong());
+            SetActiveSidebar(btnDatPhong);
+        }
+
+        private void btnGoiDichVu_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmGoiDichVu());
+            SetActiveSidebar(btnGoiDichVu);
+        }
+
         private void SetActiveSidebar(Guna.UI2.WinForms.Guna2Button button)
         {
             ButtonActive.SetActiveButton(
@@ -234,6 +252,7 @@ namespace karaoke
                 btnPhong,
                 btnDichVu,
                 btnDatPhong,
+                btnGoiDichVu,
                 btnThanhToan,
                 btnThongKe
             );

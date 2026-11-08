@@ -1,4 +1,4 @@
-﻿namespace karaoke
+namespace karaoke
 {
     partial class FrmMain
     {
@@ -55,6 +55,7 @@
             this.btnDichVu = new Guna.UI2.WinForms.Guna2Button();
             this.label1 = new System.Windows.Forms.Label();
             this.btnDatPhong = new Guna.UI2.WinForms.Guna2Button();
+            this.btnGoiDichVu = new Guna.UI2.WinForms.Guna2Button();
             this.btnTrangChu = new Guna.UI2.WinForms.Guna2Button();
             this.btnThanhToan = new Guna.UI2.WinForms.Guna2Button();
             this.btnThongKe = new Guna.UI2.WinForms.Guna2Button();
@@ -73,9 +74,10 @@
             // 
             this.panelContent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(248)))), ((int)(((byte)(245)))));
             this.panelContent.Controls.Add(this.panelDashboard);
-            this.panelContent.Location = new System.Drawing.Point(0, -1);
+            this.panelContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelContent.Location = new System.Drawing.Point(216, 0);
             this.panelContent.Name = "panelContent";
-            this.panelContent.Size = new System.Drawing.Size(1189, 754);
+            this.panelContent.Size = new System.Drawing.Size(968, 711);
             this.panelContent.TabIndex = 10;
             // 
             // panelDashboard
@@ -88,7 +90,10 @@
             this.panelDashboard.Controls.Add(this.lbl1);
             this.panelDashboard.Controls.Add(this.chart1);
             this.panelDashboard.Controls.Add(this.label2);
-            this.panelDashboard.Location = new System.Drawing.Point(250, 13);
+            this.panelDashboard.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelDashboard.Location = new System.Drawing.Point(34, 12);
             this.panelDashboard.Name = "panelDashboard";
             this.panelDashboard.Size = new System.Drawing.Size(922, 693);
             this.panelDashboard.TabIndex = 11;
@@ -290,6 +295,7 @@
             this.panelSidebar.Controls.Add(this.btnDichVu);
             this.panelSidebar.Controls.Add(this.label1);
             this.panelSidebar.Controls.Add(this.btnDatPhong);
+            this.panelSidebar.Controls.Add(this.btnGoiDichVu);
             this.panelSidebar.Controls.Add(this.btnTrangChu);
             this.panelSidebar.Controls.Add(this.btnThanhToan);
             this.panelSidebar.Controls.Add(this.btnThongKe);
@@ -315,7 +321,7 @@
             this.btnPhong.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.btnPhong.HoverState.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(134)))), ((int)(((byte)(239)))), ((int)(((byte)(172)))));
             this.btnPhong.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
-            this.btnPhong.Location = new System.Drawing.Point(18, 203);
+            this.btnPhong.Location = new System.Drawing.Point(18, 190);
             this.btnPhong.Name = "btnPhong";
             this.btnPhong.Size = new System.Drawing.Size(180, 45);
             this.btnPhong.TabIndex = 20;
@@ -349,12 +355,13 @@
             this.btnDichVu.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.btnDichVu.HoverState.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(134)))), ((int)(((byte)(239)))), ((int)(((byte)(172)))));
             this.btnDichVu.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
-            this.btnDichVu.Location = new System.Drawing.Point(18, 285);
+            this.btnDichVu.Location = new System.Drawing.Point(18, 265);
             this.btnDichVu.Name = "btnDichVu";
             this.btnDichVu.Size = new System.Drawing.Size(180, 45);
             this.btnDichVu.TabIndex = 19;
             this.btnDichVu.Text = "Dịch vụ";
             this.btnDichVu.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnDichVu.Click += new System.EventHandler(this.btnDichVu_Click);
             // 
             // label1
             // 
@@ -384,12 +391,37 @@
             this.btnDatPhong.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.btnDatPhong.HoverState.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(134)))), ((int)(((byte)(239)))), ((int)(((byte)(172)))));
             this.btnDatPhong.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
-            this.btnDatPhong.Location = new System.Drawing.Point(18, 367);
+            this.btnDatPhong.Location = new System.Drawing.Point(18, 340);
             this.btnDatPhong.Name = "btnDatPhong";
             this.btnDatPhong.Size = new System.Drawing.Size(180, 45);
             this.btnDatPhong.TabIndex = 18;
             this.btnDatPhong.Text = "Đặt phòng";
             this.btnDatPhong.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnDatPhong.Click += new System.EventHandler(this.btnDatPhong_Click);
+            // 
+            // btnGoiDichVu
+            // 
+            this.btnGoiDichVu.BorderColor = System.Drawing.Color.Empty;
+            this.btnGoiDichVu.BorderRadius = 10;
+            this.btnGoiDichVu.BorderThickness = 1;
+            this.btnGoiDichVu.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
+            this.btnGoiDichVu.CheckedState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(5)))), ((int)(((byte)(46)))), ((int)(((byte)(22)))));
+            this.btnGoiDichVu.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnGoiDichVu.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnGoiDichVu.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnGoiDichVu.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnGoiDichVu.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
+            this.btnGoiDichVu.Font = new System.Drawing.Font("UTM Facebook", 13.25F);
+            this.btnGoiDichVu.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.btnGoiDichVu.HoverState.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(134)))), ((int)(((byte)(239)))), ((int)(((byte)(172)))));
+            this.btnGoiDichVu.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
+            this.btnGoiDichVu.Location = new System.Drawing.Point(18, 415);
+            this.btnGoiDichVu.Name = "btnGoiDichVu";
+            this.btnGoiDichVu.Size = new System.Drawing.Size(180, 45);
+            this.btnGoiDichVu.TabIndex = 21;
+            this.btnGoiDichVu.Text = "Gọi dịch vụ";
+            this.btnGoiDichVu.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnGoiDichVu.Click += new System.EventHandler(this.btnGoiDichVu_Click);
             // 
             // btnTrangChu
             // 
@@ -408,7 +440,7 @@
             this.btnTrangChu.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.btnTrangChu.HoverState.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(134)))), ((int)(((byte)(239)))), ((int)(((byte)(172)))));
             this.btnTrangChu.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
-            this.btnTrangChu.Location = new System.Drawing.Point(18, 121);
+            this.btnTrangChu.Location = new System.Drawing.Point(18, 115);
             this.btnTrangChu.Name = "btnTrangChu";
             this.btnTrangChu.Size = new System.Drawing.Size(180, 45);
             this.btnTrangChu.TabIndex = 15;
@@ -432,7 +464,7 @@
             this.btnThanhToan.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.btnThanhToan.HoverState.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(134)))), ((int)(((byte)(239)))), ((int)(((byte)(172)))));
             this.btnThanhToan.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
-            this.btnThanhToan.Location = new System.Drawing.Point(18, 449);
+            this.btnThanhToan.Location = new System.Drawing.Point(18, 490);
             this.btnThanhToan.Name = "btnThanhToan";
             this.btnThanhToan.Size = new System.Drawing.Size(180, 45);
             this.btnThanhToan.TabIndex = 16;
@@ -455,7 +487,7 @@
             this.btnThongKe.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.btnThongKe.HoverState.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(134)))), ((int)(((byte)(239)))), ((int)(((byte)(172)))));
             this.btnThongKe.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
-            this.btnThongKe.Location = new System.Drawing.Point(18, 531);
+            this.btnThongKe.Location = new System.Drawing.Point(18, 565);
             this.btnThongKe.Name = "btnThongKe";
             this.btnThongKe.Size = new System.Drawing.Size(180, 45);
             this.btnThongKe.TabIndex = 17;
@@ -465,8 +497,9 @@
             // FrmMain
             // 
             this.ClientSize = new System.Drawing.Size(1184, 711);
-            this.Controls.Add(this.panelSidebar);
             this.Controls.Add(this.panelContent);
+            this.Controls.Add(this.panelSidebar);
+            this.MinimumSize = new System.Drawing.Size(1200, 750);
             this.Name = "FrmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.panelContent.ResumeLayout(false);
@@ -513,6 +546,7 @@
         private Guna.UI2.WinForms.Guna2Button btnPhong;
         private Guna.UI2.WinForms.Guna2Button btnDichVu;
         private Guna.UI2.WinForms.Guna2Button btnDatPhong;
+        private Guna.UI2.WinForms.Guna2Button btnGoiDichVu;
         private Guna.UI2.WinForms.Guna2Button btnThongKe;
         private Guna.UI2.WinForms.Guna2Button btnThanhToan;
     }

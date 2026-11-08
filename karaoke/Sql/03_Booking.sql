@@ -1,0 +1,22 @@
+USE QuanLyKaraoke;
+GO
+SET QUOTED_IDENTIFIER ON;
+SET XACT_ABORT ON;
+BEGIN TRANSACTION;
+IF OBJECT_ID('dbo.DATPHONG') IS NULL
+BEGIN
+ CREATE TABLE dbo.DATPHONG (
+ MaDatPhong int IDENTITY PRIMARY KEY, MaPhong varchar(20) NOT NULL REFERENCES dbo.PHONG(MaPhong),
+ TenKhach nvarchar(100) NOT NULL, SDT varchar(15) NOT NULL, SoKhach int NOT NULL CHECK(SoKhach>0),
+ GioBatDauDuKien datetime2 NOT NULL, GioKetThucDuKien datetime2 NOT NULL,
+ DonGiaGioDaChot decimal(18,2) NOT NULL CHECK(DonGiaGioDaChot>=0),
+ TrangThai varchar(20) NOT NULL CHECK(TrangThai IN ('ChoNhan','DaNhan','DaHuy')),
+ MaNV varchar(20) NOT NULL REFERENCES dbo.NHANVIEN(MaNV), GhiChu nvarchar(500) NULL,
+ CHECK(GioKetThucDuKien>GioBatDauDuKien));
+ CREATE INDEX IX_DATPHONG_Lich ON dbo.DATPHONG(MaPhong,TrangThai,GioBatDauDuKien,GioKetThucDuKien);
+END;
+IF COL_LENGTH('dbo.PHIENHAT','MaDatPhong') IS NULL
+ ALTER TABLE dbo.PHIENHAT ADD MaDatPhong int NULL REFERENCES dbo.DATPHONG(MaDatPhong);
+IF NOT EXISTS(SELECT 1 FROM sys.indexes WHERE name='UX_PHIENHAT_DATPHONG' AND object_id=OBJECT_ID('dbo.PHIENHAT'))
+ EXEC('CREATE UNIQUE INDEX UX_PHIENHAT_DATPHONG ON dbo.PHIENHAT(MaDatPhong) WHERE MaDatPhong IS NOT NULL');
+COMMIT;

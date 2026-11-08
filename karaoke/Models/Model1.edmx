@@ -1,603 +1,603 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
-  <!-- EF Runtime content -->
+<?xml version='1.0' encoding='utf-8'?>
+<edmx:Edmx xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:csdl="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx" xmlns:mapping="http://schemas.microsoft.com/ado/2009/11/mapping/cs" xmlns:ns2="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:ssdl="http://schemas.microsoft.com/ado/2009/11/edm/ssdl" Version="3.0">
+  
   <edmx:Runtime>
-    <!-- SSDL content -->
+    
     <edmx:StorageModels>
-      <Schema Namespace="QuanLyKaraokeModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="CHITIETDICHVU">
-          <Key>
-            <PropertyRef Name="MaCTDV" />
-          </Key>
-          <Property Name="MaCTDV" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="MaPhien" Type="int" Nullable="false" />
-          <Property Name="MaDV" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="SoLuong" Type="int" Nullable="false" />
-          <Property Name="DonGia" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="ThoiGianGoi" Type="datetime2" Precision="7" Nullable="false" />
-        </EntityType>
-        <EntityType Name="DICHVU">
-          <Key>
-            <PropertyRef Name="MaDV" />
-          </Key>
-          <Property Name="MaDV" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="TenDV" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="DonViTinh" Type="nvarchar" MaxLength="30" Nullable="false" />
-          <Property Name="DonGia" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TrangThai" Type="bit" Nullable="false" />
-        </EntityType>
-        <EntityType Name="HOADON">
-          <Key>
-            <PropertyRef Name="MaHD" />
-          </Key>
-          <Property Name="MaHD" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="MaPhien" Type="int" Nullable="false" />
-          <Property Name="MaNV" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="NgayThanhToan" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="TienPhong" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TienDichVu" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="GiamGia" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="ThanhTien" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="PhuongThucTT" Type="nvarchar" MaxLength="30" Nullable="false" />
-        </EntityType>
-        <EntityType Name="LOAIPHONG">
-          <Key>
-            <PropertyRef Name="MaLoaiPhong" />
-          </Key>
-          <Property Name="MaLoaiPhong" Type="int" Nullable="false" />
-          <Property Name="TenLoaiPhong" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="DonGiaGio" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-        </EntityType>
-        <EntityType Name="NHANVIEN">
-          <Key>
-            <PropertyRef Name="MaNV" />
-          </Key>
-          <Property Name="MaNV" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="HoTen" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="NgaySinh" Type="date" />
-          <Property Name="SDT" Type="varchar" MaxLength="15" />
-          <Property Name="ChucVu" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="TrangThai" Type="nvarchar" MaxLength="30" Nullable="false" />
-        </EntityType>
-        <EntityType Name="PHIENHAT">
-          <Key>
-            <PropertyRef Name="MaPhien" />
-          </Key>
-          <Property Name="MaPhien" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="MaPhong" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="MaNV" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="GioBatDau" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="GioKetThuc" Type="datetime2" Precision="7" />
-          <Property Name="DonGiaGio" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TrangThai" Type="varchar" MaxLength="20" Nullable="false" />
-        </EntityType>
-        <EntityType Name="PHONG">
-          <Key>
-            <PropertyRef Name="MaPhong" />
-          </Key>
-          <Property Name="MaPhong" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="TenPhong" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="MaLoaiPhong" Type="int" Nullable="false" />
-          <Property Name="SucChua" Type="int" Nullable="false" />
-          <Property Name="TrangThai" Type="nvarchar" MaxLength="30" Nullable="false" />
-        </EntityType>
-        <EntityType Name="TAIKHOAN">
-          <Key>
-            <PropertyRef Name="MaTK" />
-          </Key>
-          <Property Name="MaTK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="MaNV" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="TenDangNhap" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="MatKhauHash" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="VaiTro" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="TrangThai" Type="bit" Nullable="false" />
-        </EntityType>
-        <Association Name="FK_CTDV_DICHVU">
-          <End Role="DICHVU" Type="Self.DICHVU" Multiplicity="1" />
-          <End Role="CHITIETDICHVU" Type="Self.CHITIETDICHVU" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DICHVU">
-              <PropertyRef Name="MaDV" />
-            </Principal>
-            <Dependent Role="CHITIETDICHVU">
-              <PropertyRef Name="MaDV" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CTDV_PHIENHAT">
-          <End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="1" />
-          <End Role="CHITIETDICHVU" Type="Self.CHITIETDICHVU" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PHIENHAT">
-              <PropertyRef Name="MaPhien" />
-            </Principal>
-            <Dependent Role="CHITIETDICHVU">
-              <PropertyRef Name="MaPhien" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_HOADON_NHANVIEN">
-          <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="1" />
-          <End Role="HOADON" Type="Self.HOADON" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NHANVIEN">
-              <PropertyRef Name="MaNV" />
-            </Principal>
-            <Dependent Role="HOADON">
-              <PropertyRef Name="MaNV" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_HOADON_PHIENHAT">
-          <End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="1" />
-          <End Role="HOADON" Type="Self.HOADON" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PHIENHAT">
-              <PropertyRef Name="MaPhien" />
-            </Principal>
-            <Dependent Role="HOADON">
-              <PropertyRef Name="MaPhien" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PHIENHAT_NHANVIEN">
-          <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="1" />
-          <End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NHANVIEN">
-              <PropertyRef Name="MaNV" />
-            </Principal>
-            <Dependent Role="PHIENHAT">
-              <PropertyRef Name="MaNV" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PHIENHAT_PHONG">
-          <End Role="PHONG" Type="Self.PHONG" Multiplicity="1" />
-          <End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PHONG">
-              <PropertyRef Name="MaPhong" />
-            </Principal>
-            <Dependent Role="PHIENHAT">
-              <PropertyRef Name="MaPhong" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PHONG_LOAIPHONG">
-          <End Role="LOAIPHONG" Type="Self.LOAIPHONG" Multiplicity="1" />
-          <End Role="PHONG" Type="Self.PHONG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="LOAIPHONG">
-              <PropertyRef Name="MaLoaiPhong" />
-            </Principal>
-            <Dependent Role="PHONG">
-              <PropertyRef Name="MaLoaiPhong" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TAIKHOAN_NHANVIEN">
-          <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="1" />
-          <End Role="TAIKHOAN" Type="Self.TAIKHOAN" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NHANVIEN">
-              <PropertyRef Name="MaNV" />
-            </Principal>
-            <Dependent Role="TAIKHOAN">
-              <PropertyRef Name="MaNV" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="QuanLyKaraokeModelStoreContainer">
-          <EntitySet Name="CHITIETDICHVU" EntityType="Self.CHITIETDICHVU" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="DICHVU" EntityType="Self.DICHVU" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="HOADON" EntityType="Self.HOADON" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="LOAIPHONG" EntityType="Self.LOAIPHONG" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="NHANVIEN" EntityType="Self.NHANVIEN" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="PHIENHAT" EntityType="Self.PHIENHAT" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="PHONG" EntityType="Self.PHONG" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TAIKHOAN" EntityType="Self.TAIKHOAN" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_CTDV_DICHVU" Association="Self.FK_CTDV_DICHVU">
-            <End Role="DICHVU" EntitySet="DICHVU" />
-            <End Role="CHITIETDICHVU" EntitySet="CHITIETDICHVU" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CTDV_PHIENHAT" Association="Self.FK_CTDV_PHIENHAT">
-            <End Role="PHIENHAT" EntitySet="PHIENHAT" />
-            <End Role="CHITIETDICHVU" EntitySet="CHITIETDICHVU" />
-          </AssociationSet>
-          <AssociationSet Name="FK_HOADON_NHANVIEN" Association="Self.FK_HOADON_NHANVIEN">
-            <End Role="NHANVIEN" EntitySet="NHANVIEN" />
-            <End Role="HOADON" EntitySet="HOADON" />
-          </AssociationSet>
-          <AssociationSet Name="FK_HOADON_PHIENHAT" Association="Self.FK_HOADON_PHIENHAT">
-            <End Role="PHIENHAT" EntitySet="PHIENHAT" />
-            <End Role="HOADON" EntitySet="HOADON" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PHIENHAT_NHANVIEN" Association="Self.FK_PHIENHAT_NHANVIEN">
-            <End Role="NHANVIEN" EntitySet="NHANVIEN" />
-            <End Role="PHIENHAT" EntitySet="PHIENHAT" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PHIENHAT_PHONG" Association="Self.FK_PHIENHAT_PHONG">
-            <End Role="PHONG" EntitySet="PHONG" />
-            <End Role="PHIENHAT" EntitySet="PHIENHAT" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PHONG_LOAIPHONG" Association="Self.FK_PHONG_LOAIPHONG">
-            <End Role="LOAIPHONG" EntitySet="LOAIPHONG" />
-            <End Role="PHONG" EntitySet="PHONG" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TAIKHOAN_NHANVIEN" Association="Self.FK_TAIKHOAN_NHANVIEN">
-            <End Role="NHANVIEN" EntitySet="NHANVIEN" />
-            <End Role="TAIKHOAN" EntitySet="TAIKHOAN" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema>
+      <ssdl:Schema Namespace="QuanLyKaraokeModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self">
+        <ssdl:EntityType Name="CHITIETDICHVU">
+          <ssdl:Key>
+            <ssdl:PropertyRef Name="MaCTDV" />
+          </ssdl:Key>
+          <ssdl:Property Name="MaCTDV" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <ssdl:Property Name="MaPhien" Type="int" Nullable="false" />
+          <ssdl:Property Name="MaDV" Type="varchar" MaxLength="20" Nullable="false" />
+          <ssdl:Property Name="SoLuong" Type="int" Nullable="false" />
+          <ssdl:Property Name="DonGia" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <ssdl:Property Name="ThoiGianGoi" Type="datetime2" Precision="7" Nullable="false" />
+        </ssdl:EntityType>
+        <ssdl:EntityType Name="DICHVU">
+          <ssdl:Key>
+            <ssdl:PropertyRef Name="MaDV" />
+          </ssdl:Key>
+          <ssdl:Property Name="MaDV" Type="varchar" MaxLength="20" Nullable="false" />
+          <ssdl:Property Name="TenDV" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <ssdl:Property Name="DonViTinh" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <ssdl:Property Name="DonGia" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <ssdl:Property Name="TrangThai" Type="bit" Nullable="false" />
+        </ssdl:EntityType>
+        <ssdl:EntityType Name="HOADON">
+          <ssdl:Key>
+            <ssdl:PropertyRef Name="MaHD" />
+          </ssdl:Key>
+          <ssdl:Property Name="MaHD" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <ssdl:Property Name="MaPhien" Type="int" Nullable="false" />
+          <ssdl:Property Name="MaNV" Type="varchar" MaxLength="20" Nullable="false" />
+          <ssdl:Property Name="NgayThanhToan" Type="datetime2" Precision="7" Nullable="false" />
+          <ssdl:Property Name="TienPhong" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <ssdl:Property Name="TienDichVu" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <ssdl:Property Name="GiamGia" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <ssdl:Property Name="ThanhTien" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <ssdl:Property Name="PhuongThucTT" Type="nvarchar" MaxLength="30" Nullable="false" />
+        </ssdl:EntityType>
+        <ssdl:EntityType Name="LOAIPHONG">
+          <ssdl:Key>
+            <ssdl:PropertyRef Name="MaLoaiPhong" />
+          </ssdl:Key>
+          <ssdl:Property Name="MaLoaiPhong" Type="int" Nullable="false" />
+          <ssdl:Property Name="TenLoaiPhong" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <ssdl:Property Name="DonGiaGio" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+        </ssdl:EntityType>
+        <ssdl:EntityType Name="NHANVIEN">
+          <ssdl:Key>
+            <ssdl:PropertyRef Name="MaNV" />
+          </ssdl:Key>
+          <ssdl:Property Name="MaNV" Type="varchar" MaxLength="20" Nullable="false" />
+          <ssdl:Property Name="HoTen" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <ssdl:Property Name="NgaySinh" Type="date" />
+          <ssdl:Property Name="SDT" Type="varchar" MaxLength="15" />
+          <ssdl:Property Name="ChucVu" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <ssdl:Property Name="TrangThai" Type="nvarchar" MaxLength="30" Nullable="false" />
+        </ssdl:EntityType>
+        <ssdl:EntityType Name="PHIENHAT">
+          <ssdl:Key>
+            <ssdl:PropertyRef Name="MaPhien" />
+          </ssdl:Key>
+          <ssdl:Property Name="MaPhien" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <ssdl:Property Name="MaPhong" Type="varchar" MaxLength="20" Nullable="false" />
+          <ssdl:Property Name="MaNV" Type="varchar" MaxLength="20" Nullable="false" />
+          <ssdl:Property Name="GioBatDau" Type="datetime2" Precision="7" Nullable="false" />
+          <ssdl:Property Name="GioKetThuc" Type="datetime2" Precision="7" />
+          <ssdl:Property Name="DonGiaGio" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <ssdl:Property Name="TrangThai" Type="varchar" MaxLength="20" Nullable="false" />
+        <ssdl:Property Name="MaDatPhong" Type="int" Nullable="true" /></ssdl:EntityType>
+        <ssdl:EntityType Name="PHONG">
+          <ssdl:Key>
+            <ssdl:PropertyRef Name="MaPhong" />
+          </ssdl:Key>
+          <ssdl:Property Name="MaPhong" Type="varchar" MaxLength="20" Nullable="false" />
+          <ssdl:Property Name="TenPhong" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <ssdl:Property Name="MaLoaiPhong" Type="int" Nullable="false" />
+          <ssdl:Property Name="SucChua" Type="int" Nullable="false" />
+          <ssdl:Property Name="TrangThai" Type="nvarchar" MaxLength="30" Nullable="false" />
+        </ssdl:EntityType>
+        <ssdl:EntityType Name="TAIKHOAN">
+          <ssdl:Key>
+            <ssdl:PropertyRef Name="MaTK" />
+          </ssdl:Key>
+          <ssdl:Property Name="MaTK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <ssdl:Property Name="MaNV" Type="varchar" MaxLength="20" Nullable="false" />
+          <ssdl:Property Name="TenDangNhap" Type="varchar" MaxLength="50" Nullable="false" />
+          <ssdl:Property Name="MatKhauHash" Type="varchar" MaxLength="255" Nullable="false" />
+          <ssdl:Property Name="VaiTro" Type="varchar" MaxLength="20" Nullable="false" />
+          <ssdl:Property Name="TrangThai" Type="bit" Nullable="false" />
+        </ssdl:EntityType>
+        <ssdl:Association Name="FK_CTDV_DICHVU">
+          <ssdl:End Role="DICHVU" Type="Self.DICHVU" Multiplicity="1" />
+          <ssdl:End Role="CHITIETDICHVU" Type="Self.CHITIETDICHVU" Multiplicity="*" />
+          <ssdl:ReferentialConstraint>
+            <ssdl:Principal Role="DICHVU">
+              <ssdl:PropertyRef Name="MaDV" />
+            </ssdl:Principal>
+            <ssdl:Dependent Role="CHITIETDICHVU">
+              <ssdl:PropertyRef Name="MaDV" />
+            </ssdl:Dependent>
+          </ssdl:ReferentialConstraint>
+        </ssdl:Association>
+        <ssdl:Association Name="FK_CTDV_PHIENHAT">
+          <ssdl:End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="1" />
+          <ssdl:End Role="CHITIETDICHVU" Type="Self.CHITIETDICHVU" Multiplicity="*" />
+          <ssdl:ReferentialConstraint>
+            <ssdl:Principal Role="PHIENHAT">
+              <ssdl:PropertyRef Name="MaPhien" />
+            </ssdl:Principal>
+            <ssdl:Dependent Role="CHITIETDICHVU">
+              <ssdl:PropertyRef Name="MaPhien" />
+            </ssdl:Dependent>
+          </ssdl:ReferentialConstraint>
+        </ssdl:Association>
+        <ssdl:Association Name="FK_HOADON_NHANVIEN">
+          <ssdl:End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="1" />
+          <ssdl:End Role="HOADON" Type="Self.HOADON" Multiplicity="*" />
+          <ssdl:ReferentialConstraint>
+            <ssdl:Principal Role="NHANVIEN">
+              <ssdl:PropertyRef Name="MaNV" />
+            </ssdl:Principal>
+            <ssdl:Dependent Role="HOADON">
+              <ssdl:PropertyRef Name="MaNV" />
+            </ssdl:Dependent>
+          </ssdl:ReferentialConstraint>
+        </ssdl:Association>
+        <ssdl:Association Name="FK_HOADON_PHIENHAT">
+          <ssdl:End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="1" />
+          <ssdl:End Role="HOADON" Type="Self.HOADON" Multiplicity="*" />
+          <ssdl:ReferentialConstraint>
+            <ssdl:Principal Role="PHIENHAT">
+              <ssdl:PropertyRef Name="MaPhien" />
+            </ssdl:Principal>
+            <ssdl:Dependent Role="HOADON">
+              <ssdl:PropertyRef Name="MaPhien" />
+            </ssdl:Dependent>
+          </ssdl:ReferentialConstraint>
+        </ssdl:Association>
+        <ssdl:Association Name="FK_PHIENHAT_NHANVIEN">
+          <ssdl:End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="1" />
+          <ssdl:End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="*" />
+          <ssdl:ReferentialConstraint>
+            <ssdl:Principal Role="NHANVIEN">
+              <ssdl:PropertyRef Name="MaNV" />
+            </ssdl:Principal>
+            <ssdl:Dependent Role="PHIENHAT">
+              <ssdl:PropertyRef Name="MaNV" />
+            </ssdl:Dependent>
+          </ssdl:ReferentialConstraint>
+        </ssdl:Association>
+        <ssdl:Association Name="FK_PHIENHAT_PHONG">
+          <ssdl:End Role="PHONG" Type="Self.PHONG" Multiplicity="1" />
+          <ssdl:End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="*" />
+          <ssdl:ReferentialConstraint>
+            <ssdl:Principal Role="PHONG">
+              <ssdl:PropertyRef Name="MaPhong" />
+            </ssdl:Principal>
+            <ssdl:Dependent Role="PHIENHAT">
+              <ssdl:PropertyRef Name="MaPhong" />
+            </ssdl:Dependent>
+          </ssdl:ReferentialConstraint>
+        </ssdl:Association>
+        <ssdl:Association Name="FK_PHONG_LOAIPHONG">
+          <ssdl:End Role="LOAIPHONG" Type="Self.LOAIPHONG" Multiplicity="1" />
+          <ssdl:End Role="PHONG" Type="Self.PHONG" Multiplicity="*" />
+          <ssdl:ReferentialConstraint>
+            <ssdl:Principal Role="LOAIPHONG">
+              <ssdl:PropertyRef Name="MaLoaiPhong" />
+            </ssdl:Principal>
+            <ssdl:Dependent Role="PHONG">
+              <ssdl:PropertyRef Name="MaLoaiPhong" />
+            </ssdl:Dependent>
+          </ssdl:ReferentialConstraint>
+        </ssdl:Association>
+        <ssdl:Association Name="FK_TAIKHOAN_NHANVIEN">
+          <ssdl:End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="1" />
+          <ssdl:End Role="TAIKHOAN" Type="Self.TAIKHOAN" Multiplicity="*" />
+          <ssdl:ReferentialConstraint>
+            <ssdl:Principal Role="NHANVIEN">
+              <ssdl:PropertyRef Name="MaNV" />
+            </ssdl:Principal>
+            <ssdl:Dependent Role="TAIKHOAN">
+              <ssdl:PropertyRef Name="MaNV" />
+            </ssdl:Dependent>
+          </ssdl:ReferentialConstraint>
+        </ssdl:Association>
+        <ssdl:EntityContainer Name="QuanLyKaraokeModelStoreContainer">
+          <ssdl:EntitySet Name="CHITIETDICHVU" EntityType="Self.CHITIETDICHVU" Schema="dbo" ns2:Type="Tables" />
+          <ssdl:EntitySet Name="DICHVU" EntityType="Self.DICHVU" Schema="dbo" ns2:Type="Tables" />
+          <ssdl:EntitySet Name="HOADON" EntityType="Self.HOADON" Schema="dbo" ns2:Type="Tables" />
+          <ssdl:EntitySet Name="LOAIPHONG" EntityType="Self.LOAIPHONG" Schema="dbo" ns2:Type="Tables" />
+          <ssdl:EntitySet Name="NHANVIEN" EntityType="Self.NHANVIEN" Schema="dbo" ns2:Type="Tables" />
+          <ssdl:EntitySet Name="PHIENHAT" EntityType="Self.PHIENHAT" Schema="dbo" ns2:Type="Tables" />
+          <ssdl:EntitySet Name="PHONG" EntityType="Self.PHONG" Schema="dbo" ns2:Type="Tables" />
+          <ssdl:EntitySet Name="TAIKHOAN" EntityType="Self.TAIKHOAN" Schema="dbo" ns2:Type="Tables" />
+          <ssdl:AssociationSet Name="FK_CTDV_DICHVU" Association="Self.FK_CTDV_DICHVU">
+            <ssdl:End Role="DICHVU" EntitySet="DICHVU" />
+            <ssdl:End Role="CHITIETDICHVU" EntitySet="CHITIETDICHVU" />
+          </ssdl:AssociationSet>
+          <ssdl:AssociationSet Name="FK_CTDV_PHIENHAT" Association="Self.FK_CTDV_PHIENHAT">
+            <ssdl:End Role="PHIENHAT" EntitySet="PHIENHAT" />
+            <ssdl:End Role="CHITIETDICHVU" EntitySet="CHITIETDICHVU" />
+          </ssdl:AssociationSet>
+          <ssdl:AssociationSet Name="FK_HOADON_NHANVIEN" Association="Self.FK_HOADON_NHANVIEN">
+            <ssdl:End Role="NHANVIEN" EntitySet="NHANVIEN" />
+            <ssdl:End Role="HOADON" EntitySet="HOADON" />
+          </ssdl:AssociationSet>
+          <ssdl:AssociationSet Name="FK_HOADON_PHIENHAT" Association="Self.FK_HOADON_PHIENHAT">
+            <ssdl:End Role="PHIENHAT" EntitySet="PHIENHAT" />
+            <ssdl:End Role="HOADON" EntitySet="HOADON" />
+          </ssdl:AssociationSet>
+          <ssdl:AssociationSet Name="FK_PHIENHAT_NHANVIEN" Association="Self.FK_PHIENHAT_NHANVIEN">
+            <ssdl:End Role="NHANVIEN" EntitySet="NHANVIEN" />
+            <ssdl:End Role="PHIENHAT" EntitySet="PHIENHAT" />
+          </ssdl:AssociationSet>
+          <ssdl:AssociationSet Name="FK_PHIENHAT_PHONG" Association="Self.FK_PHIENHAT_PHONG">
+            <ssdl:End Role="PHONG" EntitySet="PHONG" />
+            <ssdl:End Role="PHIENHAT" EntitySet="PHIENHAT" />
+          </ssdl:AssociationSet>
+          <ssdl:AssociationSet Name="FK_PHONG_LOAIPHONG" Association="Self.FK_PHONG_LOAIPHONG">
+            <ssdl:End Role="LOAIPHONG" EntitySet="LOAIPHONG" />
+            <ssdl:End Role="PHONG" EntitySet="PHONG" />
+          </ssdl:AssociationSet>
+          <ssdl:AssociationSet Name="FK_TAIKHOAN_NHANVIEN" Association="Self.FK_TAIKHOAN_NHANVIEN">
+            <ssdl:End Role="NHANVIEN" EntitySet="NHANVIEN" />
+            <ssdl:End Role="TAIKHOAN" EntitySet="TAIKHOAN" />
+          </ssdl:AssociationSet>
+        <ssdl:EntitySet Name="DATPHONG" EntityType="QuanLyKaraokeModel.Store.DATPHONG" Schema="dbo" /></ssdl:EntityContainer>
+      <ssdl:EntityType Name="DATPHONG"><ssdl:Key><ssdl:PropertyRef Name="MaDatPhong" /></ssdl:Key><ssdl:Property Name="MaDatPhong" Type="int" Nullable="false" StoreGeneratedPattern="Identity" /><ssdl:Property Name="MaPhong" Type="varchar" Nullable="false" MaxLength="20" /><ssdl:Property Name="TenKhach" Type="nvarchar" Nullable="false" MaxLength="100" /><ssdl:Property Name="SDT" Type="varchar" Nullable="false" MaxLength="15" /><ssdl:Property Name="SoKhach" Type="int" Nullable="false" /><ssdl:Property Name="GioBatDauDuKien" Type="datetime2" Nullable="false" Precision="7" /><ssdl:Property Name="GioKetThucDuKien" Type="datetime2" Nullable="false" Precision="7" /><ssdl:Property Name="DonGiaGioDaChot" Type="decimal" Nullable="false" Precision="18" Scale="2" /><ssdl:Property Name="TrangThai" Type="varchar" Nullable="false" MaxLength="20" /><ssdl:Property Name="MaNV" Type="varchar" Nullable="false" MaxLength="20" /><ssdl:Property Name="GhiChu" Type="nvarchar" Nullable="true" MaxLength="500" /></ssdl:EntityType></ssdl:Schema>
     </edmx:StorageModels>
-    <!-- CSDL content -->
+    
     <edmx:ConceptualModels>
-      <Schema Namespace="QuanLyKaraokeModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="CHITIETDICHVU">
-          <Key>
-            <PropertyRef Name="MaCTDV" />
-          </Key>
-          <Property Name="MaCTDV" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MaPhien" Type="Int32" Nullable="false" />
-          <Property Name="MaDV" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="SoLuong" Type="Int32" Nullable="false" />
-          <Property Name="DonGia" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="ThoiGianGoi" Type="DateTime" Nullable="false" Precision="7" />
-          <NavigationProperty Name="DICHVU" Relationship="Self.FK_CTDV_DICHVU" FromRole="CHITIETDICHVU" ToRole="DICHVU" />
-          <NavigationProperty Name="PHIENHAT" Relationship="Self.FK_CTDV_PHIENHAT" FromRole="CHITIETDICHVU" ToRole="PHIENHAT" />
-        </EntityType>
-        <EntityType Name="DICHVU">
-          <Key>
-            <PropertyRef Name="MaDV" />
-          </Key>
-          <Property Name="MaDV" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="TenDV" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="DonViTinh" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="DonGia" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TrangThai" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="CHITIETDICHVUs" Relationship="Self.FK_CTDV_DICHVU" FromRole="DICHVU" ToRole="CHITIETDICHVU" />
-        </EntityType>
-        <EntityType Name="HOADON">
-          <Key>
-            <PropertyRef Name="MaHD" />
-          </Key>
-          <Property Name="MaHD" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MaPhien" Type="Int32" Nullable="false" />
-          <Property Name="MaNV" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="NgayThanhToan" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="TienPhong" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TienDichVu" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="GiamGia" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="ThanhTien" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="PhuongThucTT" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="NHANVIEN" Relationship="Self.FK_HOADON_NHANVIEN" FromRole="HOADON" ToRole="NHANVIEN" />
-          <NavigationProperty Name="PHIENHAT" Relationship="Self.FK_HOADON_PHIENHAT" FromRole="HOADON" ToRole="PHIENHAT" />
-        </EntityType>
-        <EntityType Name="LOAIPHONG">
-          <Key>
-            <PropertyRef Name="MaLoaiPhong" />
-          </Key>
-          <Property Name="MaLoaiPhong" Type="Int32" Nullable="false" />
-          <Property Name="TenLoaiPhong" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="DonGiaGio" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <NavigationProperty Name="PHONGs" Relationship="Self.FK_PHONG_LOAIPHONG" FromRole="LOAIPHONG" ToRole="PHONG" />
-        </EntityType>
-        <EntityType Name="NHANVIEN">
-          <Key>
-            <PropertyRef Name="MaNV" />
-          </Key>
-          <Property Name="MaNV" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="HoTen" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="NgaySinh" Type="DateTime" Precision="0" />
-          <Property Name="SDT" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="ChucVu" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="TrangThai" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="HOADONs" Relationship="Self.FK_HOADON_NHANVIEN" FromRole="NHANVIEN" ToRole="HOADON" />
-          <NavigationProperty Name="PHIENHATs" Relationship="Self.FK_PHIENHAT_NHANVIEN" FromRole="NHANVIEN" ToRole="PHIENHAT" />
-          <NavigationProperty Name="TAIKHOANs" Relationship="Self.FK_TAIKHOAN_NHANVIEN" FromRole="NHANVIEN" ToRole="TAIKHOAN" />
-        </EntityType>
-        <EntityType Name="PHIENHAT">
-          <Key>
-            <PropertyRef Name="MaPhien" />
-          </Key>
-          <Property Name="MaPhien" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MaPhong" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="MaNV" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="GioBatDau" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="GioKetThuc" Type="DateTime" Precision="7" />
-          <Property Name="DonGiaGio" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TrangThai" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="CHITIETDICHVUs" Relationship="Self.FK_CTDV_PHIENHAT" FromRole="PHIENHAT" ToRole="CHITIETDICHVU" />
-          <NavigationProperty Name="HOADONs" Relationship="Self.FK_HOADON_PHIENHAT" FromRole="PHIENHAT" ToRole="HOADON" />
-          <NavigationProperty Name="NHANVIEN" Relationship="Self.FK_PHIENHAT_NHANVIEN" FromRole="PHIENHAT" ToRole="NHANVIEN" />
-          <NavigationProperty Name="PHONG" Relationship="Self.FK_PHIENHAT_PHONG" FromRole="PHIENHAT" ToRole="PHONG" />
-        </EntityType>
-        <EntityType Name="PHONG">
-          <Key>
-            <PropertyRef Name="MaPhong" />
-          </Key>
-          <Property Name="MaPhong" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="TenPhong" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="MaLoaiPhong" Type="Int32" Nullable="false" />
-          <Property Name="SucChua" Type="Int32" Nullable="false" />
-          <Property Name="TrangThai" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="LOAIPHONG" Relationship="Self.FK_PHONG_LOAIPHONG" FromRole="PHONG" ToRole="LOAIPHONG" />
-          <NavigationProperty Name="PHIENHATs" Relationship="Self.FK_PHIENHAT_PHONG" FromRole="PHONG" ToRole="PHIENHAT" />
-        </EntityType>
-        <EntityType Name="TAIKHOAN">
-          <Key>
-            <PropertyRef Name="MaTK" />
-          </Key>
-          <Property Name="MaTK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MaNV" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="TenDangNhap" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="MatKhauHash" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="VaiTro" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="TrangThai" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="NHANVIEN" Relationship="Self.FK_TAIKHOAN_NHANVIEN" FromRole="TAIKHOAN" ToRole="NHANVIEN" />
-        </EntityType>
-        <Association Name="FK_CTDV_DICHVU">
-          <End Role="DICHVU" Type="Self.DICHVU" Multiplicity="1" />
-          <End Role="CHITIETDICHVU" Type="Self.CHITIETDICHVU" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DICHVU">
-              <PropertyRef Name="MaDV" />
-            </Principal>
-            <Dependent Role="CHITIETDICHVU">
-              <PropertyRef Name="MaDV" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CTDV_PHIENHAT">
-          <End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="1" />
-          <End Role="CHITIETDICHVU" Type="Self.CHITIETDICHVU" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PHIENHAT">
-              <PropertyRef Name="MaPhien" />
-            </Principal>
-            <Dependent Role="CHITIETDICHVU">
-              <PropertyRef Name="MaPhien" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_HOADON_NHANVIEN">
-          <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="1" />
-          <End Role="HOADON" Type="Self.HOADON" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NHANVIEN">
-              <PropertyRef Name="MaNV" />
-            </Principal>
-            <Dependent Role="HOADON">
-              <PropertyRef Name="MaNV" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_HOADON_PHIENHAT">
-          <End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="1" />
-          <End Role="HOADON" Type="Self.HOADON" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PHIENHAT">
-              <PropertyRef Name="MaPhien" />
-            </Principal>
-            <Dependent Role="HOADON">
-              <PropertyRef Name="MaPhien" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PHONG_LOAIPHONG">
-          <End Role="LOAIPHONG" Type="Self.LOAIPHONG" Multiplicity="1" />
-          <End Role="PHONG" Type="Self.PHONG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="LOAIPHONG">
-              <PropertyRef Name="MaLoaiPhong" />
-            </Principal>
-            <Dependent Role="PHONG">
-              <PropertyRef Name="MaLoaiPhong" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PHIENHAT_NHANVIEN">
-          <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="1" />
-          <End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NHANVIEN">
-              <PropertyRef Name="MaNV" />
-            </Principal>
-            <Dependent Role="PHIENHAT">
-              <PropertyRef Name="MaNV" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TAIKHOAN_NHANVIEN">
-          <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="1" />
-          <End Role="TAIKHOAN" Type="Self.TAIKHOAN" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NHANVIEN">
-              <PropertyRef Name="MaNV" />
-            </Principal>
-            <Dependent Role="TAIKHOAN">
-              <PropertyRef Name="MaNV" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PHIENHAT_PHONG">
-          <End Role="PHONG" Type="Self.PHONG" Multiplicity="1" />
-          <End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PHONG">
-              <PropertyRef Name="MaPhong" />
-            </Principal>
-            <Dependent Role="PHIENHAT">
-              <PropertyRef Name="MaPhong" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="QuanLyKaraokeEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="CHITIETDICHVUs" EntityType="Self.CHITIETDICHVU" />
-          <EntitySet Name="DICHVUs" EntityType="Self.DICHVU" />
-          <EntitySet Name="HOADONs" EntityType="Self.HOADON" />
-          <EntitySet Name="LOAIPHONGs" EntityType="Self.LOAIPHONG" />
-          <EntitySet Name="NHANVIENs" EntityType="Self.NHANVIEN" />
-          <EntitySet Name="PHIENHATs" EntityType="Self.PHIENHAT" />
-          <EntitySet Name="PHONGs" EntityType="Self.PHONG" />
-          <EntitySet Name="TAIKHOANs" EntityType="Self.TAIKHOAN" />
-          <AssociationSet Name="FK_CTDV_DICHVU" Association="Self.FK_CTDV_DICHVU">
-            <End Role="DICHVU" EntitySet="DICHVUs" />
-            <End Role="CHITIETDICHVU" EntitySet="CHITIETDICHVUs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CTDV_PHIENHAT" Association="Self.FK_CTDV_PHIENHAT">
-            <End Role="PHIENHAT" EntitySet="PHIENHATs" />
-            <End Role="CHITIETDICHVU" EntitySet="CHITIETDICHVUs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_HOADON_NHANVIEN" Association="Self.FK_HOADON_NHANVIEN">
-            <End Role="NHANVIEN" EntitySet="NHANVIENs" />
-            <End Role="HOADON" EntitySet="HOADONs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_HOADON_PHIENHAT" Association="Self.FK_HOADON_PHIENHAT">
-            <End Role="PHIENHAT" EntitySet="PHIENHATs" />
-            <End Role="HOADON" EntitySet="HOADONs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PHONG_LOAIPHONG" Association="Self.FK_PHONG_LOAIPHONG">
-            <End Role="LOAIPHONG" EntitySet="LOAIPHONGs" />
-            <End Role="PHONG" EntitySet="PHONGs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PHIENHAT_NHANVIEN" Association="Self.FK_PHIENHAT_NHANVIEN">
-            <End Role="NHANVIEN" EntitySet="NHANVIENs" />
-            <End Role="PHIENHAT" EntitySet="PHIENHATs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TAIKHOAN_NHANVIEN" Association="Self.FK_TAIKHOAN_NHANVIEN">
-            <End Role="NHANVIEN" EntitySet="NHANVIENs" />
-            <End Role="TAIKHOAN" EntitySet="TAIKHOANs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PHIENHAT_PHONG" Association="Self.FK_PHIENHAT_PHONG">
-            <End Role="PHONG" EntitySet="PHONGs" />
-            <End Role="PHIENHAT" EntitySet="PHIENHATs" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema>
+      <csdl:Schema Namespace="QuanLyKaraokeModel" Alias="Self" annotation:UseStrongSpatialTypes="false">
+        <csdl:EntityType Name="CHITIETDICHVU">
+          <csdl:Key>
+            <csdl:PropertyRef Name="MaCTDV" />
+          </csdl:Key>
+          <csdl:Property Name="MaCTDV" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <csdl:Property Name="MaPhien" Type="Int32" Nullable="false" />
+          <csdl:Property Name="MaDV" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <csdl:Property Name="SoLuong" Type="Int32" Nullable="false" />
+          <csdl:Property Name="DonGia" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <csdl:Property Name="ThoiGianGoi" Type="DateTime" Nullable="false" Precision="7" />
+          <csdl:NavigationProperty Name="DICHVU" Relationship="Self.FK_CTDV_DICHVU" FromRole="CHITIETDICHVU" ToRole="DICHVU" />
+          <csdl:NavigationProperty Name="PHIENHAT" Relationship="Self.FK_CTDV_PHIENHAT" FromRole="CHITIETDICHVU" ToRole="PHIENHAT" />
+        </csdl:EntityType>
+        <csdl:EntityType Name="DICHVU">
+          <csdl:Key>
+            <csdl:PropertyRef Name="MaDV" />
+          </csdl:Key>
+          <csdl:Property Name="MaDV" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <csdl:Property Name="TenDV" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <csdl:Property Name="DonViTinh" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <csdl:Property Name="DonGia" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <csdl:Property Name="TrangThai" Type="Boolean" Nullable="false" />
+          <csdl:NavigationProperty Name="CHITIETDICHVUs" Relationship="Self.FK_CTDV_DICHVU" FromRole="DICHVU" ToRole="CHITIETDICHVU" />
+        </csdl:EntityType>
+        <csdl:EntityType Name="HOADON">
+          <csdl:Key>
+            <csdl:PropertyRef Name="MaHD" />
+          </csdl:Key>
+          <csdl:Property Name="MaHD" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <csdl:Property Name="MaPhien" Type="Int32" Nullable="false" />
+          <csdl:Property Name="MaNV" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <csdl:Property Name="NgayThanhToan" Type="DateTime" Nullable="false" Precision="7" />
+          <csdl:Property Name="TienPhong" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <csdl:Property Name="TienDichVu" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <csdl:Property Name="GiamGia" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <csdl:Property Name="ThanhTien" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <csdl:Property Name="PhuongThucTT" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <csdl:NavigationProperty Name="NHANVIEN" Relationship="Self.FK_HOADON_NHANVIEN" FromRole="HOADON" ToRole="NHANVIEN" />
+          <csdl:NavigationProperty Name="PHIENHAT" Relationship="Self.FK_HOADON_PHIENHAT" FromRole="HOADON" ToRole="PHIENHAT" />
+        </csdl:EntityType>
+        <csdl:EntityType Name="LOAIPHONG">
+          <csdl:Key>
+            <csdl:PropertyRef Name="MaLoaiPhong" />
+          </csdl:Key>
+          <csdl:Property Name="MaLoaiPhong" Type="Int32" Nullable="false" />
+          <csdl:Property Name="TenLoaiPhong" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <csdl:Property Name="DonGiaGio" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <csdl:NavigationProperty Name="PHONGs" Relationship="Self.FK_PHONG_LOAIPHONG" FromRole="LOAIPHONG" ToRole="PHONG" />
+        </csdl:EntityType>
+        <csdl:EntityType Name="NHANVIEN">
+          <csdl:Key>
+            <csdl:PropertyRef Name="MaNV" />
+          </csdl:Key>
+          <csdl:Property Name="MaNV" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <csdl:Property Name="HoTen" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <csdl:Property Name="NgaySinh" Type="DateTime" Precision="0" />
+          <csdl:Property Name="SDT" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <csdl:Property Name="ChucVu" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <csdl:Property Name="TrangThai" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <csdl:NavigationProperty Name="HOADONs" Relationship="Self.FK_HOADON_NHANVIEN" FromRole="NHANVIEN" ToRole="HOADON" />
+          <csdl:NavigationProperty Name="PHIENHATs" Relationship="Self.FK_PHIENHAT_NHANVIEN" FromRole="NHANVIEN" ToRole="PHIENHAT" />
+          <csdl:NavigationProperty Name="TAIKHOANs" Relationship="Self.FK_TAIKHOAN_NHANVIEN" FromRole="NHANVIEN" ToRole="TAIKHOAN" />
+        </csdl:EntityType>
+        <csdl:EntityType Name="PHIENHAT">
+          <csdl:Key>
+            <csdl:PropertyRef Name="MaPhien" />
+          </csdl:Key>
+          <csdl:Property Name="MaPhien" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <csdl:Property Name="MaPhong" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <csdl:Property Name="MaNV" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <csdl:Property Name="GioBatDau" Type="DateTime" Nullable="false" Precision="7" />
+          <csdl:Property Name="GioKetThuc" Type="DateTime" Precision="7" />
+          <csdl:Property Name="DonGiaGio" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <csdl:Property Name="TrangThai" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <csdl:NavigationProperty Name="CHITIETDICHVUs" Relationship="Self.FK_CTDV_PHIENHAT" FromRole="PHIENHAT" ToRole="CHITIETDICHVU" />
+          <csdl:NavigationProperty Name="HOADONs" Relationship="Self.FK_HOADON_PHIENHAT" FromRole="PHIENHAT" ToRole="HOADON" />
+          <csdl:NavigationProperty Name="NHANVIEN" Relationship="Self.FK_PHIENHAT_NHANVIEN" FromRole="PHIENHAT" ToRole="NHANVIEN" />
+          <csdl:NavigationProperty Name="PHONG" Relationship="Self.FK_PHIENHAT_PHONG" FromRole="PHIENHAT" ToRole="PHONG" />
+        <csdl:Property Name="MaDatPhong" Type="Int32" Nullable="true" /></csdl:EntityType>
+        <csdl:EntityType Name="PHONG">
+          <csdl:Key>
+            <csdl:PropertyRef Name="MaPhong" />
+          </csdl:Key>
+          <csdl:Property Name="MaPhong" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <csdl:Property Name="TenPhong" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <csdl:Property Name="MaLoaiPhong" Type="Int32" Nullable="false" />
+          <csdl:Property Name="SucChua" Type="Int32" Nullable="false" />
+          <csdl:Property Name="TrangThai" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <csdl:NavigationProperty Name="LOAIPHONG" Relationship="Self.FK_PHONG_LOAIPHONG" FromRole="PHONG" ToRole="LOAIPHONG" />
+          <csdl:NavigationProperty Name="PHIENHATs" Relationship="Self.FK_PHIENHAT_PHONG" FromRole="PHONG" ToRole="PHIENHAT" />
+        </csdl:EntityType>
+        <csdl:EntityType Name="TAIKHOAN">
+          <csdl:Key>
+            <csdl:PropertyRef Name="MaTK" />
+          </csdl:Key>
+          <csdl:Property Name="MaTK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <csdl:Property Name="MaNV" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <csdl:Property Name="TenDangNhap" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <csdl:Property Name="MatKhauHash" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <csdl:Property Name="VaiTro" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <csdl:Property Name="TrangThai" Type="Boolean" Nullable="false" />
+          <csdl:NavigationProperty Name="NHANVIEN" Relationship="Self.FK_TAIKHOAN_NHANVIEN" FromRole="TAIKHOAN" ToRole="NHANVIEN" />
+        </csdl:EntityType>
+        <csdl:Association Name="FK_CTDV_DICHVU">
+          <csdl:End Role="DICHVU" Type="Self.DICHVU" Multiplicity="1" />
+          <csdl:End Role="CHITIETDICHVU" Type="Self.CHITIETDICHVU" Multiplicity="*" />
+          <csdl:ReferentialConstraint>
+            <csdl:Principal Role="DICHVU">
+              <csdl:PropertyRef Name="MaDV" />
+            </csdl:Principal>
+            <csdl:Dependent Role="CHITIETDICHVU">
+              <csdl:PropertyRef Name="MaDV" />
+            </csdl:Dependent>
+          </csdl:ReferentialConstraint>
+        </csdl:Association>
+        <csdl:Association Name="FK_CTDV_PHIENHAT">
+          <csdl:End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="1" />
+          <csdl:End Role="CHITIETDICHVU" Type="Self.CHITIETDICHVU" Multiplicity="*" />
+          <csdl:ReferentialConstraint>
+            <csdl:Principal Role="PHIENHAT">
+              <csdl:PropertyRef Name="MaPhien" />
+            </csdl:Principal>
+            <csdl:Dependent Role="CHITIETDICHVU">
+              <csdl:PropertyRef Name="MaPhien" />
+            </csdl:Dependent>
+          </csdl:ReferentialConstraint>
+        </csdl:Association>
+        <csdl:Association Name="FK_HOADON_NHANVIEN">
+          <csdl:End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="1" />
+          <csdl:End Role="HOADON" Type="Self.HOADON" Multiplicity="*" />
+          <csdl:ReferentialConstraint>
+            <csdl:Principal Role="NHANVIEN">
+              <csdl:PropertyRef Name="MaNV" />
+            </csdl:Principal>
+            <csdl:Dependent Role="HOADON">
+              <csdl:PropertyRef Name="MaNV" />
+            </csdl:Dependent>
+          </csdl:ReferentialConstraint>
+        </csdl:Association>
+        <csdl:Association Name="FK_HOADON_PHIENHAT">
+          <csdl:End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="1" />
+          <csdl:End Role="HOADON" Type="Self.HOADON" Multiplicity="*" />
+          <csdl:ReferentialConstraint>
+            <csdl:Principal Role="PHIENHAT">
+              <csdl:PropertyRef Name="MaPhien" />
+            </csdl:Principal>
+            <csdl:Dependent Role="HOADON">
+              <csdl:PropertyRef Name="MaPhien" />
+            </csdl:Dependent>
+          </csdl:ReferentialConstraint>
+        </csdl:Association>
+        <csdl:Association Name="FK_PHONG_LOAIPHONG">
+          <csdl:End Role="LOAIPHONG" Type="Self.LOAIPHONG" Multiplicity="1" />
+          <csdl:End Role="PHONG" Type="Self.PHONG" Multiplicity="*" />
+          <csdl:ReferentialConstraint>
+            <csdl:Principal Role="LOAIPHONG">
+              <csdl:PropertyRef Name="MaLoaiPhong" />
+            </csdl:Principal>
+            <csdl:Dependent Role="PHONG">
+              <csdl:PropertyRef Name="MaLoaiPhong" />
+            </csdl:Dependent>
+          </csdl:ReferentialConstraint>
+        </csdl:Association>
+        <csdl:Association Name="FK_PHIENHAT_NHANVIEN">
+          <csdl:End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="1" />
+          <csdl:End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="*" />
+          <csdl:ReferentialConstraint>
+            <csdl:Principal Role="NHANVIEN">
+              <csdl:PropertyRef Name="MaNV" />
+            </csdl:Principal>
+            <csdl:Dependent Role="PHIENHAT">
+              <csdl:PropertyRef Name="MaNV" />
+            </csdl:Dependent>
+          </csdl:ReferentialConstraint>
+        </csdl:Association>
+        <csdl:Association Name="FK_TAIKHOAN_NHANVIEN">
+          <csdl:End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="1" />
+          <csdl:End Role="TAIKHOAN" Type="Self.TAIKHOAN" Multiplicity="*" />
+          <csdl:ReferentialConstraint>
+            <csdl:Principal Role="NHANVIEN">
+              <csdl:PropertyRef Name="MaNV" />
+            </csdl:Principal>
+            <csdl:Dependent Role="TAIKHOAN">
+              <csdl:PropertyRef Name="MaNV" />
+            </csdl:Dependent>
+          </csdl:ReferentialConstraint>
+        </csdl:Association>
+        <csdl:Association Name="FK_PHIENHAT_PHONG">
+          <csdl:End Role="PHONG" Type="Self.PHONG" Multiplicity="1" />
+          <csdl:End Role="PHIENHAT" Type="Self.PHIENHAT" Multiplicity="*" />
+          <csdl:ReferentialConstraint>
+            <csdl:Principal Role="PHONG">
+              <csdl:PropertyRef Name="MaPhong" />
+            </csdl:Principal>
+            <csdl:Dependent Role="PHIENHAT">
+              <csdl:PropertyRef Name="MaPhong" />
+            </csdl:Dependent>
+          </csdl:ReferentialConstraint>
+        </csdl:Association>
+        <csdl:EntityContainer Name="QuanLyKaraokeEntities" annotation:LazyLoadingEnabled="true">
+          <csdl:EntitySet Name="CHITIETDICHVUs" EntityType="Self.CHITIETDICHVU" />
+          <csdl:EntitySet Name="DICHVUs" EntityType="Self.DICHVU" />
+          <csdl:EntitySet Name="HOADONs" EntityType="Self.HOADON" />
+          <csdl:EntitySet Name="LOAIPHONGs" EntityType="Self.LOAIPHONG" />
+          <csdl:EntitySet Name="NHANVIENs" EntityType="Self.NHANVIEN" />
+          <csdl:EntitySet Name="PHIENHATs" EntityType="Self.PHIENHAT" />
+          <csdl:EntitySet Name="PHONGs" EntityType="Self.PHONG" />
+          <csdl:EntitySet Name="TAIKHOANs" EntityType="Self.TAIKHOAN" />
+          <csdl:AssociationSet Name="FK_CTDV_DICHVU" Association="Self.FK_CTDV_DICHVU">
+            <csdl:End Role="DICHVU" EntitySet="DICHVUs" />
+            <csdl:End Role="CHITIETDICHVU" EntitySet="CHITIETDICHVUs" />
+          </csdl:AssociationSet>
+          <csdl:AssociationSet Name="FK_CTDV_PHIENHAT" Association="Self.FK_CTDV_PHIENHAT">
+            <csdl:End Role="PHIENHAT" EntitySet="PHIENHATs" />
+            <csdl:End Role="CHITIETDICHVU" EntitySet="CHITIETDICHVUs" />
+          </csdl:AssociationSet>
+          <csdl:AssociationSet Name="FK_HOADON_NHANVIEN" Association="Self.FK_HOADON_NHANVIEN">
+            <csdl:End Role="NHANVIEN" EntitySet="NHANVIENs" />
+            <csdl:End Role="HOADON" EntitySet="HOADONs" />
+          </csdl:AssociationSet>
+          <csdl:AssociationSet Name="FK_HOADON_PHIENHAT" Association="Self.FK_HOADON_PHIENHAT">
+            <csdl:End Role="PHIENHAT" EntitySet="PHIENHATs" />
+            <csdl:End Role="HOADON" EntitySet="HOADONs" />
+          </csdl:AssociationSet>
+          <csdl:AssociationSet Name="FK_PHONG_LOAIPHONG" Association="Self.FK_PHONG_LOAIPHONG">
+            <csdl:End Role="LOAIPHONG" EntitySet="LOAIPHONGs" />
+            <csdl:End Role="PHONG" EntitySet="PHONGs" />
+          </csdl:AssociationSet>
+          <csdl:AssociationSet Name="FK_PHIENHAT_NHANVIEN" Association="Self.FK_PHIENHAT_NHANVIEN">
+            <csdl:End Role="NHANVIEN" EntitySet="NHANVIENs" />
+            <csdl:End Role="PHIENHAT" EntitySet="PHIENHATs" />
+          </csdl:AssociationSet>
+          <csdl:AssociationSet Name="FK_TAIKHOAN_NHANVIEN" Association="Self.FK_TAIKHOAN_NHANVIEN">
+            <csdl:End Role="NHANVIEN" EntitySet="NHANVIENs" />
+            <csdl:End Role="TAIKHOAN" EntitySet="TAIKHOANs" />
+          </csdl:AssociationSet>
+          <csdl:AssociationSet Name="FK_PHIENHAT_PHONG" Association="Self.FK_PHIENHAT_PHONG">
+            <csdl:End Role="PHONG" EntitySet="PHONGs" />
+            <csdl:End Role="PHIENHAT" EntitySet="PHIENHATs" />
+          </csdl:AssociationSet>
+        <csdl:EntitySet Name="DATPHONGs" EntityType="QuanLyKaraokeModel.DATPHONG" /></csdl:EntityContainer>
+      <csdl:EntityType Name="DATPHONG"><csdl:Key><csdl:PropertyRef Name="MaDatPhong" /></csdl:Key><csdl:Property Name="MaDatPhong" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" /><csdl:Property Name="MaPhong" Type="String" Nullable="false" MaxLength="20" Unicode="false" FixedLength="false" /><csdl:Property Name="TenKhach" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" /><csdl:Property Name="SDT" Type="String" Nullable="false" MaxLength="15" Unicode="false" FixedLength="false" /><csdl:Property Name="SoKhach" Type="Int32" Nullable="false" /><csdl:Property Name="GioBatDauDuKien" Type="DateTime" Nullable="false" Precision="7" /><csdl:Property Name="GioKetThucDuKien" Type="DateTime" Nullable="false" Precision="7" /><csdl:Property Name="DonGiaGioDaChot" Type="Decimal" Nullable="false" Precision="18" Scale="2" /><csdl:Property Name="TrangThai" Type="String" Nullable="false" MaxLength="20" Unicode="false" FixedLength="false" /><csdl:Property Name="MaNV" Type="String" Nullable="false" MaxLength="20" Unicode="false" FixedLength="false" /><csdl:Property Name="GhiChu" Type="String" Nullable="true" MaxLength="500" Unicode="true" FixedLength="false" /></csdl:EntityType></csdl:Schema>
     </edmx:ConceptualModels>
-    <!-- C-S mapping content -->
+    
     <edmx:Mappings>
-      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="QuanLyKaraokeModelStoreContainer" CdmEntityContainer="QuanLyKaraokeEntities">
-          <EntitySetMapping Name="CHITIETDICHVUs">
-            <EntityTypeMapping TypeName="QuanLyKaraokeModel.CHITIETDICHVU">
-              <MappingFragment StoreEntitySet="CHITIETDICHVU">
-                <ScalarProperty Name="MaCTDV" ColumnName="MaCTDV" />
-                <ScalarProperty Name="MaPhien" ColumnName="MaPhien" />
-                <ScalarProperty Name="MaDV" ColumnName="MaDV" />
-                <ScalarProperty Name="SoLuong" ColumnName="SoLuong" />
-                <ScalarProperty Name="DonGia" ColumnName="DonGia" />
-                <ScalarProperty Name="ThoiGianGoi" ColumnName="ThoiGianGoi" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DICHVUs">
-            <EntityTypeMapping TypeName="QuanLyKaraokeModel.DICHVU">
-              <MappingFragment StoreEntitySet="DICHVU">
-                <ScalarProperty Name="MaDV" ColumnName="MaDV" />
-                <ScalarProperty Name="TenDV" ColumnName="TenDV" />
-                <ScalarProperty Name="DonViTinh" ColumnName="DonViTinh" />
-                <ScalarProperty Name="DonGia" ColumnName="DonGia" />
-                <ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="HOADONs">
-            <EntityTypeMapping TypeName="QuanLyKaraokeModel.HOADON">
-              <MappingFragment StoreEntitySet="HOADON">
-                <ScalarProperty Name="MaHD" ColumnName="MaHD" />
-                <ScalarProperty Name="MaPhien" ColumnName="MaPhien" />
-                <ScalarProperty Name="MaNV" ColumnName="MaNV" />
-                <ScalarProperty Name="NgayThanhToan" ColumnName="NgayThanhToan" />
-                <ScalarProperty Name="TienPhong" ColumnName="TienPhong" />
-                <ScalarProperty Name="TienDichVu" ColumnName="TienDichVu" />
-                <ScalarProperty Name="GiamGia" ColumnName="GiamGia" />
-                <ScalarProperty Name="ThanhTien" ColumnName="ThanhTien" />
-                <ScalarProperty Name="PhuongThucTT" ColumnName="PhuongThucTT" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="LOAIPHONGs">
-            <EntityTypeMapping TypeName="QuanLyKaraokeModel.LOAIPHONG">
-              <MappingFragment StoreEntitySet="LOAIPHONG">
-                <ScalarProperty Name="MaLoaiPhong" ColumnName="MaLoaiPhong" />
-                <ScalarProperty Name="TenLoaiPhong" ColumnName="TenLoaiPhong" />
-                <ScalarProperty Name="DonGiaGio" ColumnName="DonGiaGio" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="NHANVIENs">
-            <EntityTypeMapping TypeName="QuanLyKaraokeModel.NHANVIEN">
-              <MappingFragment StoreEntitySet="NHANVIEN">
-                <ScalarProperty Name="MaNV" ColumnName="MaNV" />
-                <ScalarProperty Name="HoTen" ColumnName="HoTen" />
-                <ScalarProperty Name="NgaySinh" ColumnName="NgaySinh" />
-                <ScalarProperty Name="SDT" ColumnName="SDT" />
-                <ScalarProperty Name="ChucVu" ColumnName="ChucVu" />
-                <ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PHIENHATs">
-            <EntityTypeMapping TypeName="QuanLyKaraokeModel.PHIENHAT">
-              <MappingFragment StoreEntitySet="PHIENHAT">
-                <ScalarProperty Name="MaPhien" ColumnName="MaPhien" />
-                <ScalarProperty Name="MaPhong" ColumnName="MaPhong" />
-                <ScalarProperty Name="MaNV" ColumnName="MaNV" />
-                <ScalarProperty Name="GioBatDau" ColumnName="GioBatDau" />
-                <ScalarProperty Name="GioKetThuc" ColumnName="GioKetThuc" />
-                <ScalarProperty Name="DonGiaGio" ColumnName="DonGiaGio" />
-                <ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PHONGs">
-            <EntityTypeMapping TypeName="QuanLyKaraokeModel.PHONG">
-              <MappingFragment StoreEntitySet="PHONG">
-                <ScalarProperty Name="MaPhong" ColumnName="MaPhong" />
-                <ScalarProperty Name="TenPhong" ColumnName="TenPhong" />
-                <ScalarProperty Name="MaLoaiPhong" ColumnName="MaLoaiPhong" />
-                <ScalarProperty Name="SucChua" ColumnName="SucChua" />
-                <ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TAIKHOANs">
-            <EntityTypeMapping TypeName="QuanLyKaraokeModel.TAIKHOAN">
-              <MappingFragment StoreEntitySet="TAIKHOAN">
-                <ScalarProperty Name="MaTK" ColumnName="MaTK" />
-                <ScalarProperty Name="MaNV" ColumnName="MaNV" />
-                <ScalarProperty Name="TenDangNhap" ColumnName="TenDangNhap" />
-                <ScalarProperty Name="MatKhauHash" ColumnName="MatKhauHash" />
-                <ScalarProperty Name="VaiTro" ColumnName="VaiTro" />
-                <ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-        </EntityContainerMapping>
-      </Mapping>
+      <mapping:Mapping Space="C-S">
+        <mapping:EntityContainerMapping StorageEntityContainer="QuanLyKaraokeModelStoreContainer" CdmEntityContainer="QuanLyKaraokeEntities">
+          <mapping:EntitySetMapping Name="CHITIETDICHVUs">
+            <mapping:EntityTypeMapping TypeName="QuanLyKaraokeModel.CHITIETDICHVU">
+              <mapping:MappingFragment StoreEntitySet="CHITIETDICHVU">
+                <mapping:ScalarProperty Name="MaCTDV" ColumnName="MaCTDV" />
+                <mapping:ScalarProperty Name="MaPhien" ColumnName="MaPhien" />
+                <mapping:ScalarProperty Name="MaDV" ColumnName="MaDV" />
+                <mapping:ScalarProperty Name="SoLuong" ColumnName="SoLuong" />
+                <mapping:ScalarProperty Name="DonGia" ColumnName="DonGia" />
+                <mapping:ScalarProperty Name="ThoiGianGoi" ColumnName="ThoiGianGoi" />
+              </mapping:MappingFragment>
+            </mapping:EntityTypeMapping>
+          </mapping:EntitySetMapping>
+          <mapping:EntitySetMapping Name="DICHVUs">
+            <mapping:EntityTypeMapping TypeName="QuanLyKaraokeModel.DICHVU">
+              <mapping:MappingFragment StoreEntitySet="DICHVU">
+                <mapping:ScalarProperty Name="MaDV" ColumnName="MaDV" />
+                <mapping:ScalarProperty Name="TenDV" ColumnName="TenDV" />
+                <mapping:ScalarProperty Name="DonViTinh" ColumnName="DonViTinh" />
+                <mapping:ScalarProperty Name="DonGia" ColumnName="DonGia" />
+                <mapping:ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
+              </mapping:MappingFragment>
+            </mapping:EntityTypeMapping>
+          </mapping:EntitySetMapping>
+          <mapping:EntitySetMapping Name="HOADONs">
+            <mapping:EntityTypeMapping TypeName="QuanLyKaraokeModel.HOADON">
+              <mapping:MappingFragment StoreEntitySet="HOADON">
+                <mapping:ScalarProperty Name="MaHD" ColumnName="MaHD" />
+                <mapping:ScalarProperty Name="MaPhien" ColumnName="MaPhien" />
+                <mapping:ScalarProperty Name="MaNV" ColumnName="MaNV" />
+                <mapping:ScalarProperty Name="NgayThanhToan" ColumnName="NgayThanhToan" />
+                <mapping:ScalarProperty Name="TienPhong" ColumnName="TienPhong" />
+                <mapping:ScalarProperty Name="TienDichVu" ColumnName="TienDichVu" />
+                <mapping:ScalarProperty Name="GiamGia" ColumnName="GiamGia" />
+                <mapping:ScalarProperty Name="ThanhTien" ColumnName="ThanhTien" />
+                <mapping:ScalarProperty Name="PhuongThucTT" ColumnName="PhuongThucTT" />
+              </mapping:MappingFragment>
+            </mapping:EntityTypeMapping>
+          </mapping:EntitySetMapping>
+          <mapping:EntitySetMapping Name="LOAIPHONGs">
+            <mapping:EntityTypeMapping TypeName="QuanLyKaraokeModel.LOAIPHONG">
+              <mapping:MappingFragment StoreEntitySet="LOAIPHONG">
+                <mapping:ScalarProperty Name="MaLoaiPhong" ColumnName="MaLoaiPhong" />
+                <mapping:ScalarProperty Name="TenLoaiPhong" ColumnName="TenLoaiPhong" />
+                <mapping:ScalarProperty Name="DonGiaGio" ColumnName="DonGiaGio" />
+              </mapping:MappingFragment>
+            </mapping:EntityTypeMapping>
+          </mapping:EntitySetMapping>
+          <mapping:EntitySetMapping Name="NHANVIENs">
+            <mapping:EntityTypeMapping TypeName="QuanLyKaraokeModel.NHANVIEN">
+              <mapping:MappingFragment StoreEntitySet="NHANVIEN">
+                <mapping:ScalarProperty Name="MaNV" ColumnName="MaNV" />
+                <mapping:ScalarProperty Name="HoTen" ColumnName="HoTen" />
+                <mapping:ScalarProperty Name="NgaySinh" ColumnName="NgaySinh" />
+                <mapping:ScalarProperty Name="SDT" ColumnName="SDT" />
+                <mapping:ScalarProperty Name="ChucVu" ColumnName="ChucVu" />
+                <mapping:ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
+              </mapping:MappingFragment>
+            </mapping:EntityTypeMapping>
+          </mapping:EntitySetMapping>
+          <mapping:EntitySetMapping Name="PHIENHATs">
+            <mapping:EntityTypeMapping TypeName="QuanLyKaraokeModel.PHIENHAT">
+              <mapping:MappingFragment StoreEntitySet="PHIENHAT">
+                <mapping:ScalarProperty Name="MaPhien" ColumnName="MaPhien" />
+                <mapping:ScalarProperty Name="MaPhong" ColumnName="MaPhong" />
+                <mapping:ScalarProperty Name="MaNV" ColumnName="MaNV" />
+                <mapping:ScalarProperty Name="GioBatDau" ColumnName="GioBatDau" />
+                <mapping:ScalarProperty Name="GioKetThuc" ColumnName="GioKetThuc" />
+                <mapping:ScalarProperty Name="DonGiaGio" ColumnName="DonGiaGio" />
+                <mapping:ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
+              <mapping:ScalarProperty Name="MaDatPhong" ColumnName="MaDatPhong" /></mapping:MappingFragment>
+            </mapping:EntityTypeMapping>
+          </mapping:EntitySetMapping>
+          <mapping:EntitySetMapping Name="PHONGs">
+            <mapping:EntityTypeMapping TypeName="QuanLyKaraokeModel.PHONG">
+              <mapping:MappingFragment StoreEntitySet="PHONG">
+                <mapping:ScalarProperty Name="MaPhong" ColumnName="MaPhong" />
+                <mapping:ScalarProperty Name="TenPhong" ColumnName="TenPhong" />
+                <mapping:ScalarProperty Name="MaLoaiPhong" ColumnName="MaLoaiPhong" />
+                <mapping:ScalarProperty Name="SucChua" ColumnName="SucChua" />
+                <mapping:ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
+              </mapping:MappingFragment>
+            </mapping:EntityTypeMapping>
+          </mapping:EntitySetMapping>
+          <mapping:EntitySetMapping Name="TAIKHOANs">
+            <mapping:EntityTypeMapping TypeName="QuanLyKaraokeModel.TAIKHOAN">
+              <mapping:MappingFragment StoreEntitySet="TAIKHOAN">
+                <mapping:ScalarProperty Name="MaTK" ColumnName="MaTK" />
+                <mapping:ScalarProperty Name="MaNV" ColumnName="MaNV" />
+                <mapping:ScalarProperty Name="TenDangNhap" ColumnName="TenDangNhap" />
+                <mapping:ScalarProperty Name="MatKhauHash" ColumnName="MatKhauHash" />
+                <mapping:ScalarProperty Name="VaiTro" ColumnName="VaiTro" />
+                <mapping:ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
+              </mapping:MappingFragment>
+            </mapping:EntityTypeMapping>
+          </mapping:EntitySetMapping>
+        <mapping:EntitySetMapping Name="DATPHONGs"><mapping:EntityTypeMapping TypeName="QuanLyKaraokeModel.DATPHONG"><mapping:MappingFragment StoreEntitySet="DATPHONG"><mapping:ScalarProperty Name="MaDatPhong" ColumnName="MaDatPhong" /><mapping:ScalarProperty Name="MaPhong" ColumnName="MaPhong" /><mapping:ScalarProperty Name="TenKhach" ColumnName="TenKhach" /><mapping:ScalarProperty Name="SDT" ColumnName="SDT" /><mapping:ScalarProperty Name="SoKhach" ColumnName="SoKhach" /><mapping:ScalarProperty Name="GioBatDauDuKien" ColumnName="GioBatDauDuKien" /><mapping:ScalarProperty Name="GioKetThucDuKien" ColumnName="GioKetThucDuKien" /><mapping:ScalarProperty Name="DonGiaGioDaChot" ColumnName="DonGiaGioDaChot" /><mapping:ScalarProperty Name="TrangThai" ColumnName="TrangThai" /><mapping:ScalarProperty Name="MaNV" ColumnName="MaNV" /><mapping:ScalarProperty Name="GhiChu" ColumnName="GhiChu" /></mapping:MappingFragment></mapping:EntityTypeMapping></mapping:EntitySetMapping></mapping:EntityContainerMapping>
+      </mapping:Mapping>
     </edmx:Mappings>
   </edmx:Runtime>
-  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
-  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
-    <Connection>
-      <DesignerInfoPropertySet>
-        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
-      </DesignerInfoPropertySet>
-    </Connection>
-    <Options>
-      <DesignerInfoPropertySet>
-        <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="true" />
-        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
-        <DesignerProperty Name="UseLegacyProvider" Value="false" />
-        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
-      </DesignerInfoPropertySet>
-    </Options>
-    <!-- Diagram content (shape and connector positions) -->
-    <Diagrams></Diagrams>
-  </Designer>
+  
+  <edmx:Designer>
+    <edmx:Connection>
+      <edmx:DesignerInfoPropertySet>
+        <edmx:DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </edmx:DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <edmx:DesignerInfoPropertySet>
+        <edmx:DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <edmx:DesignerProperty Name="EnablePluralization" Value="true" />
+        <edmx:DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <edmx:DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <edmx:DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </edmx:DesignerInfoPropertySet>
+    </edmx:Options>
+    
+    <edmx:Diagrams />
+  </edmx:Designer>
 </edmx:Edmx>
