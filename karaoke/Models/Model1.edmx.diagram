@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="8310012bece44b8e91827e72123b5401" Name="Diagram1" ZoomLevel="64">
+        <EntityTypeShape EntityType="QuanLyKaraokeModel.CHITIETDICHVU" Width="1.5" PointX="8.25" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuanLyKaraokeModel.DICHVU" Width="1.5" PointX="6" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuanLyKaraokeModel.HOADON" Width="1.5" PointX="3" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuanLyKaraokeModel.LOAIPHONG" Width="1.5" PointX="1.5" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuanLyKaraokeModel.NHANVIEN" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuanLyKaraokeModel.PHIENHAT" Width="1.5" PointX="6" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuanLyKaraokeModel.PHONG" Width="1.5" PointX="3.75" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuanLyKaraokeModel.TAIKHOAN" Width="1.5" PointX="0.75" PointY="8.75" IsExpanded="true" />
+        <AssociationConnector Association="QuanLyKaraokeModel.FK_CTDV_DICHVU" ManuallyRouted="false" />
+        <AssociationConnector Association="QuanLyKaraokeModel.FK_CTDV_PHIENHAT" ManuallyRouted="false" />
+        <AssociationConnector Association="QuanLyKaraokeModel.FK_HOADON_NHANVIEN" ManuallyRouted="false" />
+        <AssociationConnector Association="QuanLyKaraokeModel.FK_HOADON_PHIENHAT" ManuallyRouted="false" />
+        <AssociationConnector Association="QuanLyKaraokeModel.FK_PHONG_LOAIPHONG" ManuallyRouted="false" />
+        <AssociationConnector Association="QuanLyKaraokeModel.FK_PHIENHAT_NHANVIEN" ManuallyRouted="false" />
+        <AssociationConnector Association="QuanLyKaraokeModel.FK_TAIKHOAN_NHANVIEN" ManuallyRouted="false" />
+        <AssociationConnector Association="QuanLyKaraokeModel.FK_PHIENHAT_PHONG" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
