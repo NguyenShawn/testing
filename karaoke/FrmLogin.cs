@@ -59,6 +59,8 @@ namespace karaoke
             }
             catch (Exception ex)
             {
+                karaoke.Helpers.UserSession.Clear();
+                this.Show();
                 MessageBox.Show(
                     "Không thể đăng nhập: " + ex.Message,
                     "Lỗi",
@@ -68,7 +70,7 @@ namespace karaoke
             }
             finally
             {
-                btnDangNhap.Enabled = true;
+                if (!IsDisposed) btnDangNhap.Enabled = true;
             }
         }
     }

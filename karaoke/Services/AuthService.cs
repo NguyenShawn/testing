@@ -11,6 +11,7 @@ namespace karaoke.Services
     {
         public bool DangNhap(string tenDangNhap, string matKhau)
         {
+            UserSession.Clear();
             if (string.IsNullOrWhiteSpace(tenDangNhap) ||
                 string.IsNullOrEmpty(matKhau))
             {
