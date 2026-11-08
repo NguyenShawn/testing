@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 using karaoke.Services;
 namespace karaoke
 {
@@ -16,7 +17,7 @@ namespace karaoke
             txtMatKhau.UseSystemPasswordChar = true;
         }
         
-        private void btnDangNhap_Click(
+        private async void btnDangNhap_Click(
             object sender, EventArgs e)
         {
             string tenDangNhap = txtTenDangNhap.Text.Trim();
@@ -34,12 +35,34 @@ namespace karaoke
             try
             {
                 btnDangNhap.Enabled = false;
+                lblThongBao.Text = "Đang kiểm tra tài khoản...";
 
-                bool thanhCong = authService.DangNhap(
-                    tenDangNhap, matKhau
-                );
+                // Keep exceptions on the worker thread until they can be reported on the UI
+                // thread. Visual Studio otherwise stops at a user-unhandled exception before
+                // the await continuation reaches the outer catch.
+                LoginAttemptResult loginResult = await Task.Run(
+                    () => authService.TryDangNhap(tenDangNhap, matKhau));
+                if (IsDisposed || Disposing)
+                {
+                    karaoke.Helpers.UserSession.Clear();
+                    return;
+                }
+                lblThongBao.Text = "";
 
-                if (!thanhCong)
+                if (loginResult.Error != null)
+                {
+                    karaoke.Helpers.UserSession.Clear();
+                    MessageBox.Show(
+                        "Không thể kiểm tra đăng nhập. Hãy kiểm tra kết nối cơ sở dữ liệu rồi thử lại.\n\n" +
+                        loginResult.Error.GetBaseException().Message,
+                        "Lỗi đăng nhập",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    return;
+                }
+
+                if (!loginResult.Success)
                 {
                     lblThongBao.Text =
                         "Thông tin đăng nhập không hợp lệ!";
@@ -60,6 +83,8 @@ namespace karaoke
             catch (Exception ex)
             {
                 karaoke.Helpers.UserSession.Clear();
+                if (IsDisposed || Disposing) return;
+                lblThongBao.Text = "";
                 this.Show();
                 MessageBox.Show(
                     "Không thể đăng nhập: " + ex.Message,

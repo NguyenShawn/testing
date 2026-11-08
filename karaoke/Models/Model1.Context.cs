@@ -25,6 +25,7 @@ namespace karaoke.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<DATPHONG> DATPHONGs {get;set;}
         public virtual DbSet<CHITIETDICHVU> CHITIETDICHVUs { get; set; }
         public virtual DbSet<DICHVU> DICHVUs { get; set; }
         public virtual DbSet<HOADON> HOADONs { get; set; }
