@@ -1,4 +1,3 @@
-
 using System;
 using System.Drawing;
 using System.Linq;
@@ -6,6 +5,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using karaoke.Models;
 using karaoke.UI;
+
 namespace karaoke
 {
     public partial class FrmMain : Form
@@ -17,6 +17,8 @@ namespace karaoke
             InitializeComponent();
 
             this.Load += FrmMain_Load;
+            this.btnThanhToan.Click += btnThanhToan_Click;
+            this.btnThongKe.Click += btnThongKe_Click;
         }
 
         // ============================================
@@ -244,6 +246,18 @@ namespace karaoke
             SetActiveSidebar(btnGoiDichVu);
         }
 
+        private void btnThanhToan_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmThanhToan());
+            SetActiveSidebar(btnThanhToan);
+        }
+
+        private void btnThongKe_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmThongKe());
+            SetActiveSidebar(btnThongKe);
+        }
+
         private void SetActiveSidebar(Guna.UI2.WinForms.Guna2Button button)
         {
             ButtonActive.SetActiveButton(
@@ -257,7 +271,5 @@ namespace karaoke
                 btnThongKe
             );
         }
-
-        
     }
 }
