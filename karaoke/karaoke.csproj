@@ -281,9 +281,7 @@
       <LastGenOutput>Model1.cs</LastGenOutput>
     </Content>
     <Content Include="Sql\Setup_QuanLyKaraoke.sql" />
-    <Content Include="Sql\01_CreateTables.sql" />
     <Content Include="Sql\02_SampleData.sql" />
-    <Content Include="Sql\03_Booking.sql" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
