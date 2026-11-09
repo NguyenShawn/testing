@@ -81,6 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\DichVuService.cs" />
     <Compile Include="Services\RoomService.cs" />
     <Compile Include="Services\BookingService.cs" />
     <Compile Include="Services\ServiceOrderService.cs" />

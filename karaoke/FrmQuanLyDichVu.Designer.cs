@@ -2,15 +2,8 @@
 {
     partial class FrmQuanLyDichVu
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,165 +13,208 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmQuanLyDichVu));
-            this.panelSidebar = new System.Windows.Forms.Panel();
-            this.btnMain = new System.Windows.Forms.Button();
-            this.btnThongKe = new System.Windows.Forms.Button();
-            this.btnThanhToan = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.dgvDichVu = new System.Windows.Forms.DataGridView();
+            this.btnThem = new System.Windows.Forms.Button();
+            this.btnSua = new System.Windows.Forms.Button();
+            this.btnXoa = new System.Windows.Forms.Button();
+            this.btnLamMoi = new System.Windows.Forms.Button();
+            this.txtMaDV = new System.Windows.Forms.TextBox();
+            this.txtTenDV = new System.Windows.Forms.TextBox();
+            this.txtDonViTinh = new System.Windows.Forms.TextBox();
+            this.txtDonGia = new System.Windows.Forms.TextBox();
+            this.chkTrangThai = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.btnGoiDichVu = new System.Windows.Forms.Button();
-            this.btnDatPhong = new System.Windows.Forms.Button();
-            this.btnDichVu = new System.Windows.Forms.Button();
-            this.btnPhong = new System.Windows.Forms.Button();
-            this.panelSidebar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDichVu)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panelSidebar
+            // dgvDichVu
             // 
-            this.panelSidebar.BackColor = System.Drawing.Color.White;
-            this.panelSidebar.Controls.Add(this.btnMain);
-            this.panelSidebar.Controls.Add(this.btnThongKe);
-            this.panelSidebar.Controls.Add(this.btnThanhToan);
-            this.panelSidebar.Controls.Add(this.pictureBox1);
-            this.panelSidebar.Controls.Add(this.label1);
-            this.panelSidebar.Controls.Add(this.btnGoiDichVu);
-            this.panelSidebar.Controls.Add(this.btnDatPhong);
-            this.panelSidebar.Controls.Add(this.btnDichVu);
-            this.panelSidebar.Controls.Add(this.btnPhong);
-            this.panelSidebar.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panelSidebar.Location = new System.Drawing.Point(0, 0);
-            this.panelSidebar.Name = "panelSidebar";
-            this.panelSidebar.Size = new System.Drawing.Size(216, 715);
-            this.panelSidebar.TabIndex = 13;
+            this.dgvDichVu.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvDichVu.Location = new System.Drawing.Point(12, 191);
+            this.dgvDichVu.Name = "dgvDichVu";
+            this.dgvDichVu.Size = new System.Drawing.Size(936, 512);
+            this.dgvDichVu.TabIndex = 0;
             // 
-            // btnMain
+            // btnThem
             // 
-            this.btnMain.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnMain.Location = new System.Drawing.Point(18, 122);
-            this.btnMain.Name = "btnMain";
-            this.btnMain.Size = new System.Drawing.Size(180, 44);
-            this.btnMain.TabIndex = 13;
-            this.btnMain.Text = "Trang chủ";
-            this.btnMain.UseVisualStyleBackColor = false;
+            this.btnThem.Location = new System.Drawing.Point(32, 46);
+            this.btnThem.Name = "btnThem";
+            this.btnThem.Size = new System.Drawing.Size(75, 23);
+            this.btnThem.TabIndex = 1;
+            this.btnThem.Text = "button1";
+            this.btnThem.UseVisualStyleBackColor = true;
             // 
-            // btnThongKe
+            // btnSua
             // 
-            this.btnThongKe.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnThongKe.Location = new System.Drawing.Point(18, 584);
-            this.btnThongKe.Name = "btnThongKe";
-            this.btnThongKe.Size = new System.Drawing.Size(180, 44);
-            this.btnThongKe.TabIndex = 12;
-            this.btnThongKe.Text = "Thống kê";
-            this.btnThongKe.UseVisualStyleBackColor = false;
+            this.btnSua.Location = new System.Drawing.Point(129, 46);
+            this.btnSua.Name = "btnSua";
+            this.btnSua.Size = new System.Drawing.Size(75, 23);
+            this.btnSua.TabIndex = 2;
+            this.btnSua.Text = "button2";
+            this.btnSua.UseVisualStyleBackColor = true;
             // 
-            // btnThanhToan
+            // btnXoa
             // 
-            this.btnThanhToan.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnThanhToan.Location = new System.Drawing.Point(18, 507);
-            this.btnThanhToan.Name = "btnThanhToan";
-            this.btnThanhToan.Size = new System.Drawing.Size(180, 44);
-            this.btnThanhToan.TabIndex = 11;
-            this.btnThanhToan.Text = "Thanh toán";
-            this.btnThanhToan.UseVisualStyleBackColor = false;
+            this.btnXoa.Location = new System.Drawing.Point(32, 88);
+            this.btnXoa.Name = "btnXoa";
+            this.btnXoa.Size = new System.Drawing.Size(75, 23);
+            this.btnXoa.TabIndex = 3;
+            this.btnXoa.Text = "button3";
+            this.btnXoa.UseVisualStyleBackColor = true;
             // 
-            // pictureBox1
+            // btnLamMoi
             // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(53, 61);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 10;
-            this.pictureBox1.TabStop = false;
+            this.btnLamMoi.Location = new System.Drawing.Point(129, 88);
+            this.btnLamMoi.Name = "btnLamMoi";
+            this.btnLamMoi.Size = new System.Drawing.Size(75, 23);
+            this.btnLamMoi.TabIndex = 4;
+            this.btnLamMoi.Text = "button4";
+            this.btnLamMoi.UseVisualStyleBackColor = true;
+            // 
+            // txtMaDV
+            // 
+            this.txtMaDV.Location = new System.Drawing.Point(110, 30);
+            this.txtMaDV.Name = "txtMaDV";
+            this.txtMaDV.Size = new System.Drawing.Size(100, 20);
+            this.txtMaDV.TabIndex = 5;
+            // 
+            // txtTenDV
+            // 
+            this.txtTenDV.Location = new System.Drawing.Point(110, 56);
+            this.txtTenDV.Name = "txtTenDV";
+            this.txtTenDV.Size = new System.Drawing.Size(100, 20);
+            this.txtTenDV.TabIndex = 6;
+            // 
+            // txtDonViTinh
+            // 
+            this.txtDonViTinh.Location = new System.Drawing.Point(110, 88);
+            this.txtDonViTinh.Name = "txtDonViTinh";
+            this.txtDonViTinh.Size = new System.Drawing.Size(100, 20);
+            this.txtDonViTinh.TabIndex = 7;
+            // 
+            // txtDonGia
+            // 
+            this.txtDonGia.Location = new System.Drawing.Point(110, 118);
+            this.txtDonGia.Name = "txtDonGia";
+            this.txtDonGia.Size = new System.Drawing.Size(100, 20);
+            this.txtDonGia.TabIndex = 8;
+            // 
+            // chkTrangThai
+            // 
+            this.chkTrangThai.AutoSize = true;
+            this.chkTrangThai.Location = new System.Drawing.Point(110, 144);
+            this.chkTrangThai.Name = "chkTrangThai";
+            this.chkTrangThai.Size = new System.Drawing.Size(80, 17);
+            this.chkTrangThai.TabIndex = 9;
+            this.chkTrangThai.Text = "checkBox1";
+            this.chkTrangThai.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.LimeGreen;
-            this.label1.Location = new System.Drawing.Point(51, 12);
+            this.label1.Location = new System.Drawing.Point(41, 30);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(142, 29);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "Karaoke404";
+            this.label1.Size = new System.Drawing.Size(63, 13);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Mã Dịch Vụ";
             // 
-            // btnGoiDichVu
+            // label2
             // 
-            this.btnGoiDichVu.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnGoiDichVu.Location = new System.Drawing.Point(18, 430);
-            this.btnGoiDichVu.Name = "btnGoiDichVu";
-            this.btnGoiDichVu.Size = new System.Drawing.Size(180, 44);
-            this.btnGoiDichVu.TabIndex = 6;
-            this.btnGoiDichVu.Text = "Gọi dịch vụ";
-            this.btnGoiDichVu.UseVisualStyleBackColor = false;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(37, 56);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(67, 13);
+            this.label2.TabIndex = 11;
+            this.label2.Text = "Tên Dịch Vụ";
             // 
-            // btnDatPhong
+            // label3
             // 
-            this.btnDatPhong.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnDatPhong.Location = new System.Drawing.Point(18, 353);
-            this.btnDatPhong.Name = "btnDatPhong";
-            this.btnDatPhong.Size = new System.Drawing.Size(180, 44);
-            this.btnDatPhong.TabIndex = 7;
-            this.btnDatPhong.Text = "Đặt phòng";
-            this.btnDatPhong.UseVisualStyleBackColor = false;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(39, 88);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(65, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Đơn Vị Tính";
             // 
-            // btnDichVu
+            // label4
             // 
-            this.btnDichVu.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnDichVu.Location = new System.Drawing.Point(18, 276);
-            this.btnDichVu.Name = "btnDichVu";
-            this.btnDichVu.Size = new System.Drawing.Size(180, 44);
-            this.btnDichVu.TabIndex = 8;
-            this.btnDichVu.Text = "Quản lý dịch vụ";
-            this.btnDichVu.UseVisualStyleBackColor = false;
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(59, 118);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(45, 13);
+            this.label4.TabIndex = 13;
+            this.label4.Text = "Giá Bán";
             // 
-            // btnPhong
+            // groupBox1
             // 
-            this.btnPhong.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnPhong.Location = new System.Drawing.Point(18, 199);
-            this.btnPhong.Name = "btnPhong";
-            this.btnPhong.Size = new System.Drawing.Size(180, 44);
-            this.btnPhong.TabIndex = 1;
-            this.btnPhong.Text = "Quản lý phòng";
-            this.btnPhong.UseVisualStyleBackColor = false;
+            this.groupBox1.Controls.Add(this.txtMaDV);
+            this.groupBox1.Controls.Add(this.chkTrangThai);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.txtTenDV);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.txtDonViTinh);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.txtDonGia);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Location = new System.Drawing.Point(224, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(272, 173);
+            this.groupBox1.TabIndex = 14;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Thông Tin Dịch Vụ";
             // 
-            // frmQLDichVu
+            // groupBox2
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1173, 715);
-            this.Controls.Add(this.panelSidebar);
-            this.Name = "frmQLDichVu";
-            this.Text = "frmQLDichVu";
-            this.panelSidebar.ResumeLayout(false);
-            this.panelSidebar.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.groupBox2.Controls.Add(this.btnThem);
+            this.groupBox2.Controls.Add(this.btnSua);
+            this.groupBox2.Controls.Add(this.btnLamMoi);
+            this.groupBox2.Controls.Add(this.btnXoa);
+            this.groupBox2.Location = new System.Drawing.Point(502, 12);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(245, 173);
+            this.groupBox2.TabIndex = 15;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Chức Năng";
+            // 
+            // FrmQuanLyDichVu
+            // 
+            this.ClientSize = new System.Drawing.Size(960, 715);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.dgvDichVu);
+            this.Name = "FrmQuanLyDichVu";
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDichVu)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
-        #endregion
-
-        private System.Windows.Forms.Panel panelSidebar;
-        private System.Windows.Forms.Button btnMain;
-        private System.Windows.Forms.Button btnThongKe;
-        private System.Windows.Forms.Button btnThanhToan;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.DataGridView dgvDichVu;
+        private System.Windows.Forms.Button btnThem;
+        private System.Windows.Forms.Button btnSua;
+        private System.Windows.Forms.Button btnXoa;
+        private System.Windows.Forms.Button btnLamMoi;
+        private System.Windows.Forms.TextBox txtMaDV;
+        private System.Windows.Forms.TextBox txtTenDV;
+        private System.Windows.Forms.TextBox txtDonViTinh;
+        private System.Windows.Forms.TextBox txtDonGia;
+        private System.Windows.Forms.CheckBox chkTrangThai;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btnGoiDichVu;
-        private System.Windows.Forms.Button btnDatPhong;
-        private System.Windows.Forms.Button btnDichVu;
-        private System.Windows.Forms.Button btnPhong;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
