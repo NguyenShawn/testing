@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -51,7 +51,9 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
-                var query = from b in db.DATPHONGs
+                var account = AuthService.RequireCurrentUser(db);
+                var bookings = db.DATPHONGs.AsQueryable();
+                var query = from b in bookings
                             join p in db.PHONGs on b.MaPhong equals p.MaPhong
                             join lp in db.LOAIPHONGs on p.MaLoaiPhong equals lp.MaLoaiPhong
                             join nv in db.NHANVIENs on b.MaNV equals nv.MaNV into nvGroup
@@ -122,7 +124,9 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
-                var row = (from b in db.DATPHONGs
+                var account = AuthService.RequireCurrentUser(db);
+                var bookings = db.DATPHONGs.AsQueryable();
+                var row = (from b in bookings
                            join p in db.PHONGs on b.MaPhong equals p.MaPhong
                            join lp in db.LOAIPHONGs on p.MaLoaiPhong equals lp.MaLoaiPhong
                            join nv in db.NHANVIENs on b.MaNV equals nv.MaNV into nvGroup
@@ -165,6 +169,7 @@ namespace karaoke.Services
 
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequireCurrentUser(db);
                 var query = db.PHONGs.Include("LOAIPHONG")
                                      .Where(p => p.TrangThai != "Bảo trì" && p.SucChua >= guestCount);
 
@@ -217,7 +222,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                var staff = AuthService.ValidateCurrentUser(db, "Admin", "NhanVien");
+                var staff = AuthService.RequireCurrentUser(db);
 
                 var room = db.PHONGs.Include("LOAIPHONG").FirstOrDefault(p => p.MaPhong == maPhong);
                 if (room == null)
@@ -245,6 +250,8 @@ namespace karaoke.Services
                     throw new InvalidOperationException("Phòng đã có lịch đặt khác trong khoảng thời gian này.");
                 }
 
+                if (start <= DateTime.Now && db.PHIENHATs.Any(p => p.MaPhong == maPhong && p.TrangThai == "DangHat"))
+                    throw new InvalidOperationException("Phòng đang có phiên hát.");
                 decimal donGiaGioDaChot = room.LOAIPHONG.DonGiaGio;
 
                 var booking = new DATPHONG
@@ -276,7 +283,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                var staff = AuthService.ValidateCurrentUser(db, "Admin", "NhanVien");
+                var staff = AuthService.RequireCurrentUser(db);
 
                 var booking = db.DATPHONGs.FirstOrDefault(b => b.MaDatPhong == maDatPhong);
                 if (booking == null)
@@ -328,7 +335,6 @@ namespace karaoke.Services
                 booking.SoKhach = soKhach;
                 booking.GioBatDauDuKien = start;
                 booking.GioKetThucDuKien = end;
-                booking.MaNV = staff.MaNV;
                 booking.GhiChu = string.IsNullOrWhiteSpace(ghiChu) ? null : ghiChu.Trim();
 
                 db.SaveChanges();
@@ -341,7 +347,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                AuthService.ValidateCurrentUser(db, "Admin", "NhanVien");
+                var account = AuthService.RequireCurrentUser(db);
 
                 var booking = db.DATPHONGs.FirstOrDefault(b => b.MaDatPhong == maDatPhong);
                 if (booking == null)
@@ -371,7 +377,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                var staff = AuthService.ValidateCurrentUser(db, "Admin", "NhanVien");
+                var staff = AuthService.RequireCurrentUser(db);
 
                 var booking = db.DATPHONGs.FirstOrDefault(b => b.MaDatPhong == maDatPhong);
                 if (booking == null)
@@ -432,6 +438,9 @@ namespace karaoke.Services
                     throw new InvalidOperationException("Phiếu đặt phòng này đã được tạo phiên hát trước đó.");
                 }
 
+                if (db.DATPHONGs.Any(b => b.MaPhong == booking.MaPhong && b.MaDatPhong != maDatPhong
+                    && b.TrangThai == "ChoNhan" && b.GioBatDauDuKien < booking.GioKetThucDuKien && b.GioKetThucDuKien > now))
+                    throw new InvalidOperationException("Khoảng nhận phòng sớm trùng lịch đặt khác.");
                 // Atomically create PHIENHAT with frozen rate and current staff
                 var phienHat = new PHIENHAT
                 {

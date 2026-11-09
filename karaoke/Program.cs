@@ -16,7 +16,33 @@ namespace karaoke
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMain());
+            while (true)
+            {
+                karaoke.Helpers.UserSession.Clear();
+                using (var login = new FrmLogin())
+                {
+                    if (login.ShowDialog() != DialogResult.OK)
+                        return;
+                } // FrmLogin is disposed before FrmMain is created.
+
+                DialogResult result;
+                try
+                {
+                    using (var main = new FrmMain())
+                    {
+                        Application.Run(main);
+                        result = main.DialogResult;
+                    }
+                }
+                finally
+                {
+                    karaoke.Helpers.UserSession.Clear();
+                }
+
+                // Only logout opens a new login form. Closing FrmMain exits.
+                if (result != DialogResult.Retry)
+                    return;
+            }
         }
     }
 }

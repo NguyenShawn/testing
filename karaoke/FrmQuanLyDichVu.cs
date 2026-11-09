@@ -39,6 +39,11 @@ namespace karaoke
 
         private void FrmQuanLyDichVu_Load(object sender, EventArgs e)
         {
+            try {
+                bool admin = AuthService.IsAdmin(AuthService.RequireCurrentUser());
+                btnThem.Enabled = btnSua.Enabled = admin;
+                btnXoa.Enabled = admin;
+            } catch (Exception ex) { MessageBox.Show(ex.Message); Close(); return; }
             LoadData();
         }
 

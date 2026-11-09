@@ -22,6 +22,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequireCurrentUser(db);
                 return db.DICHVUs
                     .AsNoTracking()
                     .Select(d => new DichVuRow
@@ -36,15 +37,8 @@ namespace karaoke.Services
             }
         }
 
-        public static void RequireAdmin()
-        {
-            if (!UserSession.IsLoggedIn || UserSession.VaiTro != "Admin")
-                throw new InvalidOperationException("Chỉ Admin được phép thay đổi danh mục dịch vụ.");
-        }
-
         public void Save(string maDV, string tenDV, string donViTinh, decimal donGia, bool trangThai, bool create)
         {
-            RequireAdmin();
 
             if (string.IsNullOrWhiteSpace(maDV) || maDV.Length > 20 ||
                 string.IsNullOrWhiteSpace(tenDV) || tenDV.Length > 100 ||
@@ -56,6 +50,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
+                AuthService.RequireAdmin(db);
                 var dv = db.DICHVUs.Find(maDV);
 
                 if (create && dv != null)
@@ -81,10 +76,10 @@ namespace karaoke.Services
 
         public void Delete(string maDV)
         {
-            RequireAdmin();
 
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequireAdmin(db);
                 var dv = db.DICHVUs.Find(maDV);
                 if (dv == null) return;
 

@@ -23,6 +23,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequireCurrentUser(db);
                 return db.PHONGs
                     .AsNoTracking()
                     .Select(p => new RoomRow
@@ -38,17 +39,11 @@ namespace karaoke.Services
             }
         }
 
-        public static void RequireAdmin()
-        {
-            if (!UserSession.IsLoggedIn || UserSession.VaiTro != "Admin")
-                throw new InvalidOperationException("Chỉ Admin được thay đổi danh mục phòng.");
-        }
-
         public void Save(string id, string name, string type, decimal price, int capacity, string status, bool create)
         {
-            RequireAdmin();
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequireAdmin(db);
                 var category = db.LOAIPHONGs.FirstOrDefault(x => x.TenLoaiPhong == type && x.DonGiaGio == price);
                 if (category == null)
                     throw new InvalidOperationException("Loại phòng và đơn giá phải khớp danh mục loại phòng đã có.");
@@ -59,7 +54,6 @@ namespace karaoke.Services
 
         public void Save(string id, string name, int maLoaiPhong, int capacity, string status, bool create)
         {
-            RequireAdmin();
 
             if (string.IsNullOrWhiteSpace(id) || id.Length > 20 ||
                 string.IsNullOrWhiteSpace(name) || name.Length > 50 || capacity < 1)
@@ -70,6 +64,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
+                AuthService.RequireAdmin(db);
                 var category = db.LOAIPHONGs.Find(maLoaiPhong);
                 if (category == null)
                     throw new InvalidOperationException("Loại phòng không tồn tại trong hệ thống.");
@@ -93,6 +88,8 @@ namespace karaoke.Services
                     db.PHONGs.Add(room);
                 }
 
+                if (status == "Bảo trì" && db.DATPHONGs.Any(x => x.MaPhong == id && x.TrangThai == "ChoNhan"))
+                    throw new InvalidOperationException("Phòng còn lịch đặt chưa nhận; hãy xử lý lịch đặt trước khi bảo trì.");
                 room.TenPhong = name;
                 room.MaLoaiPhong = category.MaLoaiPhong;
                 room.SucChua = capacity;
@@ -105,13 +102,13 @@ namespace karaoke.Services
 
         public void Delete(string id)
         {
-            RequireAdmin();
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequireAdmin(db);
                 var room = db.PHONGs.Find(id);
                 if (room == null) return;
 
-                if (db.PHIENHATs.Any(x => x.MaPhong == id))
+                if (db.PHIENHATs.Any(x => x.MaPhong == id) || db.DATPHONGs.Any(x => x.MaPhong == id))
                     throw new InvalidOperationException("Phòng đã có lịch sử phiên hát, không thể xóa.");
 
                 db.PHONGs.Remove(room);

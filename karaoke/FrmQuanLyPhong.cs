@@ -40,6 +40,11 @@ namespace karaoke
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
                 return;
 
+            Run(() => {
+                bool admin = AuthService.IsAdmin(AuthService.RequireCurrentUser());
+                btnThem.Enabled = btnSua.Enabled = admin;
+                btnXoa.Enabled = admin;
+            });
             cbTrangThai.Items.Clear();
             cbTrangThai.Items.AddRange(new object[] { "Trống", "Đang sử dụng", "Bảo trì" });
             cbTrangThai.SelectedIndex = 0;

@@ -36,6 +36,7 @@
             this.guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             this.lblThongBao = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.guna2Panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,7 +61,7 @@
             this.btnDangNhap.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
             this.btnDangNhap.Font = new System.Drawing.Font("UTM Cooper Black", 10F);
             this.btnDangNhap.ForeColor = System.Drawing.Color.White;
-            this.btnDangNhap.Location = new System.Drawing.Point(100, 195);
+            this.btnDangNhap.Location = new System.Drawing.Point(100, 209);
             this.btnDangNhap.Name = "btnDangNhap";
             this.btnDangNhap.Size = new System.Drawing.Size(180, 38);
             this.btnDangNhap.TabIndex = 1;
@@ -133,6 +134,7 @@
             this.guna2Panel1.BorderColor = System.Drawing.Color.Black;
             this.guna2Panel1.BorderRadius = 15;
             this.guna2Panel1.BorderThickness = 2;
+            this.guna2Panel1.Controls.Add(this.linkLabel1);
             this.guna2Panel1.Controls.Add(this.lblThongBao);
             this.guna2Panel1.Controls.Add(this.guna2HtmlLabel2);
             this.guna2Panel1.Controls.Add(this.guna2HtmlLabel1);
@@ -150,8 +152,24 @@
             this.lblThongBao.BackColor = System.Drawing.Color.Transparent;
             this.lblThongBao.Location = new System.Drawing.Point(90, 174);
             this.lblThongBao.Name = "lblThongBao";
-            this.lblThongBao.Size = new System.Drawing.Size(3, 2);
+            this.lblThongBao.Size = new System.Drawing.Size(0, 0);
             this.lblThongBao.TabIndex = 5;
+            this.lblThongBao.Text = null;
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.ActiveLinkColor = System.Drawing.Color.Black;
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.linkLabel1.Font = new System.Drawing.Font("UTM Cooper Black", 8.25F);
+            this.linkLabel1.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
+            this.linkLabel1.Location = new System.Drawing.Point(87, 174);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(191, 17);
+            this.linkLabel1.TabIndex = 6;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Chưa có tài khoản? Đăng ký ngay";
+            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
             // 
             // FrmLogin
             // 
@@ -182,5 +200,6 @@
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel2;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblThongBao;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }

@@ -20,6 +20,7 @@ namespace karaoke.Models
             this.HOADONs = new HashSet<HOADON>();
             this.PHIENHATs = new HashSet<PHIENHAT>();
             this.TAIKHOANs = new HashSet<TAIKHOAN>();
+            this.DATPHONGs = new HashSet<DATPHONG>();
         }
     
         public string MaNV { get; set; }
@@ -35,5 +36,7 @@ namespace karaoke.Models
         public virtual ICollection<PHIENHAT> PHIENHATs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TAIKHOAN> TAIKHOANs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DATPHONG> DATPHONGs { get; set; }
     }
 }

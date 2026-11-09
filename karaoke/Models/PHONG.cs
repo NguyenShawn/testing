@@ -18,6 +18,7 @@ namespace karaoke.Models
         public PHONG()
         {
             this.PHIENHATs = new HashSet<PHIENHAT>();
+            this.DATPHONGs = new HashSet<DATPHONG>();
         }
     
         public string MaPhong { get; set; }
@@ -29,5 +30,7 @@ namespace karaoke.Models
         public virtual LOAIPHONG LOAIPHONG { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PHIENHAT> PHIENHATs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DATPHONG> DATPHONGs { get; set; }
     }
 }

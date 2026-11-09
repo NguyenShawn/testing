@@ -20,6 +20,9 @@ namespace karaoke.Models
         public string MatKhauHash { get; set; }
         public string VaiTro { get; set; }
         public bool TrangThai { get; set; }
+        public int PhienBanBaoMat { get; set; }
+        public int SoLanDangNhapSai { get; set; }
+        public Nullable<System.DateTime> KhoaDen { get; set; }
     
         public virtual NHANVIEN NHANVIEN { get; set; }
     }
