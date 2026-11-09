@@ -13,8 +13,19 @@ namespace karaoke
         public FrmLogin()
         {
             InitializeComponent();
+            guna2Panel1.Size = new System.Drawing.Size(380, 310);
+            lblThongBao.AutoSize = false;
+            lblThongBao.Location = new System.Drawing.Point(20, 165);
+            lblThongBao.Size = new System.Drawing.Size(340, 50);
+            btnDangNhap.Location = new System.Drawing.Point(100, 220);
+            linkLabel1.Location = new System.Drawing.Point(70, 275);
+            linkLabel1.Text = "Quên mật khẩu? Liên hệ Admin";
+            linkLabel1.LinkClicked += (sender, args) => MessageBox.Show(
+                "Nhân viên quên mật khẩu cần liên hệ Admin để xác minh và đặt lại. Nếu quên mật khẩu Admin, liên hệ người quản trị database.",
+                "Hỗ trợ đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.AcceptButton = btnDangNhap;
             txtMatKhau.UseSystemPasswordChar = true;
+            txtTenDangNhap.MaxLength = 50; txtMatKhau.MaxLength = 72;
         }
         
         private async void btnDangNhap_Click(
@@ -34,6 +45,7 @@ namespace karaoke
 
             try
             {
+                Enabled = false;
                 btnDangNhap.Enabled = false;
                 lblThongBao.Text = "Đang kiểm tra tài khoản...";
 
@@ -65,20 +77,14 @@ namespace karaoke
                 if (!loginResult.Success)
                 {
                     lblThongBao.Text =
-                        "Thông tin đăng nhập không hợp lệ!";
+                        "Không thể đăng nhập. Kiểm tra thông tin; nếu nhập sai nhiều lần, hãy chờ 15 phút hoặc liên hệ Admin.";
                     return;
                 }
 
-                // Mo Dashboard sau khi dang nhap thanh cong
-                this.Hide();
-
-                using (FrmMain main = new FrmMain())
-                {
-                    main.ShowDialog();
-                }
-
-                // Dong Login khi FrmMain da dong
-                this.Close();
+                // Program disposes this form before opening FrmMain.
+                txtMatKhau.Clear();
+                DialogResult = DialogResult.OK;
+                Close();
             }
             catch (Exception ex)
             {
@@ -95,7 +101,7 @@ namespace karaoke
             }
             finally
             {
-                if (!IsDisposed) btnDangNhap.Enabled = true;
+                if (!IsDisposed) { Enabled = true; btnDangNhap.Enabled = true; }
             }
         }
     }

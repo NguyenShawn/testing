@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -33,6 +33,14 @@ namespace karaoke
         {
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
 
+            try {
+                AuthService.RequireCurrentUser();
+                btnThemDat.Enabled = true;
+                btnSuaDat.Enabled = true;
+                btnHuyDat.Enabled = true;
+                btnNhanPhong.Visible = true;
+                btnNhanPhong.Enabled = true;
+            } catch (Exception ex) { MessageBox.Show(ex.Message); Close(); return; }
             InitGrid();
             InitFilterControls();
             LoadBookings();
@@ -277,7 +285,7 @@ namespace karaoke
 
             try
             {
-                bookingService.CancelBooking(booking.MaDatPhong, "Hủy bởi nhân viên");
+                bookingService.CancelBooking(booking.MaDatPhong, "Hủy bởi người dùng");
                 MessageBox.Show("Hủy phiếu đặt phòng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadBookings();
             }

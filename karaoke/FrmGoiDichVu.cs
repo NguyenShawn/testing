@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -23,6 +23,13 @@ namespace karaoke
         private void FrmGoiDichVu_Load(object sender, EventArgs e)
         {
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
+
+            try
+            {
+                AuthService.RequireCurrentUser();
+                btnXacNhanGoi.Enabled = true;
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message); Close(); return; }
 
             InitGrids();
             dgvGioHang.DataSource = unconfirmedCart;

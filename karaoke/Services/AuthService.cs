@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data.SqlClient;
 using System.Linq;
 using karaoke.Models;
@@ -30,101 +30,89 @@ namespace karaoke.Services
             }
         }
 
+        private static readonly string DummyHash = BCryptNet.HashPassword("invalid-account-password");
         public bool DangNhap(string tenDangNhap, string matKhau)
         {
             UserSession.Clear();
-            if (string.IsNullOrWhiteSpace(tenDangNhap) ||
-                string.IsNullOrEmpty(matKhau))
-            {
+            tenDangNhap = (tenDangNhap ?? "").Trim();
+            if (!System.Text.RegularExpressions.Regex.IsMatch(tenDangNhap, @"\A[a-zA-Z0-9_.]{3,50}\z"))
                 return false;
-            }
-
+            if (string.IsNullOrEmpty(matKhau) || System.Text.Encoding.UTF8.GetByteCount(matKhau) > 72) return false;
             using (var db = new QuanLyKaraokeEntities())
             {
-                // LocalDB is on this machine: do not spend another 10 seconds
-                // retrying a failed login connection. Keep remote configurations
-                // and their retry policies unchanged.
                 var connection = db.Database.Connection;
                 var settings = new SqlConnectionStringBuilder(connection.ConnectionString);
                 if (settings.DataSource.StartsWith("(localdb)\\", StringComparison.OrdinalIgnoreCase))
+                { settings.ConnectRetryCount = 0; connection.ConnectionString = settings.ConnectionString; }
+                EnsureInternalSchema(db);
+                using (var tx = db.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
                 {
-                    settings.ConnectRetryCount = 0;
-                    connection.ConnectionString = settings.ConnectionString;
+                    var account = db.TAIKHOANs.SqlQuery("SELECT * FROM dbo.TAIKHOAN WITH(UPDLOCK,HOLDLOCK) WHERE TenDangNhap=@u", new SqlParameter("@u", tenDangNhap)).SingleOrDefault();
+                    bool correct;
+                    try { correct = BCryptNet.Verify(matKhau, account == null ? DummyHash : account.MatKhauHash); }
+                    catch (BCrypt.Net.SaltParseException) { correct = false; }
+                    DateTime now = db.Database.SqlQuery<DateTime>("SELECT SYSUTCDATETIME()").Single();
+                    if (account == null || !account.TrangThai || (account.KhoaDen.HasValue && account.KhoaDen > now))
+                    { tx.Commit(); return false; }
+                    if (!correct)
+                    {
+                        // Five consecutive failures lock login for 15 minutes.
+                        if (account.KhoaDen.HasValue) { account.SoLanDangNhapSai = 0; account.KhoaDen = null; }
+                        account.SoLanDangNhapSai++;
+                        if (account.SoLanDangNhapSai >= 5) account.KhoaDen = now.AddMinutes(15);
+                        db.SaveChanges(); tx.Commit(); return false;
+                    }
+                    try { ValidateProfile(db, account); }
+                    catch (UnauthorizedAccessException) { tx.Commit(); return false; }
+                    account.SoLanDangNhapSai = 0; account.KhoaDen = null;
+                    db.SaveChanges(); tx.Commit();
+                    UserSession.MaTK = account.MaTK;
+                    UserSession.MaNV = account.MaNV; UserSession.TenDangNhap = account.TenDangNhap;
+                    UserSession.VaiTro = account.VaiTro; UserSession.PhienBanBaoMat = account.PhienBanBaoMat;
+                    return true;
                 }
-
-                var taiKhoan = db.TAIKHOANs
-                    .FirstOrDefault(t =>
-                        t.TenDangNhap == tenDangNhap);
-
-                // Khong tiet lo tai khoan co ton tai hay khong
-                if (taiKhoan == null)
-                    return false;
-
-                // Chi cho phep tai khoan dang hoat dong
-                if (!taiKhoan.TrangThai)
-                    return false;
-
-                if (string.IsNullOrEmpty(taiKhoan.MatKhauHash))
-                    return false;
-
-                bool matKhauDung;
-
-                try
-                {
-                    matKhauDung = BCryptNet.Verify(
-                        matKhau,
-                        taiKhoan.MatKhauHash
-                    );
-                }
-                catch (BCrypt.Net.SaltParseException)
-                {
-                    // Hash khong dung dinh dang BCrypt
-                    return false;
-                }
-
-                if (!matKhauDung)
-                    return false;
-
-                // Dang nhap thanh cong
-                UserSession.MaTK = taiKhoan.MaTK;
-                UserSession.MaNV = taiKhoan.MaNV;
-                UserSession.TenDangNhap =
-                    taiKhoan.TenDangNhap;
-                UserSession.VaiTro = taiKhoan.VaiTro;
-
-                return true;
             }
         }
 
-        public static TAIKHOAN ValidateCurrentUser(QuanLyKaraokeEntities db, params string[] allowedRoles)
+        public static bool IsInternalAccount(TAIKHOAN account)
         {
-            if (!UserSession.IsLoggedIn)
-            {
-                throw new UnauthorizedAccessException("Vui lòng đăng nhập để thực hiện thao tác.");
-            }
-
-            var taiKhoan = db.TAIKHOANs
-                .Include("NHANVIEN")
-                .FirstOrDefault(t => t.MaTK == UserSession.MaTK);
-
-            if (taiKhoan == null || !taiKhoan.TrangThai)
-            {
-                throw new UnauthorizedAccessException("Tài khoản không tồn tại hoặc đã bị vô hiệu hóa.");
-            }
-
-            if (taiKhoan.NHANVIEN == null || taiKhoan.NHANVIEN.TrangThai != "Đang làm việc")
-            {
-                throw new UnauthorizedAccessException("Nhân viên liên kết với tài khoản này không còn làm việc.");
-            }
-
-            if (allowedRoles != null && allowedRoles.Length > 0 && !allowedRoles.Contains(taiKhoan.VaiTro))
-            {
-                throw new UnauthorizedAccessException(
-                    string.Format("Tài khoản không có quyền thực hiện. Vai trò yêu cầu: {0}.", string.Join(", ", allowedRoles))
-                );
-            }
-
-            return taiKhoan;
+            return account != null && account.TrangThai && !string.IsNullOrWhiteSpace(account.MaNV)
+                && (account.VaiTro == "Admin" || account.VaiTro == "NhanVien");
+        }
+        public static bool IsAdmin(TAIKHOAN account)
+        {
+            return IsInternalAccount(account) && account.VaiTro == "Admin";
+        }
+        public static void ValidateProfile(QuanLyKaraokeEntities db, TAIKHOAN account)
+        {
+            if (!IsInternalAccount(account)) throw new UnauthorizedAccessException("Chỉ Admin và Nhân viên được đăng nhập.");
+            var staff = db.NHANVIENs.AsNoTracking().SingleOrDefault(x => x.MaNV == account.MaNV);
+            if (staff == null || staff.TrangThai != "Đang làm việc")
+                throw new UnauthorizedAccessException("Nhân viên không còn làm việc.");
+        }
+        public static TAIKHOAN RequireCurrentUser(QuanLyKaraokeEntities db)
+        {
+            if (!UserSession.IsLoggedIn) throw new UnauthorizedAccessException("Vui lòng đăng nhập.");
+            var account = db.TAIKHOANs.AsNoTracking().SingleOrDefault(x => x.MaTK == UserSession.MaTK);
+            ValidateProfile(db, account);
+            if (account.PhienBanBaoMat != UserSession.PhienBanBaoMat)
+            { UserSession.Clear(); throw new UnauthorizedAccessException("Mật khẩu đã thay đổi. Vui lòng đăng nhập lại."); }
+            return account;
+        }
+        public static TAIKHOAN RequireCurrentUser()
+        { using (var db = new QuanLyKaraokeEntities()) return RequireCurrentUser(db); }
+        public static TAIKHOAN RequireAdmin(QuanLyKaraokeEntities db)
+        {
+            var account = RequireCurrentUser(db);
+            if (!IsAdmin(account)) throw new UnauthorizedAccessException("Chỉ Admin được thực hiện thao tác này.");
+            return account;
+        }
+        public static void EnsureInternalSchema(QuanLyKaraokeEntities db)
+        {
+            int ready = db.Database.SqlQuery<int>(@"SELECT CASE WHEN COL_LENGTH('dbo.TAIKHOAN','PhienBanBaoMat') IS NOT NULL
+ AND COL_LENGTH('dbo.TAIKHOAN','SoLanDangNhapSai') IS NOT NULL AND COL_LENGTH('dbo.TAIKHOAN','KhoaDen') IS NOT NULL
+ AND OBJECT_ID('dbo.VAITRO','U') IS NULL THEN 1 ELSE 0 END").Single();
+            if (ready != 1) throw new InvalidOperationException("Cần chạy Sql/Setup_QuanLyKaraoke.sql để tạo đủ cấu trúc tài khoản nội bộ.");
         }
     }
 }

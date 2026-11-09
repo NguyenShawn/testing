@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -71,6 +71,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequireCurrentUser(db);
                 var query = from ph in db.PHIENHATs
                             join p in db.PHONGs on ph.MaPhong equals p.MaPhong
                             join lp in db.LOAIPHONGs on p.MaLoaiPhong equals lp.MaLoaiPhong
@@ -109,6 +110,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequireCurrentUser(db);
                 var query = db.DICHVUs.Where(d => d.TrangThai == true);
 
                 if (!string.IsNullOrWhiteSpace(search))
@@ -134,6 +136,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequireCurrentUser(db);
                 var query = from ct in db.CHITIETDICHVUs
                             join dv in db.DICHVUs on ct.MaDV equals dv.MaDV
                             where ct.MaPhien == maPhien
@@ -194,7 +197,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                AuthService.ValidateCurrentUser(db, "Admin", "NhanVien");
+                AuthService.RequireCurrentUser(db);
 
                 var phienHat = db.PHIENHATs.FirstOrDefault(ph => ph.MaPhien == maPhien);
                 if (phienHat == null || phienHat.TrangThai != "DangHat")
@@ -247,6 +250,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequireCurrentUser(db);
                 var phienHat = (from ph in db.PHIENHATs
                                 join p in db.PHONGs on ph.MaPhong equals p.MaPhong
                                 where ph.MaPhien == maPhien
@@ -256,6 +260,7 @@ namespace karaoke.Services
                                     ph.MaPhong,
                                     p.TenPhong,
                                     ph.GioBatDau,
+                                    ph.GioKetThuc,
                                     ph.DonGiaGio,
                                     ph.TrangThai
                                 }).FirstOrDefault();
@@ -273,7 +278,8 @@ namespace karaoke.Services
                 int soLuongMon = orders.Sum(c => c.SoLuong);
 
                 DateTime now = DateTime.Now;
-                TimeSpan duration = now > phienHat.GioBatDau ? (now - phienHat.GioBatDau) : TimeSpan.Zero;
+                DateTime end = phienHat.GioKetThuc ?? now;
+                TimeSpan duration = end > phienHat.GioBatDau ? (end - phienHat.GioBatDau) : TimeSpan.Zero;
 
                 // Estimated room charge based on hours used (at least 15 mins block)
                 decimal hours = (decimal)Math.Max(0.25, duration.TotalMinutes / 60.0);

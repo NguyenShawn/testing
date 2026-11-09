@@ -1,9 +1,11 @@
+﻿
 using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using karaoke.Models;
+using karaoke.Services;
 using karaoke.UI;
 
 namespace karaoke
@@ -15,7 +17,6 @@ namespace karaoke
         public FrmMain()
         {
             InitializeComponent();
-
             this.Load += FrmMain_Load;
             this.btnThanhToan.Click += btnThanhToan_Click;
             this.btnThongKe.Click += btnThongKe_Click;
@@ -29,6 +30,7 @@ namespace karaoke
         {
             try
             {
+                ApplyAccountMode();
                 LoadDashboard();
                 LoadChartDoanhThu();
             }
@@ -47,41 +49,43 @@ namespace karaoke
         // 2. LOAD THONG KE DASHBOARD BANG EF + LINQ
         // ============================================
 
+        private void ApplyAccountMode()
+        {
+            bool admin = AuthService.IsAdmin(AuthService.RequireCurrentUser());
+            btnPhong.Enabled = btnDichVu.Enabled = btnDatPhong.Enabled = btnGoiDichVu.Enabled = true;
+            btnThanhToan.Enabled = true;
+            btnThongKe.Enabled = admin;
+            chart1.Visible = lbl4.Visible = admin;
+            if (!admin) { lblDoanhThu.Text = ""; chart1.Series.Clear(); }
+        }
+        private void OpenInternal(Func<Form> factory, bool adminOnly = false)
+        {
+            try {
+                using (var db = new QuanLyKaraokeEntities())
+                { if (adminOnly) AuthService.RequireAdmin(db); else AuthService.RequireCurrentUser(db); }
+                OpenChildForm(factory());
+            }
+            catch (Exception ex) { MessageBox.Show(ex.GetBaseException().Message, "Tài khoản nội bộ"); }
+        }
         private void LoadDashboard()
         {
             using (var db = new QuanLyKaraokeEntities())
             {
-                // Tong so phong
-                int tongPhong = db.PHONGs.Count();
-
-                // So phong dang su dung
-                int dangSuDung = db.PHONGs.Count(
-                    p => p.TrangThai == "Đang sử dụng"
-                );
-
-                // So phong trong
-                int phongTrong = db.PHONGs.Count(
-                    p => p.TrangThai == "Trống"
-                );
-
-                lblTongPhong.Text = tongPhong.ToString();
-                lblDangSuDung.Text = dangSuDung.ToString();
-                lblPhongTrong.Text = phongTrong.ToString();
-
-                // Doanh thu trong ngay hien tai
-                DateTime tuNgay = DateTime.Today;
-                DateTime denNgay = tuNgay.AddDays(1);
-
-                decimal doanhThu = db.HOADONs
-                    .Where(h =>
-                        h.NgayThanhToan >= tuNgay &&
-                        h.NgayThanhToan < denNgay
-                    )
-                    .Select(h => (decimal?)h.ThanhTien)
-                    .Sum() ?? 0m;
-
-                lblDoanhThu.Text =
-                    doanhThu.ToString("N0") + "đ";
+                var account = AuthService.RequireCurrentUser(db);
+                lblTongPhong.Text = lblDangSuDung.Text = lblPhongTrong.Text = "—";
+                lblDoanhThu.Text = "";
+                if (AuthService.IsInternalAccount(account))
+                {
+                    lblTongPhong.Text = db.PHONGs.Count().ToString();
+                    lblDangSuDung.Text = db.PHONGs.Count(x => x.TrangThai == "Đang sử dụng").ToString();
+                    lblPhongTrong.Text = db.PHONGs.Count(x => x.TrangThai == "Trống").ToString();
+                }
+                if (AuthService.IsAdmin(account))
+                {
+                    DateTime start = DateTime.Today, end = start.AddDays(1);
+                    decimal revenue = db.HOADONs.Where(x => x.NgayThanhToan >= start && x.NgayThanhToan < end).Select(x => (decimal?)x.ThanhTien).Sum() ?? 0m;
+                    lblDoanhThu.Text = revenue.ToString("N0") + " đ";
+                }
             }
         }
 
@@ -91,6 +95,8 @@ namespace karaoke
 
         private void LoadChartDoanhThu()
         {
+            chart1.Series.Clear();
+            if (!AuthService.IsAdmin(AuthService.RequireCurrentUser())) return;
             int nam = DateTime.Today.Year;
 
             DateTime tuNgay = new DateTime(nam, 1, 1);
@@ -191,7 +197,7 @@ namespace karaoke
 
         private void btnPhong_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new FrmQuanLyPhong());
+            OpenInternal(() => new FrmQuanLyPhong());
             SetActiveSidebar(btnPhong);
         }
 
@@ -214,6 +220,7 @@ namespace karaoke
             
             try
             {
+                ApplyAccountMode();
                 LoadDashboard();
                 LoadChartDoanhThu();
             }
@@ -230,19 +237,19 @@ namespace karaoke
 
         private void btnDichVu_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new FrmQuanLyDichVu());
+            OpenInternal(() => new FrmQuanLyDichVu());
             SetActiveSidebar(btnDichVu);
         }
 
         private void btnDatPhong_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new FrmDanhSachDatPhong());
+            OpenInternal(() => new FrmDanhSachDatPhong());
             SetActiveSidebar(btnDatPhong);
         }
 
         private void btnGoiDichVu_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new FrmGoiDichVu());
+            OpenInternal(() => new FrmGoiDichVu());
             SetActiveSidebar(btnGoiDichVu);
         }
 
