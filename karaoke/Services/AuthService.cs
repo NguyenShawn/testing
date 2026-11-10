@@ -19,14 +19,16 @@ namespace karaoke.Services
         // UI can distinguish a connection failure from an invalid password.
         public LoginAttemptResult TryDangNhap(string tenDangNhap, string matKhau)
         {
-            try
+            for (int attempt = 0; ; attempt++)
             {
-                return new LoginAttemptResult { Success = DangNhap(tenDangNhap, matKhau) };
-            }
-            catch (Exception ex)
-            {
-                UserSession.Clear();
-                return new LoginAttemptResult { Error = ex };
+                try { return new LoginAttemptResult { Success = DangNhap(tenDangNhap, matKhau) }; }
+                catch (Exception ex)
+                {
+                    var sql = ex.GetBaseException() as SqlException;
+                    if (sql != null && sql.Number == 1205 && attempt < 2) continue;
+                    UserSession.Clear();
+                    return new LoginAttemptResult { Error = ex };
+                }
             }
         }
 
@@ -47,7 +49,7 @@ namespace karaoke.Services
                 EnsureInternalSchema(db);
                 using (var tx = db.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
                 {
-                    var account = db.TAIKHOANs.SqlQuery("SELECT * FROM dbo.TAIKHOAN WITH(UPDLOCK,HOLDLOCK) WHERE TenDangNhap=@u", new SqlParameter("@u", tenDangNhap)).SingleOrDefault();
+                    var account = db.TAIKHOANs.SingleOrDefault(t => t.TenDangNhap == tenDangNhap);
                     bool correct;
                     try { correct = BCryptNet.Verify(matKhau, account == null ? DummyHash : account.MatKhauHash); }
                     catch (BCrypt.Net.SaltParseException) { correct = false; }
@@ -101,6 +103,21 @@ namespace karaoke.Services
         }
         public static TAIKHOAN RequireCurrentUser()
         { using (var db = new QuanLyKaraokeEntities()) return RequireCurrentUser(db); }
+        public static TAIKHOAN RequirePermission(QuanLyKaraokeEntities db, string permission)
+        {
+            var account = RequireCurrentUser(db);
+            if (!IsAdmin(account) && !new RoleService().HasPermission(db, account, permission))
+                throw new UnauthorizedAccessException("Tài khoản không có quyền thực hiện chức năng này.");
+            return account;
+        }
+        public static bool HasPermission(string permission)
+        {
+            using (var db = new QuanLyKaraokeEntities())
+            {
+                var account = RequireCurrentUser(db);
+                return IsAdmin(account) || new RoleService().HasPermission(db, account, permission);
+            }
+        }
         public static TAIKHOAN RequireAdmin(QuanLyKaraokeEntities db)
         {
             var account = RequireCurrentUser(db);
@@ -111,8 +128,9 @@ namespace karaoke.Services
         {
             int ready = db.Database.SqlQuery<int>(@"SELECT CASE WHEN COL_LENGTH('dbo.TAIKHOAN','PhienBanBaoMat') IS NOT NULL
  AND COL_LENGTH('dbo.TAIKHOAN','SoLanDangNhapSai') IS NOT NULL AND COL_LENGTH('dbo.TAIKHOAN','KhoaDen') IS NOT NULL
- AND OBJECT_ID('dbo.VAITRO','U') IS NULL THEN 1 ELSE 0 END").Single();
-            if (ready != 1) throw new InvalidOperationException("Cần chạy Sql/Setup_QuanLyKaraoke.sql để tạo đủ cấu trúc tài khoản nội bộ.");
+ AND OBJECT_ID('dbo.NHOMQUYEN','U') IS NOT NULL AND OBJECT_ID('dbo.QUYEN','U') IS NOT NULL
+ AND OBJECT_ID('dbo.NHOMQUYEN_CHITIET','U') IS NOT NULL AND OBJECT_ID('dbo.TAIKHOAN_NHOMQUYEN','U') IS NOT NULL THEN 1 ELSE 0 END").Single();
+            if (ready != 1) throw new InvalidOperationException("Cơ sở dữ liệu chưa được nâng cấp. Chạy Sql/Setup_QuanLyKaraoke.sql, sau đó thử lại.");
         }
     }
 }

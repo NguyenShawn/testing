@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -23,16 +23,26 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
-                AuthService.RequireCurrentUser(db);
+                AuthService.RequirePermission(db, "PHONG_XEM");
                 return db.LOAIPHONGs.AsNoTracking().OrderBy(x => x.MaLoaiPhong).ToList();
             }
         }
 
         public List<RoomRow> List()
         {
+            return ListForPermission("PHONG_XEM");
+        }
+
+        public List<RoomRow> ListForServiceOrder()
+        {
+            return ListForPermission("GOIDICHVU");
+        }
+
+        private List<RoomRow> ListForPermission(string permission)
+        {
             using (var db = new QuanLyKaraokeEntities())
             {
-                AuthService.RequireCurrentUser(db);
+                AuthService.RequirePermission(db, permission);
                 return db.PHONGs
                     .AsNoTracking()
                     .Select(p => new RoomRow
@@ -52,7 +62,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
-                AuthService.RequireAdmin(db);
+                AuthService.RequirePermission(db, "PHONG_SUA");
                 var category = db.LOAIPHONGs.FirstOrDefault(x => x.TenLoaiPhong == type && x.DonGiaGio == price);
                 if (category == null)
                     throw new InvalidOperationException("Loại phòng và đơn giá phải khớp danh mục loại phòng đã có.");
@@ -73,7 +83,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                AuthService.RequireAdmin(db);
+                AuthService.RequirePermission(db, "PHONG_SUA");
                 var category = db.LOAIPHONGs.Find(maLoaiPhong);
                 if (category == null)
                     throw new InvalidOperationException("Loại phòng không tồn tại trong hệ thống.");
@@ -113,7 +123,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
-                AuthService.RequireAdmin(db);
+                AuthService.RequirePermission(db, "PHONG_SUA");
                 var room = db.PHONGs.Find(id);
                 if (room == null) return;
 

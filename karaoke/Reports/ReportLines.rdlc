@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSources>
+    <DataSource Name="LocalData"><ConnectionProperties><DataProvider>System.Data.DataSet</DataProvider><ConnectString>/* Local data */</ConnectString></ConnectionProperties><rd:DataSourceID>4ab6617b-f67e-4aa6-92c2-72d82bce3355</rd:DataSourceID></DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="Lines"><Query><DataSourceName>LocalData</DataSourceName><CommandText>/* Local data */</CommandText></Query><Fields><Field Name="Text"><DataField>Text</DataField><rd:TypeName>System.String</rd:TypeName></Field></Fields></DataSet>
+  </DataSets>
+  <Body>
+    <ReportItems>
+      <Tablix Name="ReportLines">
+        <TablixBody><TablixColumns><TablixColumn><Width>7.2in</Width></TablixColumn></TablixColumns>
+          <TablixRows><TablixRow><Height>0.19in</Height><TablixCells><TablixCell><CellContents>
+            <Textbox Name="Line"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!Text.Value</Value><Style><FontFamily>Consolas</FontFamily><FontSize>9pt</FontSize></Style></TextRun></TextRuns><Style /></Paragraph></Paragraphs><Style><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>1pt</PaddingTop><PaddingBottom>1pt</PaddingBottom></Style></Textbox>
+          </CellContents></TablixCell></TablixCells></TablixRow></TablixRows>
+        </TablixBody>
+        <TablixColumnHierarchy><TablixMembers><TablixMember /></TablixMembers></TablixColumnHierarchy>
+        <TablixRowHierarchy><TablixMembers><TablixMember><Group Name="Detail" /></TablixMember></TablixMembers></TablixRowHierarchy>
+        <DataSetName>Lines</DataSetName><Top>0in</Top><Left>0in</Left><Height>0.19in</Height><Width>7.2in</Width><Style />
+      </Tablix>
+    </ReportItems><Height>0.19in</Height><Style />
+  </Body>
+  <Width>7.2in</Width>
+  <Page><PageHeight>11.69in</PageHeight><PageWidth>8.27in</PageWidth><LeftMargin>0.5in</LeftMargin><RightMargin>0.5in</RightMargin><TopMargin>0.5in</TopMargin><BottomMargin>0.5in</BottomMargin><Style /></Page>
+  <Language>vi-VN</Language><ConsumeContainerWhitespace>true</ConsumeContainerWhitespace><rd:ReportUnitType>Inch</rd:ReportUnitType><rd:ReportID>29176957-27c6-49d2-978d-f2b2fa2bfbb9</rd:ReportID>
+</Report>

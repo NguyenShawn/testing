@@ -1,4 +1,4 @@
-﻿namespace karaoke
+namespace karaoke
 {
     partial class FrmGoiDichVu
     {
@@ -15,6 +15,15 @@
 
         private void InitializeComponent()
         {
+            this.panelChonPhong = new System.Windows.Forms.Panel();
+            this.panelTimPhong = new System.Windows.Forms.Panel();
+            this.lblChonPhong = new System.Windows.Forms.Label();
+            this.lblTimPhong = new System.Windows.Forms.Label();
+            this.txtTimPhong = new System.Windows.Forms.TextBox();
+            this.lblSoPhong = new System.Windows.Forms.Label();
+            this.btnLamMoiPhong = new System.Windows.Forms.Button();
+            this.danhSachPhong = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnChonPhongKhac = new System.Windows.Forms.Button();
             this.panelHeader = new System.Windows.Forms.Panel();
             this.lblTitle = new System.Windows.Forms.Label();
             this.panelTopBar = new System.Windows.Forms.Panel();
@@ -88,6 +97,7 @@
             // panelTopBar
             // 
             this.panelTopBar.BackColor = System.Drawing.Color.White;
+            this.panelTopBar.Controls.Add(this.btnChonPhongKhac);
             this.panelTopBar.Controls.Add(this.btnLamMoi);
             this.panelTopBar.Controls.Add(this.lblSessionDetail);
             this.panelTopBar.Controls.Add(this.cbPhienHat);
@@ -122,9 +132,9 @@
             this.lblSessionDetail.AutoEllipsis = true;
             this.lblSessionDetail.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSessionDetail.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
-            this.lblSessionDetail.Location = new System.Drawing.Point(340, 8);
+            this.lblSessionDetail.Location = new System.Drawing.Point(155, 8);
             this.lblSessionDetail.Name = "lblSessionDetail";
-            this.lblSessionDetail.Size = new System.Drawing.Size(585, 44);
+            this.lblSessionDetail.Size = new System.Drawing.Size(770, 44);
             this.lblSessionDetail.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblSessionDetail.TabIndex = 2;
             this.lblSessionDetail.Text = "Chọn phòng đang sử dụng để gọi";
@@ -142,6 +152,7 @@
             // 
             // labelChonPhong
             // 
+            this.labelChonPhong.Visible = false;
             this.labelChonPhong.AutoSize = true;
             this.labelChonPhong.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelChonPhong.Location = new System.Drawing.Point(15, 21);
@@ -480,12 +491,73 @@
             this.lblOrdersHeader.TabIndex = 0;
             this.lblOrdersHeader.Text = "3. Các món đã phục vụ (Đã xác nhận chốt giá)";
             // 
+            // Static room picker controls (room cards are created from live data).
+            this.panelChonPhong.Name = "panelChonPhong";
+            this.panelChonPhong.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelChonPhong.BackColor = System.Drawing.Color.White;
+            this.panelChonPhong.Controls.Add(this.danhSachPhong);
+            this.panelChonPhong.Controls.Add(this.panelTimPhong);
+            this.panelTimPhong.Name = "panelTimPhong";
+            this.panelTimPhong.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTimPhong.Size = new System.Drawing.Size(1040, 70);
+            this.panelTimPhong.BackColor = System.Drawing.Color.White;
+            this.panelTimPhong.Controls.Add(this.lblChonPhong);
+            this.panelTimPhong.Controls.Add(this.lblTimPhong);
+            this.panelTimPhong.Controls.Add(this.txtTimPhong);
+            this.panelTimPhong.Controls.Add(this.lblSoPhong);
+            this.panelTimPhong.Controls.Add(this.btnLamMoiPhong);
+            this.lblChonPhong.Name = "lblChonPhong";
+            this.lblChonPhong.Text = "CHỌN PHÒNG ĐỂ GỌI DỊCH VỤ";
+            this.lblChonPhong.AutoSize = true;
+            this.lblChonPhong.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.lblChonPhong.ForeColor = System.Drawing.Color.FromArgb(22, 101, 52);
+            this.lblChonPhong.Location = new System.Drawing.Point(16, 9);
+            this.lblTimPhong.Name = "lblTimPhong";
+            this.lblTimPhong.Text = "Tìm phòng:";
+            this.lblTimPhong.AutoSize = true;
+            this.lblTimPhong.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblTimPhong.Location = new System.Drawing.Point(16, 43);
+            this.txtTimPhong.Name = "txtTimPhong";
+            this.txtTimPhong.Location = new System.Drawing.Point(94, 39);
+            this.txtTimPhong.Size = new System.Drawing.Size(200, 23);
+            this.txtTimPhong.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtTimPhong.TextChanged += new System.EventHandler(this.txtTimPhong_TextChanged);
+            this.lblSoPhong.Name = "lblSoPhong";
+            this.lblSoPhong.AutoSize = true;
+            this.lblSoPhong.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblSoPhong.ForeColor = System.Drawing.Color.DimGray;
+            this.lblSoPhong.Location = new System.Drawing.Point(315, 43);
+            this.btnLamMoiPhong.Name = "btnLamMoiPhong";
+            this.btnLamMoiPhong.Text = "Làm mới";
+            this.btnLamMoiPhong.Size = new System.Drawing.Size(85, 28);
+            this.btnLamMoiPhong.Location = new System.Drawing.Point(940, 36);
+            this.btnLamMoiPhong.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.btnLamMoiPhong.BackColor = System.Drawing.Color.Gainsboro;
+            this.btnLamMoiPhong.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLamMoiPhong.FlatAppearance.BorderSize = 0;
+            this.btnLamMoiPhong.Click += new System.EventHandler(this.btnLamMoiPhong_Click);
+            this.danhSachPhong.Name = "danhSachPhong";
+            this.danhSachPhong.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.danhSachPhong.AutoScroll = true;
+            this.danhSachPhong.Padding = new System.Windows.Forms.Padding(12);
+            this.danhSachPhong.BackColor = System.Drawing.Color.FromArgb(243, 248, 245);
+            this.btnChonPhongKhac.Name = "btnChonPhongKhac";
+            this.btnChonPhongKhac.Text = "← Chọn phòng";
+            this.btnChonPhongKhac.Size = new System.Drawing.Size(125, 32);
+            this.btnChonPhongKhac.Location = new System.Drawing.Point(15, 14);
+            this.btnChonPhongKhac.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnChonPhongKhac.FlatAppearance.BorderSize = 0;
+            this.btnChonPhongKhac.BackColor = System.Drawing.Color.FromArgb(22, 101, 52);
+            this.btnChonPhongKhac.ForeColor = System.Drawing.Color.White;
+            this.btnChonPhongKhac.Click += new System.EventHandler(this.btnChonPhongKhac_Click);
+            this.cbPhienHat.Visible = false;
             // FrmGoiDichVu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(245)))), ((int)(((byte)(241)))));
             this.ClientSize = new System.Drawing.Size(1040, 640);
+            this.Controls.Add(this.panelChonPhong);
             this.Controls.Add(this.splitContainerMain);
             this.Controls.Add(this.panelTopBar);
             this.Controls.Add(this.panelHeader);
@@ -514,10 +586,115 @@
             this.panelOrders.ResumeLayout(false);
             this.panelOrders.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDaGoi)).EndInit();
+            this.designColumn_dgvMenu_1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvMenu_1.DataPropertyName = "MaDV";
+            this.designColumn_dgvMenu_1.HeaderText = "Mã";
+            this.designColumn_dgvMenu_1.Width = 65;
+            this.designColumn_dgvMenu_1.Name = "designColumn_dgvMenu_1";
+            this.dgvMenu.Columns.Add(this.designColumn_dgvMenu_1);
+            this.designColumn_dgvMenu_2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvMenu_2.DataPropertyName = "TenDV";
+            this.designColumn_dgvMenu_2.HeaderText = "Tên dịch vụ";
+            this.designColumn_dgvMenu_2.Width = 160;
+            this.designColumn_dgvMenu_2.Name = "designColumn_dgvMenu_2";
+            this.dgvMenu.Columns.Add(this.designColumn_dgvMenu_2);
+            this.designColumn_dgvMenu_3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvMenu_3.DataPropertyName = "DonViTinh";
+            this.designColumn_dgvMenu_3.HeaderText = "ĐVT";
+            this.designColumn_dgvMenu_3.Width = 65;
+            this.designColumn_dgvMenu_3.Name = "designColumn_dgvMenu_3";
+            this.dgvMenu.Columns.Add(this.designColumn_dgvMenu_3);
+            this.designColumn_dgvMenu_4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvMenu_4.DataPropertyName = "DonGia";
+            this.designColumn_dgvMenu_4.HeaderText = "Đơn giá";
+            this.designColumn_dgvMenu_4.DefaultCellStyle.Format = "N0";
+            this.designColumn_dgvMenu_4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.designColumn_dgvMenu_4.Name = "designColumn_dgvMenu_4";
+            this.dgvMenu.Columns.Add(this.designColumn_dgvMenu_4);
+            this.designColumn_dgvGioHang_5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvGioHang_5.DataPropertyName = "TenDV";
+            this.designColumn_dgvGioHang_5.HeaderText = "Mặt hàng";
+            this.designColumn_dgvGioHang_5.Width = 160;
+            this.designColumn_dgvGioHang_5.Name = "designColumn_dgvGioHang_5";
+            this.dgvGioHang.Columns.Add(this.designColumn_dgvGioHang_5);
+            this.designColumn_dgvGioHang_6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvGioHang_6.DataPropertyName = "DonViTinh";
+            this.designColumn_dgvGioHang_6.HeaderText = "ĐVT";
+            this.designColumn_dgvGioHang_6.Width = 60;
+            this.designColumn_dgvGioHang_6.Name = "designColumn_dgvGioHang_6";
+            this.dgvGioHang.Columns.Add(this.designColumn_dgvGioHang_6);
+            this.designColumn_dgvGioHang_7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvGioHang_7.DataPropertyName = "DonGia";
+            this.designColumn_dgvGioHang_7.HeaderText = "Đơn giá";
+            this.designColumn_dgvGioHang_7.DefaultCellStyle.Format = "N0";
+            this.designColumn_dgvGioHang_7.Width = 90;
+            this.designColumn_dgvGioHang_7.Name = "designColumn_dgvGioHang_7";
+            this.dgvGioHang.Columns.Add(this.designColumn_dgvGioHang_7);
+            this.designColumn_dgvGioHang_8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvGioHang_8.DataPropertyName = "SoLuong";
+            this.designColumn_dgvGioHang_8.HeaderText = "SL";
+            this.designColumn_dgvGioHang_8.Width = 55;
+            this.designColumn_dgvGioHang_8.Name = "designColumn_dgvGioHang_8";
+            this.dgvGioHang.Columns.Add(this.designColumn_dgvGioHang_8);
+            this.designColumn_dgvGioHang_9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvGioHang_9.DataPropertyName = "ThanhTien";
+            this.designColumn_dgvGioHang_9.HeaderText = "Thành tiền";
+            this.designColumn_dgvGioHang_9.DefaultCellStyle.Format = "N0";
+            this.designColumn_dgvGioHang_9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.designColumn_dgvGioHang_9.Name = "designColumn_dgvGioHang_9";
+            this.dgvGioHang.Columns.Add(this.designColumn_dgvGioHang_9);
+            this.designColumn_dgvDaGoi_10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDaGoi_10.DataPropertyName = "TenDV";
+            this.designColumn_dgvDaGoi_10.HeaderText = "Tên món";
+            this.designColumn_dgvDaGoi_10.Width = 150;
+            this.designColumn_dgvDaGoi_10.Name = "designColumn_dgvDaGoi_10";
+            this.dgvDaGoi.Columns.Add(this.designColumn_dgvDaGoi_10);
+            this.designColumn_dgvDaGoi_11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDaGoi_11.DataPropertyName = "DonViTinh";
+            this.designColumn_dgvDaGoi_11.HeaderText = "ĐVT";
+            this.designColumn_dgvDaGoi_11.Width = 60;
+            this.designColumn_dgvDaGoi_11.Name = "designColumn_dgvDaGoi_11";
+            this.dgvDaGoi.Columns.Add(this.designColumn_dgvDaGoi_11);
+            this.designColumn_dgvDaGoi_12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDaGoi_12.DataPropertyName = "DonGia";
+            this.designColumn_dgvDaGoi_12.HeaderText = "Đơn giá";
+            this.designColumn_dgvDaGoi_12.DefaultCellStyle.Format = "N0";
+            this.designColumn_dgvDaGoi_12.Width = 85;
+            this.designColumn_dgvDaGoi_12.Name = "designColumn_dgvDaGoi_12";
+            this.dgvDaGoi.Columns.Add(this.designColumn_dgvDaGoi_12);
+            this.designColumn_dgvDaGoi_13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDaGoi_13.DataPropertyName = "SoLuong";
+            this.designColumn_dgvDaGoi_13.HeaderText = "SL";
+            this.designColumn_dgvDaGoi_13.Width = 50;
+            this.designColumn_dgvDaGoi_13.Name = "designColumn_dgvDaGoi_13";
+            this.dgvDaGoi.Columns.Add(this.designColumn_dgvDaGoi_13);
+            this.designColumn_dgvDaGoi_14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDaGoi_14.DataPropertyName = "ThanhTien";
+            this.designColumn_dgvDaGoi_14.HeaderText = "Thành tiền";
+            this.designColumn_dgvDaGoi_14.DefaultCellStyle.Format = "N0";
+            this.designColumn_dgvDaGoi_14.Width = 95;
+            this.designColumn_dgvDaGoi_14.Name = "designColumn_dgvDaGoi_14";
+            this.dgvDaGoi.Columns.Add(this.designColumn_dgvDaGoi_14);
+            this.designColumn_dgvDaGoi_15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDaGoi_15.DataPropertyName = "ThoiGianGoi";
+            this.designColumn_dgvDaGoi_15.HeaderText = "Thời gian gọi";
+            this.designColumn_dgvDaGoi_15.DefaultCellStyle.Format = "HH:mm";
+            this.designColumn_dgvDaGoi_15.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.designColumn_dgvDaGoi_15.Name = "designColumn_dgvDaGoi_15";
+            this.dgvDaGoi.Columns.Add(this.designColumn_dgvDaGoi_15);
             this.ResumeLayout(false);
 
         }
 
+        private System.Windows.Forms.Panel panelChonPhong;
+        private System.Windows.Forms.Panel panelTimPhong;
+        private System.Windows.Forms.Label lblChonPhong;
+        private System.Windows.Forms.Label lblTimPhong;
+        private System.Windows.Forms.TextBox txtTimPhong;
+        private System.Windows.Forms.Label lblSoPhong;
+        private System.Windows.Forms.Button btnLamMoiPhong;
+        private System.Windows.Forms.FlowLayoutPanel danhSachPhong;
+        private System.Windows.Forms.Button btnChonPhongKhac;
         private System.Windows.Forms.Panel panelHeader;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Panel panelTopBar;
@@ -548,5 +725,21 @@
         private System.Windows.Forms.Label lblTongTienDichVu;
         private System.Windows.Forms.Label lblTienPhongTamTinh;
         private System.Windows.Forms.Label lblTongCongTamTinh;
+
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvMenu_1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvMenu_2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvMenu_3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvMenu_4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvGioHang_5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvGioHang_6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvGioHang_7;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvGioHang_8;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvGioHang_9;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDaGoi_10;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDaGoi_11;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDaGoi_12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDaGoi_13;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDaGoi_14;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDaGoi_15;
     }
 }

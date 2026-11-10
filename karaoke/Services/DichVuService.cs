@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -22,7 +22,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
-                AuthService.RequireCurrentUser(db);
+                AuthService.RequirePermission(db, "DICHVU_XEM");
                 return db.DICHVUs
                     .AsNoTracking()
                     .Select(d => new DichVuRow
@@ -50,7 +50,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                AuthService.RequireAdmin(db);
+                AuthService.RequirePermission(db, "DICHVU_SUA");
                 var dv = db.DICHVUs.Find(maDV);
 
                 if (create && dv != null)
@@ -79,7 +79,7 @@ namespace karaoke.Services
 
             using (var db = new QuanLyKaraokeEntities())
             {
-                AuthService.RequireAdmin(db);
+                AuthService.RequirePermission(db, "DICHVU_SUA");
                 var dv = db.DICHVUs.Find(maDV);
                 if (dv == null) return;
 

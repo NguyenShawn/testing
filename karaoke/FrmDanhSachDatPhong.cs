@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -10,6 +10,7 @@ namespace karaoke
     public partial class FrmDanhSachDatPhong : Form
     {
         private readonly BookingService bookingService = new BookingService();
+        private bool hasSearched;
 
         private class TrangThaiItem
         {
@@ -43,89 +44,12 @@ namespace karaoke
             } catch (Exception ex) { MessageBox.Show(ex.Message); Close(); return; }
             InitGrid();
             InitFilterControls();
-            LoadBookings();
+            lblTongSo.Text = "Nhấn Tìm kiếm để xem danh sách đặt phòng.";
         }
 
         private void InitGrid()
         {
             dgvDanhSach.AutoGenerateColumns = false;
-            dgvDanhSach.Columns.Clear();
-
-            dgvDanhSach.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "MaDatPhong",
-                HeaderText = "Mã đặt",
-                Width = 70
-            });
-            dgvDanhSach.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenPhong",
-                HeaderText = "Phòng",
-                Width = 100
-            });
-            dgvDanhSach.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "LoaiPhong",
-                HeaderText = "Loại phòng",
-                Width = 100
-            });
-            dgvDanhSach.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenKhach",
-                HeaderText = "Khách hàng",
-                Width = 140
-            });
-            dgvDanhSach.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "SDT",
-                HeaderText = "SĐT",
-                Width = 100
-            });
-            dgvDanhSach.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "SoKhach",
-                HeaderText = "Số khách",
-                Width = 80
-            });
-            dgvDanhSach.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "GioBatDauDuKien",
-                HeaderText = "Bắt đầu dự kiến",
-                DefaultCellStyle = { Format = "dd/MM/yyyy HH:mm" },
-                Width = 135
-            });
-            dgvDanhSach.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "GioKetThucDuKien",
-                HeaderText = "Kết thúc dự kiến",
-                DefaultCellStyle = { Format = "dd/MM/yyyy HH:mm" },
-                Width = 135
-            });
-            dgvDanhSach.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "DonGiaGioDaChot",
-                HeaderText = "Đơn giá/h",
-                DefaultCellStyle = { Format = "N0" },
-                Width = 95
-            });
-            dgvDanhSach.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TrangThai",
-                HeaderText = "Trạng thái",
-                Width = 110
-            });
-            dgvDanhSach.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenNV",
-                HeaderText = "NV tiếp nhận",
-                Width = 110
-            });
-            dgvDanhSach.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "GhiChu",
-                HeaderText = "Ghi chú",
-                Width = 100
-            });
 
             // Chia đều không gian theo tỉ lệ, để cột cuối vẫn hiện ở cửa sổ mặc định.
             foreach (DataGridViewColumn column in dgvDanhSach.Columns)
@@ -164,13 +88,9 @@ namespace karaoke
             dtpDenNgay.Enabled = chkLocNgay.Checked;
         }
 
-        private void cbTrangThai_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            LoadBookings();
-        }
-
         private void btnTimKiem_Click(object sender, EventArgs e)
         {
+            hasSearched = true;
             LoadBookings();
         }
 
@@ -181,7 +101,9 @@ namespace karaoke
             chkLocNgay.Checked = false;
             dtpTuNgay.Value = DateTime.Today;
             dtpDenNgay.Value = DateTime.Today.AddDays(7);
-            LoadBookings();
+            hasSearched = false;
+            dgvDanhSach.DataSource = null;
+            lblTongSo.Text = "Nhấn Tìm kiếm để xem danh sách đặt phòng.";
         }
 
         private void LoadBookings()
@@ -230,7 +152,7 @@ namespace karaoke
             {
                 if (form.ShowDialog(this) == DialogResult.OK)
                 {
-                    LoadBookings();
+                    if (hasSearched) LoadBookings();
                 }
             }
         }
@@ -254,7 +176,7 @@ namespace karaoke
             {
                 if (form.ShowDialog(this) == DialogResult.OK)
                 {
-                    LoadBookings();
+                    if (hasSearched) LoadBookings();
                 }
             }
         }
@@ -287,7 +209,7 @@ namespace karaoke
             {
                 bookingService.CancelBooking(booking.MaDatPhong, "Hủy bởi người dùng");
                 MessageBox.Show("Hủy phiếu đặt phòng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                LoadBookings();
+                if (hasSearched) LoadBookings();
             }
             catch (Exception ex)
             {
@@ -329,7 +251,7 @@ namespace karaoke
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
                 );
-                LoadBookings();
+                if (hasSearched) LoadBookings();
             }
             catch (Exception ex)
             {

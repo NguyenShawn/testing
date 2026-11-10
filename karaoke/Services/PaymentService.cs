@@ -97,6 +97,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequirePermission(db, "THANHTOAN");
                 var now = DateTime.Now;
 
                 // LINQ Join kết nối các bảng dữ liệu
@@ -125,7 +126,7 @@ namespace karaoke.Services
                 {
                     TimeSpan usedTime = now > x.GioBatDau ? (now - x.GioBatDau) : TimeSpan.Zero;
                     // Làm tròn theo giờ hát: tối thiểu 15 phút (0.25h)
-                    decimal hours = (decimal)Math.Max(0.25, usedTime.TotalHours);
+                    decimal hours = (decimal)Math.Max(0.25, Math.Round(usedTime.TotalMinutes / 60.0, 2));
                     decimal estimatedRoomCharge = Math.Round(hours * x.DonGiaGio, 0);
 
                     return new PaymentSessionRow
@@ -153,6 +154,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequirePermission(db, "THANHTOAN");
                 // LINQ Join lấy thông tin phiên hát và phòng
                 var sessionInfo = (from ph in db.PHIENHATs
                                    join p in db.PHONGs on ph.MaPhong equals p.MaPhong
@@ -254,6 +256,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
+                var account = AuthService.RequirePermission(db, "THANHTOAN");
                 // Kiểm tra phiên hát
                 var phienHat = db.PHIENHATs.FirstOrDefault(p => p.MaPhien == maPhien);
                 if (phienHat == null)
@@ -300,7 +303,7 @@ namespace karaoke.Services
                 }
 
                 // Lấy mã nhân viên thanh toán (ưu tiên UserSession, nếu không thì lấy MaNV phiên hát hoặc NV001)
-                string maNVThanhToan = !string.IsNullOrEmpty(UserSession.MaNV) ? UserSession.MaNV : (phienHat.MaNV ?? "NV001");
+                string maNVThanhToan = account.MaNV;
 
                 // Tạo hóa đơn mới
                 var hoaDon = new HOADON
@@ -331,6 +334,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequirePermission(db, "THANHTOAN");
                 var query = from hd in db.HOADONs
                             join ph in db.PHIENHATs on hd.MaPhien equals ph.MaPhien
                             join p in db.PHONGs on ph.MaPhong equals p.MaPhong
@@ -411,6 +415,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequirePermission(db, "THANHTOAN");
                 var query = from hd in db.HOADONs
                             join ph in db.PHIENHATs on hd.MaPhien equals ph.MaPhien
                             join p in db.PHONGs on ph.MaPhong equals p.MaPhong
@@ -462,7 +467,7 @@ namespace karaoke.Services
                     GioBatDau = item.ph.GioBatDau,
                     GioKetThuc = end,
                     ThoiGianHat = duration,
-                    TongGioHat = Math.Round(duration.TotalHours, 2),
+                    TongGioHat = Math.Max(0.25, Math.Round(duration.TotalHours, 2)),
                     TienPhong = item.hd.TienPhong,
                     TienDichVu = item.hd.TienDichVu,
                     GiamGia = item.hd.GiamGia,

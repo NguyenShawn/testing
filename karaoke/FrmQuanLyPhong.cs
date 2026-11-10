@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -51,7 +51,7 @@ namespace karaoke
                 return;
 
             Run(() => {
-                bool admin = AuthService.IsAdmin(AuthService.RequireCurrentUser());
+                bool admin = AuthService.HasPermission("PHONG_SUA");
                 btnThem.Enabled = btnSua.Enabled = admin;
                 btnXoa.Enabled = admin;
             });
@@ -294,6 +294,7 @@ namespace karaoke
 
         private void btnLamMoi_Click(object s, EventArgs e) => Run(() =>
         {
+            LoadComboBoxLoaiPhong();
             ClearForm();
             LoadDanhSachPhong();
         });

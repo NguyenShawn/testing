@@ -146,8 +146,12 @@ namespace karaoke
                 if (loginResult.Error != null)
                 {
                     karaoke.Helpers.UserSession.Clear();
+                    var databaseError = loginResult.Error.GetBaseException() as System.Data.SqlClient.SqlException;
+                    string setupHint = databaseError != null && databaseError.Number == 4060
+                        ? "Không mở được database QuanLyKaraoke. Với máy mới, chạy SetupLocalDb.ps1 trong thư mục project, sau đó mở lại ứng dụng. Nếu database đã có, kiểm tra quyền truy cập và kết nối LocalDB.\n\n"
+                        : "Không thể kiểm tra đăng nhập. Hãy kiểm tra kết nối cơ sở dữ liệu rồi thử lại.\n\n";
                     MessageBox.Show(
-                        "Không thể kiểm tra đăng nhập. Hãy kiểm tra kết nối cơ sở dữ liệu rồi thử lại.\n\n" +
+                        setupHint +
                         loginResult.Error.GetBaseException().Message,
                         "Lỗi đăng nhập",
                         MessageBoxButtons.OK,

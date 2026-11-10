@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\EntityFramework.6.5.2\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.5.2\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -52,6 +52,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.ReportViewer.Common"><HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0\lib\net40\Microsoft.ReportViewer.Common.dll</HintPath><Private>True</Private></Reference>
+    <Reference Include="Microsoft.ReportViewer.WinForms"><HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0\lib\net40\Microsoft.ReportViewer.WinForms.dll</HintPath><Private>True</Private></Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel"><HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0\lib\net40\Microsoft.ReportViewer.ProcessingObjectModel.dll</HintPath><Private>True</Private></Reference>
+    <Reference Include="Microsoft.SqlServer.Types"><HintPath>..\packages\Microsoft.SqlServer.Types.14.0.314.76\lib\net40\Microsoft.SqlServer.Types.dll</HintPath><Private>True</Private></Reference>
     <Reference Include="BCrypt-Net-Next, Version=4.2.0.0, Culture=neutral, PublicKeyToken=1e11be04b6288443, processorArchitecture=MSIL">
       <HintPath>..\packages\BCrypt.Net-Next.4.2.0\lib\net472\BCrypt-Net-Next.dll</HintPath>
     </Reference>
@@ -193,12 +197,29 @@
     <Compile Include="Helpers\ButtonActive.cs" />
     <Compile Include="Helpers\UserSession.cs" />
     <Compile Include="Services\AuthService.cs" />
+    <Compile Include="Services\AccountService.cs" />
+    <Compile Include="Services\StaffService.cs" />
+    <Compile Include="Services\RoomTypeService.cs" />
+    <Compile Include="Services\RoleService.cs" />
+    <Compile Include="FrmDoiMatKhau.cs"><SubType>Form</SubType></Compile>
+    <Compile Include="FrmDoiMatKhau.Designer.cs"><DependentUpon>FrmDoiMatKhau.cs</DependentUpon></Compile>
+    <Compile Include="FrmQuanLyTaiKhoan.cs"><SubType>Form</SubType></Compile>
+    <Compile Include="FrmQuanLyTaiKhoan.Designer.cs"><DependentUpon>FrmQuanLyTaiKhoan.cs</DependentUpon></Compile>
+    <Compile Include="FrmQuanLyNhanVien.cs"><SubType>Form</SubType></Compile>
+    <Compile Include="FrmQuanLyNhanVien.Designer.cs"><DependentUpon>FrmQuanLyNhanVien.cs</DependentUpon></Compile>
+    <Compile Include="FrmQuanLyLoaiPhong.cs"><SubType>Form</SubType></Compile>
+    <Compile Include="FrmQuanLyLoaiPhong.Designer.cs"><DependentUpon>FrmQuanLyLoaiPhong.cs</DependentUpon></Compile>
+    <Compile Include="FrmQuanLyNhomQuyen.cs"><SubType>Form</SubType></Compile>
+    <Compile Include="FrmQuanLyNhomQuyen.Designer.cs"><DependentUpon>FrmQuanLyNhomQuyen.cs</DependentUpon></Compile>
+    <Compile Include="FrmBaoCaoRdlc.cs"><SubType>Form</SubType></Compile>
+    <Compile Include="FrmBaoCaoRdlc.Designer.cs"><DependentUpon>FrmBaoCaoRdlc.cs</DependentUpon></Compile>
     <Compile Include="Sql\KaraokeDB.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>KaraokeDB.dbml</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Images\Karaoke404.ico" />
+    <EmbeddedResource Include="Reports\ReportLines.rdlc" />
     <EmbeddedResource Include="Images\login-karaoke-logo.png" />
     <EmbeddedResource Include="Images\login-forgot-icon.png" />
     <EmbeddedResource Include="FrmLogin.resx">
@@ -286,6 +307,7 @@
     </Content>
     <Content Include="Sql\Setup_QuanLyKaraoke.sql" />
     <Content Include="Sql\02_SampleData.sql" />
+    <Content Include="Sql\04_PhanQuyen_NangCap.sql" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />

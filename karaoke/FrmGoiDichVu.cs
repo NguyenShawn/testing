@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,10 +13,6 @@ namespace karaoke
         private readonly ServiceOrderService orderService = new ServiceOrderService();
         private readonly BindingList<CartItemInput> unconfirmedCart = new BindingList<CartItemInput>();
         private int currentMaPhien = 0;
-        private Panel panelChonPhong;
-        private FlowLayoutPanel danhSachPhong;
-        private TextBox txtTimPhong;
-        private Label lblSoPhong;
         private readonly RoomService roomService = new RoomService();
         private List<RoomRow> rooms = new List<RoomRow>();
         private List<ActiveSessionRow> sessions = new List<ActiveSessionRow>();
@@ -24,36 +20,12 @@ namespace karaoke
         public FrmGoiDichVu()
         {
             InitializeComponent();
-            InitializeRoomPicker();
             this.Load += FrmGoiDichVu_Load;
         }
 
-        private void InitializeRoomPicker()
-        {
-            panelChonPhong = new Panel { Name = "panelChonPhong", Dock = DockStyle.Fill, BackColor = Color.White };
-            var toolbar = new Panel { Size = new Size(1040, 70), Dock = DockStyle.Top, BackColor = Color.White };
-            var heading = new Label { Text = "CHỌN PHÒNG ĐỂ GỌI DỊCH VỤ", AutoSize = true, Font = new Font("Segoe UI", 11F, FontStyle.Bold), ForeColor = Color.FromArgb(22, 101, 52), Location = new Point(16, 9) };
-            var searchLabel = new Label { Text = "Tìm phòng:", AutoSize = true, Font = new Font("Segoe UI", 9F), Location = new Point(16, 43) };
-            txtTimPhong = new TextBox { Name = "txtTimPhong", Location = new Point(94, 39), Width = 200, Font = new Font("Segoe UI", 9F) };
-            txtTimPhong.TextChanged += (s, e) => RenderRoomCards();
-            lblSoPhong = new Label { Name = "lblSoPhong", AutoSize = true, Font = new Font("Segoe UI", 9F), ForeColor = Color.DimGray, Location = new Point(315, 43) };
-            var refresh = new Button { Text = "Làm mới", Width = 85, Height = 28, Anchor = AnchorStyles.Top | AnchorStyles.Right, Location = new Point(940, 36), BackColor = Color.Gainsboro, FlatStyle = FlatStyle.Flat };
-            refresh.FlatAppearance.BorderSize = 0;
-            refresh.Click += (s, e) => LoadRooms();
-            toolbar.Controls.AddRange(new Control[] { heading, searchLabel, txtTimPhong, lblSoPhong, refresh });
-            danhSachPhong = new FlowLayoutPanel { Name = "danhSachPhong", Dock = DockStyle.Fill, AutoScroll = true, Padding = new Padding(12), BackColor = Color.FromArgb(243, 248, 245) };
-            panelChonPhong.Controls.Add(danhSachPhong);
-            panelChonPhong.Controls.Add(toolbar);
-            Controls.Add(panelChonPhong);
-            cbPhienHat.Visible = false;
-            labelChonPhong.Visible = false;
-            lblSessionDetail.Location = new Point(155, 8);
-            lblSessionDetail.Size = new Size(770, 44);
-            var back = new Button { Name = "btnChonPhongKhac", Text = "← Chọn phòng", Width = 125, Height = 32, Location = new Point(15, 14), FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(22, 101, 52), ForeColor = Color.White };
-            back.FlatAppearance.BorderSize = 0;
-            back.Click += (s, e) => ReturnToRooms();
-            panelTopBar.Controls.Add(back);
-        }
+        private void txtTimPhong_TextChanged(object sender, EventArgs e) { RenderRoomCards(); }
+        private void btnLamMoiPhong_Click(object sender, EventArgs e) { LoadRooms(); }
+        private void btnChonPhongKhac_Click(object sender, EventArgs e) { ReturnToRooms(); }
 
         private void ShowRoomPicker()
         {
@@ -68,7 +40,7 @@ namespace karaoke
         {
             try
             {
-                rooms = roomService.List();
+                rooms = roomService.ListForServiceOrder();
                 sessions = orderService.GetActiveSessions();
                 RenderRoomCards();
             }
@@ -101,7 +73,7 @@ namespace karaoke
         {
             try
             {
-                var room = roomService.List().FirstOrDefault(r => r.MaPhong == maPhong);
+                var room = roomService.ListForServiceOrder().FirstOrDefault(r => r.MaPhong == maPhong);
                 var active = orderService.GetActiveSessions().Where(s => s.MaPhong == maPhong).ToList();
                 if (room == null || room.TrangThai != "Đang sử dụng" || active.Count != 1)
                 {
@@ -127,6 +99,11 @@ namespace karaoke
             ShowRoomPicker();
         }
 
+        public bool ConfirmLeave()
+        {
+            return unconfirmedCart.Count == 0 || MessageBox.Show("Giỏ dịch vụ chưa xác nhận sẽ bị xóa khi rời màn hình. Tiếp tục?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+        }
+
         private void FrmGoiDichVu_Load(object sender, EventArgs e)
         {
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
@@ -149,113 +126,17 @@ namespace karaoke
         {
             // Menu Catalog Grid
             dgvMenu.AutoGenerateColumns = false;
-            dgvMenu.Columns.Clear();
-            dgvMenu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "MaDV",
-                HeaderText = "Mã",
-                Width = 65
-            });
-            dgvMenu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenDV",
-                HeaderText = "Tên dịch vụ",
-                Width = 160
-            });
-            dgvMenu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "DonViTinh",
-                HeaderText = "ĐVT",
-                Width = 65
-            });
-            dgvMenu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "DonGia",
-                HeaderText = "Đơn giá",
-                DefaultCellStyle = { Format = "N0" },
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            });
+
             FormatGridStyle(dgvMenu);
 
             // Unconfirmed Cart Grid
             dgvGioHang.AutoGenerateColumns = false;
-            dgvGioHang.Columns.Clear();
-            dgvGioHang.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenDV",
-                HeaderText = "Mặt hàng",
-                Width = 160
-            });
-            dgvGioHang.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "DonViTinh",
-                HeaderText = "ĐVT",
-                Width = 60
-            });
-            dgvGioHang.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "DonGia",
-                HeaderText = "Đơn giá",
-                DefaultCellStyle = { Format = "N0" },
-                Width = 90
-            });
-            dgvGioHang.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "SoLuong",
-                HeaderText = "SL",
-                Width = 55
-            });
-            dgvGioHang.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "ThanhTien",
-                HeaderText = "Thành tiền",
-                DefaultCellStyle = { Format = "N0" },
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            });
+
             FormatGridStyle(dgvGioHang);
 
             // Confirmed Orders Grid
             dgvDaGoi.AutoGenerateColumns = false;
-            dgvDaGoi.Columns.Clear();
-            dgvDaGoi.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenDV",
-                HeaderText = "Tên món",
-                Width = 150
-            });
-            dgvDaGoi.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "DonViTinh",
-                HeaderText = "ĐVT",
-                Width = 60
-            });
-            dgvDaGoi.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "DonGia",
-                HeaderText = "Đơn giá",
-                DefaultCellStyle = { Format = "N0" },
-                Width = 85
-            });
-            dgvDaGoi.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "SoLuong",
-                HeaderText = "SL",
-                Width = 50
-            });
-            dgvDaGoi.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "ThanhTien",
-                HeaderText = "Thành tiền",
-                DefaultCellStyle = { Format = "N0" },
-                Width = 95
-            });
-            dgvDaGoi.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "ThoiGianGoi",
-                HeaderText = "Thời gian gọi",
-                DefaultCellStyle = { Format = "HH:mm" },
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            });
+
             FormatGridStyle(dgvDaGoi);
         }
 

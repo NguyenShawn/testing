@@ -106,6 +106,7 @@ namespace karaoke.Services
 
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequirePermission(db, "THONGKE");
                 // LINQ Where lọc hóa đơn theo khoảng thời gian
                 var query = db.HOADONs.Where(h => h.NgayThanhToan >= start && h.NgayThanhToan < end);
 
@@ -146,6 +147,7 @@ namespace karaoke.Services
 
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequirePermission(db, "THONGKE");
                 var hoadons = db.HOADONs
                                 .Where(h => h.NgayThanhToan >= start && h.NgayThanhToan < end)
                                 .Select(h => new
@@ -233,6 +235,7 @@ namespace karaoke.Services
 
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequirePermission(db, "THONGKE");
                 // LINQ Join 4 bảng: HOADON -> PHIENHAT -> CHITIETDICHVU -> DICHVU
                 var query = from hd in db.HOADONs
                             join ph in db.PHIENHATs on hd.MaPhien equals ph.MaPhien
@@ -276,6 +279,7 @@ namespace karaoke.Services
 
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequirePermission(db, "THONGKE");
                 // LINQ Join kết nối HOADON, PHIENHAT, PHONG, LOAIPHONG
                 var query = from hd in db.HOADONs
                             join ph in db.PHIENHATs on hd.MaPhien equals ph.MaPhien
@@ -309,6 +313,7 @@ namespace karaoke.Services
 
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequirePermission(db, "THONGKE");
                 var query = from hd in db.HOADONs
                             join nv in db.NHANVIENs on hd.MaNV equals nv.MaNV
                             where hd.NgayThanhToan >= start && hd.NgayThanhToan < end
@@ -337,6 +342,7 @@ namespace karaoke.Services
 
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequirePermission(db, "THONGKE");
                 var query = from hd in db.HOADONs
                             join ph in db.PHIENHATs on hd.MaPhien equals ph.MaPhien
                             join p in db.PHONGs on ph.MaPhong equals p.MaPhong

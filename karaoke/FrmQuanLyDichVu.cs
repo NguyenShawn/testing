@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using karaoke.Services;
 
@@ -40,7 +40,7 @@ namespace karaoke
         private void FrmQuanLyDichVu_Load(object sender, EventArgs e)
         {
             try {
-                bool admin = AuthService.IsAdmin(AuthService.RequireCurrentUser());
+                bool admin = AuthService.HasPermission("DICHVU_SUA");
                 btnThem.Enabled = btnSua.Enabled = admin;
                 btnXoa.Enabled = admin;
             } catch (Exception ex) { MessageBox.Show(ex.Message); Close(); return; }

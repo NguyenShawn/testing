@@ -46,127 +46,17 @@ namespace karaoke
         {
             // Grid phòng đang hát
             dgvPhongDangHat.AutoGenerateColumns = false;
-            dgvPhongDangHat.Columns.Clear();
-            dgvPhongDangHat.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenPhong",
-                HeaderText = "Phòng",
-                Width = 110
-            });
-            dgvPhongDangHat.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "LoaiPhong",
-                HeaderText = "Loại",
-                Width = 90
-            });
-            dgvPhongDangHat.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TienPhongTamTinh",
-                HeaderText = "Tạm tính",
-                DefaultCellStyle = { Format = "N0" },
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            });
+
             FormatGridStyle(dgvPhongDangHat);
 
             // Grid dịch vụ
             dgvDichVu.AutoGenerateColumns = false;
-            dgvDichVu.Columns.Clear();
-            dgvDichVu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenDV",
-                HeaderText = "Tên dịch vụ",
-                Width = 180
-            });
-            dgvDichVu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "DonViTinh",
-                HeaderText = "ĐVT",
-                Width = 60
-            });
-            dgvDichVu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "SoLuong",
-                HeaderText = "SL",
-                Width = 50
-            });
-            dgvDichVu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "DonGia",
-                HeaderText = "Đơn giá",
-                Width = 110,
-                DefaultCellStyle = { Format = "N0" }
-            });
-            dgvDichVu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "ThanhTien",
-                HeaderText = "Thành tiền",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
-                DefaultCellStyle = { Format = "N0" }
-            });
+
             FormatGridStyle(dgvDichVu);
 
             // Grid lịch sử hóa đơn
             dgvLichSu.AutoGenerateColumns = false;
-            dgvLichSu.Columns.Clear();
-            dgvLichSu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "MaHD",
-                HeaderText = "Mã HD",
-                Width = 70
-            });
-            dgvLichSu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "NgayThanhToan",
-                HeaderText = "Ngày TT",
-                Width = 130,
-                DefaultCellStyle = { Format = "dd/MM/yyyy HH:mm" }
-            });
-            dgvLichSu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenPhong",
-                HeaderText = "Phòng",
-                Width = 90
-            });
-            dgvLichSu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TienPhong",
-                HeaderText = "Tiền phòng",
-                Width = 100,
-                DefaultCellStyle = { Format = "N0" }
-            });
-            dgvLichSu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TienDichVu",
-                HeaderText = "Tiền dịch vụ",
-                Width = 100,
-                DefaultCellStyle = { Format = "N0" }
-            });
-            dgvLichSu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "GiamGia",
-                HeaderText = "Giảm giá",
-                Width = 90,
-                DefaultCellStyle = { Format = "N0" }
-            });
-            dgvLichSu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "ThanhTien",
-                HeaderText = "Tổng thanh toán",
-                Width = 130,
-                DefaultCellStyle = { Format = "N0", Font = new Font("Segoe UI", 9.5F, FontStyle.Bold) }
-            });
-            dgvLichSu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "PhuongThucTT",
-                HeaderText = "Hình thức",
-                Width = 100
-            });
-            dgvLichSu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenNV",
-                HeaderText = "Thu ngân",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            });
+
             FormatGridStyle(dgvLichSu);
         }
 

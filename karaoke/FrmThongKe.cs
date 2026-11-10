@@ -20,6 +20,14 @@ namespace karaoke
         {
             InitializeComponent();
 
+            btnXuatBaoCao.Text = "Báo cáo";
+            btnXuatBaoCao.Click -= btnXuatBaoCao_Click;
+            var exportMenu = new ContextMenuStrip();
+            exportMenu.Items.Add("Xem / in báo cáo RDLC", null, (s, e) => ShowRevenueReport());
+            exportMenu.Items.Add("Xuất CSV", null, btnXuatBaoCao_Click);
+            btnXuatBaoCao.Click += (s, e) => exportMenu.Show(btnXuatBaoCao, new Point(0, btnXuatBaoCao.Height));
+            Disposed += (s, e) => exportMenu.Dispose();
+
             foreach (var btn in new[] { btnHomNay, btn7Ngay, btnThangNay, btnNamNay, btnXemThongKe, btnXuatBaoCao })
             {
                 ButtonActive.RoundButton(btn);
@@ -46,205 +54,22 @@ namespace karaoke
         {
             // Grid Chi tiết hóa đơn
             dgvHoaDonChiTiet.AutoGenerateColumns = false;
-            dgvHoaDonChiTiet.Columns.Clear();
-            dgvHoaDonChiTiet.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "MaHD",
-                HeaderText = "Mã HD",
-                Width = 70
-            });
-            dgvHoaDonChiTiet.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "NgayThanhToan",
-                HeaderText = "Ngày TT",
-                Width = 130,
-                DefaultCellStyle = { Format = "dd/MM/yyyy HH:mm" }
-            });
-            dgvHoaDonChiTiet.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenPhong",
-                HeaderText = "Phòng",
-                Width = 90
-            });
-            dgvHoaDonChiTiet.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "SoGioHat",
-                HeaderText = "Giờ hát",
-                Width = 75,
-                DefaultCellStyle = { Format = "0.##" }
-            });
-            dgvHoaDonChiTiet.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TienPhong",
-                HeaderText = "Tiền phòng",
-                Width = 100,
-                DefaultCellStyle = { Format = "N0" }
-            });
-            dgvHoaDonChiTiet.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TienDichVu",
-                HeaderText = "Tiền dịch vụ",
-                Width = 100,
-                DefaultCellStyle = { Format = "N0" }
-            });
-            dgvHoaDonChiTiet.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "GiamGia",
-                HeaderText = "Giảm giá",
-                Width = 90,
-                DefaultCellStyle = { Format = "N0" }
-            });
-            dgvHoaDonChiTiet.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "ThanhTien",
-                HeaderText = "Thành tiền",
-                Width = 120,
-                DefaultCellStyle = { Format = "N0", Font = new Font("Segoe UI", 9.5F, FontStyle.Bold) }
-            });
-            dgvHoaDonChiTiet.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "PhuongThucTT",
-                HeaderText = "Hình thức",
-                Width = 100
-            });
-            dgvHoaDonChiTiet.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "NhanVienLap",
-                HeaderText = "Thu ngân",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            });
+
             FormatGridStyle(dgvHoaDonChiTiet);
 
             // Grid Top Dịch Vụ
             dgvTopDichVu.AutoGenerateColumns = false;
-            dgvTopDichVu.Columns.Clear();
-            dgvTopDichVu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "MaDV",
-                HeaderText = "Mã DV",
-                Width = 80
-            });
-            dgvTopDichVu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenDV",
-                HeaderText = "Tên dịch vụ / món",
-                Width = 200
-            });
-            dgvTopDichVu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "DonViTinh",
-                HeaderText = "ĐVT",
-                Width = 70
-            });
-            dgvTopDichVu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TongSoLuong",
-                HeaderText = "Tổng SL bán",
-                Width = 110,
-                DefaultCellStyle = { Format = "N0" }
-            });
-            dgvTopDichVu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TongDoanhThu",
-                HeaderText = "Tổng doanh thu",
-                Width = 150,
-                DefaultCellStyle = { Format = "N0", Font = new Font("Segoe UI", 9.5F, FontStyle.Bold) }
-            });
-            dgvTopDichVu.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TiLeDoanhThu",
-                HeaderText = "Tỷ lệ (%)",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
-                DefaultCellStyle = { Format = "0.# '%'" }
-            });
+
             FormatGridStyle(dgvTopDichVu);
 
             // Grid Doanh Thu Theo Phòng
             dgvTheoPhong.AutoGenerateColumns = false;
-            dgvTheoPhong.Columns.Clear();
-            dgvTheoPhong.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "MaPhong",
-                HeaderText = "Mã phòng",
-                Width = 100
-            });
-            dgvTheoPhong.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenPhong",
-                HeaderText = "Tên phòng",
-                Width = 130
-            });
-            dgvTheoPhong.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "LoaiPhong",
-                HeaderText = "Loại phòng",
-                Width = 120
-            });
-            dgvTheoPhong.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "SoLuotSuDung",
-                HeaderText = "Lượt sử dụng",
-                Width = 110,
-                DefaultCellStyle = { Format = "N0" }
-            });
-            dgvTheoPhong.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TongTienPhong",
-                HeaderText = "Tiền phòng",
-                Width = 130,
-                DefaultCellStyle = { Format = "N0" }
-            });
-            dgvTheoPhong.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TongTienDichVu",
-                HeaderText = "Tiền dịch vụ",
-                Width = 130,
-                DefaultCellStyle = { Format = "N0" }
-            });
-            dgvTheoPhong.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TongDoanhThu",
-                HeaderText = "Tổng doanh thu",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
-                DefaultCellStyle = { Format = "N0", Font = new Font("Segoe UI", 9.5F, FontStyle.Bold) }
-            });
+
             FormatGridStyle(dgvTheoPhong);
 
             // Grid Doanh Thu Theo Nhân Viên
             dgvNhanVien.AutoGenerateColumns = false;
-            dgvNhanVien.Columns.Clear();
-            dgvNhanVien.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "MaNV",
-                HeaderText = "Mã NV",
-                Width = 100
-            });
-            dgvNhanVien.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenNV",
-                HeaderText = "Họ và tên",
-                Width = 200
-            });
-            dgvNhanVien.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "ChucVu",
-                HeaderText = "Chức vụ",
-                Width = 140
-            });
-            dgvNhanVien.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "SoHoaDon",
-                HeaderText = "Số HĐ đã lập",
-                Width = 120,
-                DefaultCellStyle = { Format = "N0" }
-            });
-            dgvNhanVien.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TongDoanhThu",
-                HeaderText = "Tổng doanh thu",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
-                DefaultCellStyle = { Format = "N0", Font = new Font("Segoe UI", 9.5F, FontStyle.Bold) }
-            });
+
             FormatGridStyle(dgvNhanVien);
         }
 
@@ -456,6 +281,32 @@ namespace karaoke
             {
                 MessageBox.Show("Lỗi xuất file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        private void ShowRevenueReport()
+        {
+            try
+            {
+                var start = dtpTuNgay.Value.Date; var end = dtpDenNgay.Value.Date;
+                if (end < start) throw new ArgumentException("Ngày kết thúc phải sau hoặc bằng ngày bắt đầu.");
+                var invoices = statisticService.GetInvoiceReportList(start, end);
+                var lines = new System.Collections.Generic.List<string> {
+                    "                 BÁO CÁO DOANH THU KARAOKE",
+                    string.Format("              Từ {0:dd/MM/yyyy} đến {1:dd/MM/yyyy}", start, end),
+                    string.Format("Ngày lập: {0:dd/MM/yyyy HH:mm}", DateTime.Now),
+                    "--------------------------------------------------------------------"
+                };
+                foreach (var invoice in invoices)
+                {
+                    lines.Add(string.Format("HĐ #{0} | {1:dd/MM/yyyy HH:mm} | Phòng: {2}", invoice.MaHD, invoice.NgayThanhToan, invoice.TenPhong));
+                    lines.Add(string.Format("  Phòng: {0:N0} đ | Dịch vụ: {1:N0} đ | Giảm: {2:N0} đ", invoice.TienPhong, invoice.TienDichVu, invoice.GiamGia));
+                    lines.Add(string.Format("  Thành tiền: {0:N0} đ | {1} | Thu ngân: {2}", invoice.ThanhTien, invoice.PhuongThucTT, invoice.NhanVienLap));
+                    lines.Add("--------------------------------------------------------------------");
+                }
+                if (invoices.Count == 0) lines.Add("Không có hóa đơn trong khoảng ngày đã chọn.");
+                lines.Add(string.Format("Số hóa đơn: {0} | Tổng doanh thu: {1:N0} đ", invoices.Count, invoices.Sum(i => i.ThanhTien)));
+                using (var report = new FrmBaoCaoRdlc("Báo cáo doanh thu", lines)) report.ShowDialog(this);
+            }
+            catch (Exception ex) { MessageBox.Show("Không thể tạo báo cáo: " + ex.GetBaseException().Message, "Báo cáo", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
     }
 }

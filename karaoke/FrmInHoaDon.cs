@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using System.Drawing.Printing;
 using System.Text;
 using System.Windows.Forms;
 using karaoke.Services;
@@ -12,7 +11,6 @@ namespace karaoke
     {
         private readonly InvoiceBillingDetail billingDetail;
         private readonly int? maHoaDon;
-        private PrintDocument printDoc;
 
         public FrmInHoaDon(InvoiceBillingDetail detail, int? maHD = null)
         {
@@ -32,9 +30,7 @@ namespace karaoke
 
             var sb = new StringBuilder();
             sb.AppendLine("==================================================");
-            sb.AppendLine("            QUÁN KARAOKE GIAI ĐIỆU VÀNG           ");
-            sb.AppendLine("      Địa chỉ: 123 Đường Âm Nhạc, TP. Hồ Chí Minh ");
-            sb.AppendLine("            Điện thoại: (028) 3888 9999           ");
+            sb.AppendLine("                   KARAOKE404                     ");
             sb.AppendLine("==================================================");
             sb.AppendLine("                HÓA ĐƠN THANH TOÁN                ");
             if (maHoaDon.HasValue)
@@ -48,10 +44,10 @@ namespace karaoke
             sb.AppendLine(string.Format("  Phòng:        {0} ({1})", billingDetail.TenPhong, billingDetail.LoaiPhong));
             sb.AppendLine(string.Format("  Giờ vào:      {0:dd/MM/yyyy HH:mm}", billingDetail.GioBatDau));
             sb.AppendLine(string.Format("  Giờ ra:       {0:dd/MM/yyyy HH:mm}", billingDetail.GioKetThuc));
-            sb.AppendLine(string.Format("  Thời gian:    {0} giờ {1} phút ({2:F2}h)",
+            sb.AppendLine(string.Format("  Thời gian:    {0} giờ {1} phút",
                 (int)billingDetail.ThoiGianHat.TotalHours,
-                billingDetail.ThoiGianHat.Minutes,
-                billingDetail.TongGioHat));
+                billingDetail.ThoiGianHat.Minutes));
+            sb.AppendLine(string.Format("  Giờ tính tiền: {0:F2} giờ", billingDetail.TongGioHat));
             sb.AppendLine(string.Format("  Đơn giá giờ:  {0:N0} đ/h", billingDetail.DonGiaGio));
             sb.AppendLine(string.Format("  Tiền phòng:   {0:N0} đ", billingDetail.TienPhong));
             sb.AppendLine("--------------------------------------------------");
@@ -64,7 +60,6 @@ namespace karaoke
                 foreach (var item in billingDetail.DanhSachDichVu)
                 {
                     string ten = item.TenDV;
-                    if (ten.Length > 18) ten = ten.Substring(0, 15) + "...";
                     sb.AppendLine(string.Format("  {0,-18} {1,4} {2,10:N0} {3,12:N0}",
                         ten,
                         item.SoLuong,
@@ -107,29 +102,11 @@ namespace karaoke
         {
             try
             {
-                printDoc = new PrintDocument();
-                printDoc.PrintPage += PrintDoc_PrintPage;
-
-                using (var printDlg = new PrintDialog())
-                {
-                    printDlg.Document = printDoc;
-                    if (printDlg.ShowDialog() == DialogResult.OK)
-                    {
-                        printDoc.Print();
-                    }
-                }
+                using (var preview = new FrmBaoCaoRdlc("In hóa đơn", rtbHoaDon.Lines)) preview.ShowDialog(this);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi in hóa đơn: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void PrintDoc_PrintPage(object sender, PrintPageEventArgs e)
-        {
-            using (var font = new Font("Consolas", 9, FontStyle.Regular))
-            {
-                e.Graphics.DrawString(rtbHoaDon.Text, font, Brushes.Black, new PointF(40, 40));
             }
         }
 
