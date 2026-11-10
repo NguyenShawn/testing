@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -12,12 +13,118 @@ namespace karaoke
         private readonly ServiceOrderService orderService = new ServiceOrderService();
         private readonly BindingList<CartItemInput> unconfirmedCart = new BindingList<CartItemInput>();
         private int currentMaPhien = 0;
-        private int previousSelectedMaPhien = 0;
+        private Panel panelChonPhong;
+        private FlowLayoutPanel danhSachPhong;
+        private TextBox txtTimPhong;
+        private Label lblSoPhong;
+        private readonly RoomService roomService = new RoomService();
+        private List<RoomRow> rooms = new List<RoomRow>();
+        private List<ActiveSessionRow> sessions = new List<ActiveSessionRow>();
 
         public FrmGoiDichVu()
         {
             InitializeComponent();
+            InitializeRoomPicker();
             this.Load += FrmGoiDichVu_Load;
+        }
+
+        private void InitializeRoomPicker()
+        {
+            panelChonPhong = new Panel { Name = "panelChonPhong", Dock = DockStyle.Fill, BackColor = Color.White };
+            var toolbar = new Panel { Size = new Size(1040, 70), Dock = DockStyle.Top, BackColor = Color.White };
+            var heading = new Label { Text = "CHỌN PHÒNG ĐỂ GỌI DỊCH VỤ", AutoSize = true, Font = new Font("Segoe UI", 11F, FontStyle.Bold), ForeColor = Color.FromArgb(22, 101, 52), Location = new Point(16, 9) };
+            var searchLabel = new Label { Text = "Tìm phòng:", AutoSize = true, Font = new Font("Segoe UI", 9F), Location = new Point(16, 43) };
+            txtTimPhong = new TextBox { Name = "txtTimPhong", Location = new Point(94, 39), Width = 200, Font = new Font("Segoe UI", 9F) };
+            txtTimPhong.TextChanged += (s, e) => RenderRoomCards();
+            lblSoPhong = new Label { Name = "lblSoPhong", AutoSize = true, Font = new Font("Segoe UI", 9F), ForeColor = Color.DimGray, Location = new Point(315, 43) };
+            var refresh = new Button { Text = "Làm mới", Width = 85, Height = 28, Anchor = AnchorStyles.Top | AnchorStyles.Right, Location = new Point(940, 36), BackColor = Color.Gainsboro, FlatStyle = FlatStyle.Flat };
+            refresh.FlatAppearance.BorderSize = 0;
+            refresh.Click += (s, e) => LoadRooms();
+            toolbar.Controls.AddRange(new Control[] { heading, searchLabel, txtTimPhong, lblSoPhong, refresh });
+            danhSachPhong = new FlowLayoutPanel { Name = "danhSachPhong", Dock = DockStyle.Fill, AutoScroll = true, Padding = new Padding(12), BackColor = Color.FromArgb(243, 248, 245) };
+            panelChonPhong.Controls.Add(danhSachPhong);
+            panelChonPhong.Controls.Add(toolbar);
+            Controls.Add(panelChonPhong);
+            cbPhienHat.Visible = false;
+            labelChonPhong.Visible = false;
+            lblSessionDetail.Location = new Point(155, 8);
+            lblSessionDetail.Size = new Size(770, 44);
+            var back = new Button { Name = "btnChonPhongKhac", Text = "← Chọn phòng", Width = 125, Height = 32, Location = new Point(15, 14), FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(22, 101, 52), ForeColor = Color.White };
+            back.FlatAppearance.BorderSize = 0;
+            back.Click += (s, e) => ReturnToRooms();
+            panelTopBar.Controls.Add(back);
+        }
+
+        private void ShowRoomPicker()
+        {
+            panelTopBar.Visible = false;
+            splitContainerMain.Visible = false;
+            panelChonPhong.Visible = true;
+            panelChonPhong.BringToFront();
+            LoadRooms();
+        }
+
+        private void LoadRooms()
+        {
+            try
+            {
+                rooms = roomService.List();
+                sessions = orderService.GetActiveSessions();
+                RenderRoomCards();
+            }
+            catch (Exception ex) { MessageBox.Show("Không thể tải danh sách phòng: " + ex.GetBaseException().Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+        }
+
+        private void RenderRoomCards()
+        {
+            string keyword = txtTimPhong.Text.Trim();
+            var compare = System.Globalization.CultureInfo.GetCultureInfo("vi-VN").CompareInfo;
+            var visible = rooms.Where(r => keyword.Length == 0 || compare.IndexOf(r.MaPhong ?? "", keyword, System.Globalization.CompareOptions.IgnoreCase | System.Globalization.CompareOptions.IgnoreNonSpace) >= 0 || compare.IndexOf(r.TenPhong ?? "", keyword, System.Globalization.CompareOptions.IgnoreCase | System.Globalization.CompareOptions.IgnoreNonSpace) >= 0).ToList();
+            lblSoPhong.Text = string.Format("Hiển thị {0} / {1} phòng • Chọn phòng đang sử dụng", visible.Count, rooms.Count);
+            danhSachPhong.SuspendLayout();
+            var old = danhSachPhong.Controls.Cast<Control>().ToArray();
+            danhSachPhong.Controls.Clear();
+            foreach (var control in old) control.Dispose();
+            foreach (var room in visible)
+            {
+                int activeCount = sessions.Count(s => s.MaPhong == room.MaPhong);
+                bool canOrder = room.TrangThai == "Đang sử dụng" && activeCount == 1;
+                Color color = room.TrangThai == "Trống" ? Color.LightGreen : room.TrangThai == "Đang sử dụng" ? Color.LightCoral : room.TrangThai == "Bảo trì" ? Color.LightYellow : Color.LightGray;
+                var button = new Button { Width = 140, Height = 100, Text = room.TenPhong + "\n" + room.LoaiPhong + "\n" + room.TrangThai, BackColor = color, UseVisualStyleBackColor = false, Cursor = canOrder ? Cursors.Hand : Cursors.Default, Tag = room.MaPhong };
+                button.Click += (s, e) => OpenRoom(room.MaPhong);
+                danhSachPhong.Controls.Add(button);
+            }
+            danhSachPhong.ResumeLayout();
+        }
+
+        private void OpenRoom(string maPhong)
+        {
+            try
+            {
+                var room = roomService.List().FirstOrDefault(r => r.MaPhong == maPhong);
+                var active = orderService.GetActiveSessions().Where(s => s.MaPhong == maPhong).ToList();
+                if (room == null || room.TrangThai != "Đang sử dụng" || active.Count != 1)
+                {
+                    MessageBox.Show("Phòng không có phiên hát đang hoạt động hợp lệ. Hãy nhận phòng trước khi gọi dịch vụ.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadRooms();
+                    return;
+                }
+                currentMaPhien = active[0].MaPhien;
+                panelChonPhong.Visible = false;
+                panelTopBar.Visible = true;
+                splitContainerMain.Visible = true;
+                LoadCatalog();
+                LoadSessionDetails(currentMaPhien);
+            }
+            catch (Exception ex) { MessageBox.Show("Không thể mở phòng: " + ex.GetBaseException().Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+        }
+
+        private void ReturnToRooms()
+        {
+            if (unconfirmedCart.Count > 0 && MessageBox.Show("Giỏ hàng chưa xác nhận sẽ bị xóa khi trở về danh sách phòng. Tiếp tục?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+            unconfirmedCart.Clear();
+            currentMaPhien = 0;
+            ShowRoomPicker();
         }
 
         private void FrmGoiDichVu_Load(object sender, EventArgs e)
@@ -35,8 +142,7 @@ namespace karaoke
             dgvGioHang.DataSource = unconfirmedCart;
             unconfirmedCart.ListChanged += (s, ev) => UpdateCartTotal();
 
-            LoadActiveSessions();
-            LoadCatalog();
+            ShowRoomPicker();
         }
 
         private void InitGrids()
@@ -163,105 +269,22 @@ namespace karaoke
             dgv.DefaultCellStyle.SelectionForeColor = Color.White;
         }
 
-        private void LoadActiveSessions()
-        {
-            try
-            {
-                var sessions = orderService.GetActiveSessions();
-
-                cbPhienHat.DisplayMember = "DisplayText";
-                cbPhienHat.ValueMember = "MaPhien";
-
-                var comboList = sessions.Select(s => new
-                {
-                    s.MaPhien,
-                    DisplayText = string.Format("{0} - {1} (Bắt đầu: {2:HH:mm})", s.TenPhong, s.LoaiPhong, s.GioBatDau)
-                }).ToList();
-
-                int previousSession = currentMaPhien;
-                cbPhienHat.DataSource = comboList;
-
-                if (comboList.Count > 0)
-                {
-                    if (previousSession > 0 && comboList.Any(s => s.MaPhien == previousSession))
-                        cbPhienHat.SelectedValue = previousSession;
-                    else
-                    {
-                        if (previousSession > 0 && unconfirmedCart.Count > 0)
-                        {
-                            unconfirmedCart.Clear();
-                            MessageBox.Show("Phiên hát trước không còn hoạt động. Giỏ chưa xác nhận đã được xóa; vui lòng kiểm tra phòng trước khi gọi lại.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        }
-                        cbPhienHat.SelectedIndex = 0;
-                    }
-                    currentMaPhien = (int)cbPhienHat.SelectedValue;
-                    previousSelectedMaPhien = currentMaPhien;
-                    LoadSessionDetails(currentMaPhien);
-                }
-                else
-                {
-                    if (previousSession > 0 && unconfirmedCart.Count > 0)
-                    {
-                        unconfirmedCart.Clear();
-                        MessageBox.Show("Phiên hát trước không còn hoạt động. Giỏ chưa xác nhận đã được xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                    currentMaPhien = 0;
-                    previousSelectedMaPhien = 0;
-                    lblSessionDetail.Text = "Hiện không có phòng nào đang có phiên hát.";
-                    dgvDaGoi.DataSource = null;
-                    lblTongTienDichVu.Text = "Tiền dịch vụ đã gọi: 0 đ";
-                    lblTienPhongTamTinh.Text = "Tiền giờ hát tạm tính: 0 đ";
-                    lblTongCongTamTinh.Text = "TỔNG CỘNG TẠM TÍNH: 0 đ";
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi tải danh sách phiên hát: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void cbPhienHat_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            if (cbPhienHat.SelectedValue == null) return;
-            int newMaPhien = (int)cbPhienHat.SelectedValue;
-
-            if (newMaPhien == currentMaPhien) return;
-
-            // Strict policy: Clear unsent cart only with confirmation when changing rooms
-            if (unconfirmedCart.Count > 0)
-            {
-                var confirm = MessageBox.Show(
-                    "Giỏ hàng dịch vụ hiện tại chưa được xác nhận gửi.\nBạn có chắc chắn muốn chuyển sang phòng khác và hủy bỏ giỏ hàng này?",
-                    "Xác nhận chuyển phòng",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning
-                );
-
-                if (confirm != DialogResult.Yes)
-                {
-                    // Revert selection back to previous
-                    cbPhienHat.SelectedValue = previousSelectedMaPhien;
-                    return;
-                }
-
-                unconfirmedCart.Clear();
-            }
-
-            currentMaPhien = newMaPhien;
-            previousSelectedMaPhien = newMaPhien;
-            LoadSessionDetails(currentMaPhien);
-        }
-
         private void LoadSessionDetails(int maPhien)
         {
             if (maPhien <= 0) return;
 
+            btnXacNhanGoi.Enabled = false;
+            btnThemVaoGio.Enabled = false;
+            dgvDaGoi.DataSource = null;
+            lblSessionDetail.Text = "Đang tải thông tin phòng...";
+            lblTongTienDichVu.Text = "Tiền dịch vụ đã gọi: —";
+            lblTienPhongTamTinh.Text = "Tiền giờ hát tạm tính: —";
+            lblTongCongTamTinh.Text = "TỔNG CỘNG TẠM TÍNH: —";
             try
             {
                 var orders = orderService.GetSessionOrders(maPhien);
-                dgvDaGoi.DataSource = orders;
-
                 var summary = orderService.GetSessionTotal(maPhien);
+                dgvDaGoi.DataSource = orders;
                 lblSessionDetail.Text = string.Format(
                     "Phòng: {0} | Bắt đầu: {1:HH:mm dd/MM} | Đã hát: {2}h{3:D2}p | Giá phòng: {4:N0} đ/h",
                     summary.TenPhong,
@@ -274,9 +297,12 @@ namespace karaoke
                 lblTongTienDichVu.Text = string.Format("Tiền dịch vụ đã gọi: {0:N0} đ", summary.TienDichVu);
                 lblTienPhongTamTinh.Text = string.Format("Tiền giờ hát tạm tính: {0:N0} đ", summary.TienPhongTamTinh);
                 lblTongCongTamTinh.Text = string.Format("TỔNG CỘNG TẠM TÍNH: {0:N0} đ", summary.TongCongTamTinh);
+                btnThemVaoGio.Enabled = true;
+                btnXacNhanGoi.Enabled = true;
             }
             catch (Exception ex)
             {
+                lblSessionDetail.Text = "Không tải được thông tin phòng. Hãy chọn Làm mới hoặc trở về danh sách phòng.";
                 MessageBox.Show("Lỗi tải chi tiết phòng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -417,8 +443,20 @@ namespace karaoke
 
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
-            LoadActiveSessions();
-            LoadCatalog();
+            try
+            {
+                if (!orderService.GetActiveSessions().Any(s => s.MaPhien == currentMaPhien))
+                {
+                    unconfirmedCart.Clear();
+                    currentMaPhien = 0;
+                    MessageBox.Show("Phiên hát không còn hoạt động. Giỏ chưa xác nhận đã được xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowRoomPicker();
+                    return;
+                }
+                LoadSessionDetails(currentMaPhien);
+                LoadCatalog();
+            }
+            catch (Exception ex) { MessageBox.Show("Không thể làm mới: " + ex.GetBaseException().Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
     }
 }

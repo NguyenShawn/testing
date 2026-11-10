@@ -48,6 +48,8 @@
             this.flowLayoutPanelPhong = new System.Windows.Forms.FlowLayoutPanel();
             this.dataGridViewPhong = new System.Windows.Forms.DataGridView();
             this.groupBox1.SuspendLayout();
+            this.panelLocPhong.SuspendLayout();
+            this.panelHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSucChua)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPhong)).BeginInit();
             this.SuspendLayout();
@@ -97,9 +99,10 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Location = new System.Drawing.Point(564, 10);
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox1.Location = new System.Drawing.Point(12, 56);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(398, 244);
+            this.groupBox1.Size = new System.Drawing.Size(395, 244);
             this.groupBox1.TabIndex = 17;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông Tin Phòng";
@@ -125,14 +128,14 @@
             // 
             this.numSucChua.Location = new System.Drawing.Point(92, 145);
             this.numSucChua.Name = "numSucChua";
-            this.numSucChua.Size = new System.Drawing.Size(100, 20);
+            this.numSucChua.Size = new System.Drawing.Size(165, 20);
             this.numSucChua.TabIndex = 28;
             // 
             // txtMaPhong
             // 
             this.txtMaPhong.Location = new System.Drawing.Point(92, 41);
             this.txtMaPhong.Name = "txtMaPhong";
-            this.txtMaPhong.Size = new System.Drawing.Size(100, 20);
+            this.txtMaPhong.Size = new System.Drawing.Size(165, 20);
             this.txtMaPhong.TabIndex = 27;
             // 
             // label6
@@ -149,7 +152,7 @@
             this.cbTrangThai.FormattingEnabled = true;
             this.cbTrangThai.Location = new System.Drawing.Point(92, 171);
             this.cbTrangThai.Name = "cbTrangThai";
-            this.cbTrangThai.Size = new System.Drawing.Size(100, 21);
+            this.cbTrangThai.Size = new System.Drawing.Size(165, 21);
             this.cbTrangThai.TabIndex = 25;
             // 
             // label5
@@ -173,7 +176,7 @@
             // 
             this.txtTenPhong.Location = new System.Drawing.Point(92, 67);
             this.txtTenPhong.Name = "txtTenPhong";
-            this.txtTenPhong.Size = new System.Drawing.Size(100, 20);
+            this.txtTenPhong.Size = new System.Drawing.Size(165, 20);
             this.txtTenPhong.TabIndex = 21;
             // 
             // btnLamMoi
@@ -218,22 +221,89 @@
             // 
             // flowLayoutPanelPhong
             // 
+            this.flowLayoutPanelPhong.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanelPhong.AutoScroll = true;
-            this.flowLayoutPanelPhong.Location = new System.Drawing.Point(12, 260);
+            this.flowLayoutPanelPhong.Location = new System.Drawing.Point(12, 346);
             this.flowLayoutPanelPhong.Name = "flowLayoutPanelPhong";
-            this.flowLayoutPanelPhong.Size = new System.Drawing.Size(939, 462);
+            this.flowLayoutPanelPhong.Size = new System.Drawing.Size(936, 357);
             this.flowLayoutPanelPhong.TabIndex = 18;
             // 
             // dataGridViewPhong
             // 
+            this.dataGridViewPhong.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewPhong.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewPhong.Location = new System.Drawing.Point(12, 10);
+            this.dataGridViewPhong.Location = new System.Drawing.Point(413, 56);
             this.dataGridViewPhong.MultiSelect = false;
             this.dataGridViewPhong.Name = "dataGridViewPhong";
             this.dataGridViewPhong.ReadOnly = true;
             this.dataGridViewPhong.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewPhong.Size = new System.Drawing.Size(546, 244);
+            this.dataGridViewPhong.Size = new System.Drawing.Size(535, 244);
             this.dataGridViewPhong.TabIndex = 19;
+            //
+            // panelLocPhong
+            //
+            this.panelLocPhong.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelLocPhong.Controls.Add(this.lblTimPhong);
+            this.panelLocPhong.Controls.Add(this.txtTimPhong);
+            this.panelLocPhong.Controls.Add(this.lblLocTrangThai);
+            this.panelLocPhong.Controls.Add(this.cboLocTrangThai);
+            this.panelLocPhong.Controls.Add(this.lblSoPhong);
+            this.panelLocPhong.Location = new System.Drawing.Point(12, 306);
+            this.panelLocPhong.Name = "panelLocPhong";
+            this.panelLocPhong.Size = new System.Drawing.Size(936, 34);
+            //
+            // lblTimPhong
+            //
+            this.lblTimPhong.AutoSize = true;
+            this.lblTimPhong.Location = new System.Drawing.Point(3, 10);
+            this.lblTimPhong.Name = "lblTimPhong";
+            this.lblTimPhong.Text = "Tìm phòng:";
+            //
+            // txtTimPhong
+            //
+            this.txtTimPhong.Location = new System.Drawing.Point(72, 7);
+            this.txtTimPhong.Name = "txtTimPhong";
+            this.txtTimPhong.Size = new System.Drawing.Size(200, 20);
+            this.txtTimPhong.TextChanged += new System.EventHandler(this.BoLocPhong_Changed);
+            //
+            // lblLocTrangThai
+            //
+            this.lblLocTrangThai.AutoSize = true;
+            this.lblLocTrangThai.Location = new System.Drawing.Point(292, 10);
+            this.lblLocTrangThai.Name = "lblLocTrangThai";
+            this.lblLocTrangThai.Text = "Trạng thái:";
+            //
+            // cboLocTrangThai
+            //
+            this.cboLocTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLocTrangThai.Items.AddRange(new object[] { "Tất cả", "Trống", "Đang sử dụng", "Bảo trì" });
+            this.cboLocTrangThai.Location = new System.Drawing.Point(359, 6);
+            this.cboLocTrangThai.Name = "cboLocTrangThai";
+            this.cboLocTrangThai.Size = new System.Drawing.Size(150, 21);
+            this.cboLocTrangThai.SelectedIndexChanged += new System.EventHandler(this.BoLocPhong_Changed);
+            //
+            // lblSoPhong
+            //
+            this.lblSoPhong.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSoPhong.Location = new System.Drawing.Point(530, 5);
+            this.lblSoPhong.Name = "lblSoPhong";
+            this.lblSoPhong.Size = new System.Drawing.Size(403, 23);
+            this.lblSoPhong.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // panelHeader
+            this.panelHeader.BackColor = System.Drawing.Color.FromArgb(22, 101, 52);
+            this.panelHeader.Controls.Add(this.lblHeader);
+            this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelHeader.Location = new System.Drawing.Point(0, 0);
+            this.panelHeader.Name = "panelHeader";
+            this.panelHeader.Size = new System.Drawing.Size(960, 46);
+            // lblHeader
+            this.lblHeader.AutoSize = true;
+            this.lblHeader.Font = new System.Drawing.Font("Segoe UI", 13.5F, System.Drawing.FontStyle.Bold);
+            this.lblHeader.ForeColor = System.Drawing.Color.White;
+            this.lblHeader.Location = new System.Drawing.Point(14, 10);
+            this.lblHeader.Name = "lblHeader";
+            this.lblHeader.Text = "QUẢN LÝ PHÒNG";
             // 
             // FrmQuanLyPhong
             // 
@@ -241,12 +311,18 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(960, 715);
             this.Controls.Add(this.dataGridViewPhong);
+            this.Controls.Add(this.panelLocPhong);
             this.Controls.Add(this.flowLayoutPanelPhong);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.panelHeader);
             this.Name = "FrmQuanLyPhong";
             this.Text = "frmQLPhong";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.panelLocPhong.ResumeLayout(false);
+            this.panelLocPhong.PerformLayout();
+            this.panelHeader.ResumeLayout(false);
+            this.panelHeader.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSucChua)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPhong)).EndInit();
             this.ResumeLayout(false);
