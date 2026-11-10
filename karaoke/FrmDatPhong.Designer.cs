@@ -474,6 +474,43 @@ namespace karaoke
             this.panelForm.ResumeLayout(false);
             this.panelForm.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSoKhach)).EndInit();
+            this.designColumn_dgvPhongTrong_1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvPhongTrong_1.DataPropertyName = "MaPhong";
+            this.designColumn_dgvPhongTrong_1.HeaderText = "Mã phòng";
+            this.designColumn_dgvPhongTrong_1.Width = 85;
+            this.designColumn_dgvPhongTrong_1.Name = "designColumn_dgvPhongTrong_1";
+            this.dgvPhongTrong.Columns.Add(this.designColumn_dgvPhongTrong_1);
+            this.designColumn_dgvPhongTrong_2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvPhongTrong_2.DataPropertyName = "TenPhong";
+            this.designColumn_dgvPhongTrong_2.HeaderText = "Tên phòng";
+            this.designColumn_dgvPhongTrong_2.Width = 110;
+            this.designColumn_dgvPhongTrong_2.Name = "designColumn_dgvPhongTrong_2";
+            this.dgvPhongTrong.Columns.Add(this.designColumn_dgvPhongTrong_2);
+            this.designColumn_dgvPhongTrong_3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvPhongTrong_3.DataPropertyName = "TenLoaiPhong";
+            this.designColumn_dgvPhongTrong_3.HeaderText = "Loại phòng";
+            this.designColumn_dgvPhongTrong_3.Width = 110;
+            this.designColumn_dgvPhongTrong_3.Name = "designColumn_dgvPhongTrong_3";
+            this.dgvPhongTrong.Columns.Add(this.designColumn_dgvPhongTrong_3);
+            this.designColumn_dgvPhongTrong_4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvPhongTrong_4.DataPropertyName = "DonGiaGio";
+            this.designColumn_dgvPhongTrong_4.HeaderText = "Đơn giá/h";
+            this.designColumn_dgvPhongTrong_4.DefaultCellStyle.Format = "N0";
+            this.designColumn_dgvPhongTrong_4.Width = 100;
+            this.designColumn_dgvPhongTrong_4.Name = "designColumn_dgvPhongTrong_4";
+            this.dgvPhongTrong.Columns.Add(this.designColumn_dgvPhongTrong_4);
+            this.designColumn_dgvPhongTrong_5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvPhongTrong_5.DataPropertyName = "SucChua";
+            this.designColumn_dgvPhongTrong_5.HeaderText = "Sức chứa";
+            this.designColumn_dgvPhongTrong_5.Width = 80;
+            this.designColumn_dgvPhongTrong_5.Name = "designColumn_dgvPhongTrong_5";
+            this.dgvPhongTrong.Columns.Add(this.designColumn_dgvPhongTrong_5);
+            this.designColumn_dgvPhongTrong_6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvPhongTrong_6.DataPropertyName = "TrangThai";
+            this.designColumn_dgvPhongTrong_6.HeaderText = "Hiện tại";
+            this.designColumn_dgvPhongTrong_6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.designColumn_dgvPhongTrong_6.Name = "designColumn_dgvPhongTrong_6";
+            this.dgvPhongTrong.Columns.Add(this.designColumn_dgvPhongTrong_6);
             this.ResumeLayout(false);
 
         }
@@ -510,5 +547,12 @@ namespace karaoke
         private System.Windows.Forms.TextBox txtGhiChu;
         private System.Windows.Forms.Button btnLuu;
         private System.Windows.Forms.Button btnHuy;
+
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvPhongTrong_1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvPhongTrong_2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvPhongTrong_3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvPhongTrong_4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvPhongTrong_5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvPhongTrong_6;
     }
 }

@@ -180,7 +180,6 @@ namespace karaoke
             this.cbTrangThai.Name = "cbTrangThai";
             this.cbTrangThai.Size = new System.Drawing.Size(130, 23);
             this.cbTrangThai.TabIndex = 3;
-            this.cbTrangThai.SelectedIndexChanged += new System.EventHandler(this.cbTrangThai_SelectedIndexChanged);
             // 
             // labelTrangThai
             // 
@@ -218,8 +217,8 @@ namespace karaoke
             this.panelActions.Controls.Add(this.btnSuaDat);
             this.panelActions.Controls.Add(this.btnThemDat);
             this.panelActions.Controls.Add(this.lblTongSo);
-            this.panelActions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelActions.Location = new System.Drawing.Point(0, 552);
+            this.panelActions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelActions.Location = new System.Drawing.Point(0, 116);
             this.panelActions.Name = "panelActions";
             this.panelActions.Size = new System.Drawing.Size(1000, 48);
             this.panelActions.TabIndex = 3;
@@ -310,7 +309,7 @@ namespace karaoke
             this.dgvDanhSach.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvDanhSach.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvDanhSach.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvDanhSach.Location = new System.Drawing.Point(0, 116);
+            this.dgvDanhSach.Location = new System.Drawing.Point(0, 164);
             this.dgvDanhSach.MultiSelect = false;
             this.dgvDanhSach.Name = "dgvDanhSach";
             this.dgvDanhSach.ReadOnly = true;
@@ -341,6 +340,81 @@ namespace karaoke
             this.panelActions.ResumeLayout(false);
             this.panelActions.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDanhSach)).EndInit();
+            this.designColumn_dgvDanhSach_1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDanhSach_1.DataPropertyName = "MaDatPhong";
+            this.designColumn_dgvDanhSach_1.HeaderText = "Mã đặt";
+            this.designColumn_dgvDanhSach_1.Width = 70;
+            this.designColumn_dgvDanhSach_1.Name = "designColumn_dgvDanhSach_1";
+            this.dgvDanhSach.Columns.Add(this.designColumn_dgvDanhSach_1);
+            this.designColumn_dgvDanhSach_2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDanhSach_2.DataPropertyName = "TenPhong";
+            this.designColumn_dgvDanhSach_2.HeaderText = "Phòng";
+            this.designColumn_dgvDanhSach_2.Width = 100;
+            this.designColumn_dgvDanhSach_2.Name = "designColumn_dgvDanhSach_2";
+            this.dgvDanhSach.Columns.Add(this.designColumn_dgvDanhSach_2);
+            this.designColumn_dgvDanhSach_3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDanhSach_3.DataPropertyName = "LoaiPhong";
+            this.designColumn_dgvDanhSach_3.HeaderText = "Loại phòng";
+            this.designColumn_dgvDanhSach_3.Width = 100;
+            this.designColumn_dgvDanhSach_3.Name = "designColumn_dgvDanhSach_3";
+            this.dgvDanhSach.Columns.Add(this.designColumn_dgvDanhSach_3);
+            this.designColumn_dgvDanhSach_4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDanhSach_4.DataPropertyName = "TenKhach";
+            this.designColumn_dgvDanhSach_4.HeaderText = "Khách hàng";
+            this.designColumn_dgvDanhSach_4.Width = 140;
+            this.designColumn_dgvDanhSach_4.Name = "designColumn_dgvDanhSach_4";
+            this.dgvDanhSach.Columns.Add(this.designColumn_dgvDanhSach_4);
+            this.designColumn_dgvDanhSach_5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDanhSach_5.DataPropertyName = "SDT";
+            this.designColumn_dgvDanhSach_5.HeaderText = "SĐT";
+            this.designColumn_dgvDanhSach_5.Width = 100;
+            this.designColumn_dgvDanhSach_5.Name = "designColumn_dgvDanhSach_5";
+            this.dgvDanhSach.Columns.Add(this.designColumn_dgvDanhSach_5);
+            this.designColumn_dgvDanhSach_6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDanhSach_6.DataPropertyName = "SoKhach";
+            this.designColumn_dgvDanhSach_6.HeaderText = "Số khách";
+            this.designColumn_dgvDanhSach_6.Width = 80;
+            this.designColumn_dgvDanhSach_6.Name = "designColumn_dgvDanhSach_6";
+            this.dgvDanhSach.Columns.Add(this.designColumn_dgvDanhSach_6);
+            this.designColumn_dgvDanhSach_7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDanhSach_7.DataPropertyName = "GioBatDauDuKien";
+            this.designColumn_dgvDanhSach_7.HeaderText = "Bắt đầu dự kiến";
+            this.designColumn_dgvDanhSach_7.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+            this.designColumn_dgvDanhSach_7.Width = 135;
+            this.designColumn_dgvDanhSach_7.Name = "designColumn_dgvDanhSach_7";
+            this.dgvDanhSach.Columns.Add(this.designColumn_dgvDanhSach_7);
+            this.designColumn_dgvDanhSach_8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDanhSach_8.DataPropertyName = "GioKetThucDuKien";
+            this.designColumn_dgvDanhSach_8.HeaderText = "Kết thúc dự kiến";
+            this.designColumn_dgvDanhSach_8.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+            this.designColumn_dgvDanhSach_8.Width = 135;
+            this.designColumn_dgvDanhSach_8.Name = "designColumn_dgvDanhSach_8";
+            this.dgvDanhSach.Columns.Add(this.designColumn_dgvDanhSach_8);
+            this.designColumn_dgvDanhSach_9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDanhSach_9.DataPropertyName = "DonGiaGioDaChot";
+            this.designColumn_dgvDanhSach_9.HeaderText = "Đơn giá/h";
+            this.designColumn_dgvDanhSach_9.DefaultCellStyle.Format = "N0";
+            this.designColumn_dgvDanhSach_9.Width = 95;
+            this.designColumn_dgvDanhSach_9.Name = "designColumn_dgvDanhSach_9";
+            this.dgvDanhSach.Columns.Add(this.designColumn_dgvDanhSach_9);
+            this.designColumn_dgvDanhSach_10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDanhSach_10.DataPropertyName = "TrangThai";
+            this.designColumn_dgvDanhSach_10.HeaderText = "Trạng thái";
+            this.designColumn_dgvDanhSach_10.Width = 110;
+            this.designColumn_dgvDanhSach_10.Name = "designColumn_dgvDanhSach_10";
+            this.dgvDanhSach.Columns.Add(this.designColumn_dgvDanhSach_10);
+            this.designColumn_dgvDanhSach_11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDanhSach_11.DataPropertyName = "TenNV";
+            this.designColumn_dgvDanhSach_11.HeaderText = "NV tiếp nhận";
+            this.designColumn_dgvDanhSach_11.Width = 110;
+            this.designColumn_dgvDanhSach_11.Name = "designColumn_dgvDanhSach_11";
+            this.dgvDanhSach.Columns.Add(this.designColumn_dgvDanhSach_11);
+            this.designColumn_dgvDanhSach_12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.designColumn_dgvDanhSach_12.DataPropertyName = "GhiChu";
+            this.designColumn_dgvDanhSach_12.HeaderText = "Ghi chú";
+            this.designColumn_dgvDanhSach_12.Width = 100;
+            this.designColumn_dgvDanhSach_12.Name = "designColumn_dgvDanhSach_12";
+            this.dgvDanhSach.Columns.Add(this.designColumn_dgvDanhSach_12);
             this.ResumeLayout(false);
 
         }
@@ -366,5 +440,18 @@ namespace karaoke
         private System.Windows.Forms.Button btnSuaDat;
         private System.Windows.Forms.Button btnHuyDat;
         private System.Windows.Forms.Button btnNhanPhong;
+
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDanhSach_1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDanhSach_2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDanhSach_3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDanhSach_4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDanhSach_5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDanhSach_6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDanhSach_7;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDanhSach_8;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDanhSach_9;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDanhSach_10;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDanhSach_11;
+        private System.Windows.Forms.DataGridViewTextBoxColumn designColumn_dgvDanhSach_12;
     }
 }

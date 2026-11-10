@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -47,11 +47,19 @@ namespace karaoke.Services
 
     public class BookingService
     {
+        public List<LOAIPHONG> ListRoomTypes()
+        {
+            using (var db = new QuanLyKaraokeEntities())
+            {
+                AuthService.RequirePermission(db, "DATPHONG");
+                return db.LOAIPHONGs.AsNoTracking().OrderBy(x => x.MaLoaiPhong).ToList();
+            }
+        }
         public List<BookingRow> ListBookings(BookingFilter filter = null)
         {
             using (var db = new QuanLyKaraokeEntities())
             {
-                var account = AuthService.RequireCurrentUser(db);
+                var account = AuthService.RequirePermission(db, "DATPHONG");
                 var bookings = db.DATPHONGs.AsQueryable();
                 var query = from b in bookings
                             join p in db.PHONGs on b.MaPhong equals p.MaPhong
@@ -124,7 +132,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
-                var account = AuthService.RequireCurrentUser(db);
+                var account = AuthService.RequirePermission(db, "DATPHONG");
                 var bookings = db.DATPHONGs.AsQueryable();
                 var row = (from b in bookings
                            join p in db.PHONGs on b.MaPhong equals p.MaPhong
@@ -154,7 +162,7 @@ namespace karaoke.Services
             }
         }
 
-        public List<AvailableRoomRow> FindAvailableRooms(DateTime start, DateTime end, int guestCount = 1, int? maLoaiPhong = null)
+        public List<AvailableRoomRow> FindAvailableRooms(DateTime start, DateTime end, int guestCount = 1, int? maLoaiPhong = null, int? editingBookingId = null)
         {
             if (end <= start)
             {
@@ -169,7 +177,9 @@ namespace karaoke.Services
 
             using (var db = new QuanLyKaraokeEntities())
             {
-                AuthService.RequireCurrentUser(db);
+                AuthService.RequirePermission(db, "DATPHONG");
+                var editing = editingBookingId.HasValue ? db.DATPHONGs.AsNoTracking().SingleOrDefault(b => b.MaDatPhong == editingBookingId.Value && b.TrangThai == "ChoNhan") : null;
+                if (editingBookingId.HasValue && editing == null) throw new InvalidOperationException("Phiếu đặt không tồn tại hoặc không còn ở trạng thái chờ.");
                 var query = db.PHONGs.Include("LOAIPHONG")
                                      .Where(p => p.TrangThai != "Bảo trì" && p.SucChua >= guestCount);
 
@@ -181,7 +191,7 @@ namespace karaoke.Services
                 var rooms = query.ToList();
 
                 var busyRoomIds = db.DATPHONGs
-                    .Where(b => b.TrangThai == "ChoNhan" && start < b.GioKetThucDuKien && end > b.GioBatDauDuKien)
+                    .Where(b => (!editingBookingId.HasValue || b.MaDatPhong != editingBookingId.Value) && (b.TrangThai == "ChoNhan" || (b.TrangThai == "DaNhan" && db.PHIENHATs.Any(p => p.MaDatPhong == b.MaDatPhong && p.TrangThai == "DangHat"))) && start < b.GioKetThucDuKien && end > b.GioBatDauDuKien)
                     .Select(b => b.MaPhong)
                     .Distinct()
                     .ToList();
@@ -207,7 +217,7 @@ namespace karaoke.Services
                         TenPhong = p.TenPhong,
                         MaLoaiPhong = p.MaLoaiPhong,
                         TenLoaiPhong = p.LOAIPHONG.TenLoaiPhong,
-                        DonGiaGio = p.LOAIPHONG.DonGiaGio,
+                        DonGiaGio = editing != null && editing.MaPhong == p.MaPhong ? editing.DonGiaGioDaChot : p.LOAIPHONG.DonGiaGio,
                         SucChua = p.SucChua,
                         TrangThai = p.TrangThai
                     })
@@ -222,7 +232,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                var staff = AuthService.RequireCurrentUser(db);
+                var staff = AuthService.RequirePermission(db, "DATPHONG");
 
                 var room = db.PHONGs.Include("LOAIPHONG").FirstOrDefault(p => p.MaPhong == maPhong);
                 if (room == null)
@@ -240,7 +250,7 @@ namespace karaoke.Services
 
                 bool overlap = db.DATPHONGs.Any(b =>
                     b.MaPhong == maPhong &&
-                    b.TrangThai == "ChoNhan" &&
+                    (b.TrangThai == "ChoNhan" || (b.TrangThai == "DaNhan" && db.PHIENHATs.Any(p => p.MaDatPhong == b.MaDatPhong && p.TrangThai == "DangHat"))) &&
                     start < b.GioKetThucDuKien &&
                     end > b.GioBatDauDuKien
                 );
@@ -283,7 +293,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                var staff = AuthService.RequireCurrentUser(db);
+                var staff = AuthService.RequirePermission(db, "DATPHONG");
 
                 var booking = db.DATPHONGs.FirstOrDefault(b => b.MaDatPhong == maDatPhong);
                 if (booking == null)
@@ -313,7 +323,7 @@ namespace karaoke.Services
                 bool overlap = db.DATPHONGs.Any(b =>
                     b.MaDatPhong != maDatPhong &&
                     b.MaPhong == maPhong &&
-                    b.TrangThai == "ChoNhan" &&
+                    (b.TrangThai == "ChoNhan" || (b.TrangThai == "DaNhan" && db.PHIENHATs.Any(p => p.MaDatPhong == b.MaDatPhong && p.TrangThai == "DangHat"))) &&
                     start < b.GioKetThucDuKien &&
                     end > b.GioBatDauDuKien
                 );
@@ -347,7 +357,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                var account = AuthService.RequireCurrentUser(db);
+                var account = AuthService.RequirePermission(db, "DATPHONG");
 
                 var booking = db.DATPHONGs.FirstOrDefault(b => b.MaDatPhong == maDatPhong);
                 if (booking == null)
@@ -377,7 +387,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                var staff = AuthService.RequireCurrentUser(db);
+                var staff = AuthService.RequirePermission(db, "DATPHONG");
 
                 var booking = db.DATPHONGs.FirstOrDefault(b => b.MaDatPhong == maDatPhong);
                 if (booking == null)

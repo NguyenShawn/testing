@@ -94,10 +94,11 @@ BEGIN TRY
             INSERT INTO dbo.PHIENHAT(MaPhong,MaNV,GioBatDau,GioKetThuc,DonGiaGio,TrangThai)
             VALUES('P001','NV001',@start,@end,80000,'DaKetThuc');
             SET @maPhien = CONVERT(INT,SCOPE_IDENTITY());
-        END;
-        IF NOT EXISTS(SELECT 1 FROM dbo.HOADON WHERE MaPhien=@maPhien)
+            INSERT INTO dbo.CHITIETDICHVU(MaPhien,MaDV,SoLuong,DonGia,ThoiGianGoi)
+            VALUES(@maPhien,'DV003',7-@offset,50000,@start);
             INSERT INTO dbo.HOADON(MaPhien,MaNV,NgayThanhToan,TienPhong,TienDichVu,GiamGia,ThanhTien,PhuongThucTT)
             VALUES(@maPhien,'NV001',@end,160000,@dichVu,0,160000+@dichVu,N'Tiền mặt');
+        END;
         SET @offset -= 1;
     END;
 
@@ -105,6 +106,9 @@ BEGIN TRY
     -- Ket thuc tai thoi diem chay, khong tao thoi gian trong tuong lai.
     DECLARE @todayStart DATETIME2 = CAST(CAST(@now AS DATE) AS DATETIME2);
     DECLARE @todayEnd DATETIME2 = @now;
+    DECLARE @todayHours DECIMAL(18,2) = ROUND(DATEDIFF(SECOND, @todayStart, @todayEnd) / 3600.0, 2);
+    IF @todayHours < 0.25 SET @todayHours = 0.25;
+    DECLARE @todayRoom DECIMAL(18,2) = ROUND(@todayHours * 80000, 0);
     SET @maPhien = NULL;
     SELECT @maPhien = MaPhien FROM dbo.PHIENHAT
     WHERE MaPhong='P003' AND GioBatDau=@todayStart;
@@ -113,10 +117,11 @@ BEGIN TRY
         INSERT INTO dbo.PHIENHAT(MaPhong,MaNV,GioBatDau,GioKetThuc,DonGiaGio,TrangThai)
         VALUES('P003','NV001',@todayStart,@todayEnd,80000,'DaKetThuc');
         SET @maPhien = CONVERT(INT,SCOPE_IDENTITY());
-    END;
-    IF NOT EXISTS(SELECT 1 FROM dbo.HOADON WHERE MaPhien=@maPhien)
+        INSERT INTO dbo.CHITIETDICHVU(MaPhien,MaDV,SoLuong,DonGia,ThoiGianGoi)
+        VALUES(@maPhien,'DV003',13,50000,@todayStart), (@maPhien,'DV001',4,10000,@todayStart);
         INSERT INTO dbo.HOADON(MaPhien,MaNV,NgayThanhToan,TienPhong,TienDichVu,GiamGia,ThanhTien,PhuongThucTT)
-        VALUES(@maPhien,'NV001',@now,160000,690000,0,850000,N'Tiền mặt');
+        VALUES(@maPhien,'NV001',@now,@todayRoom,690000,0,@todayRoom+690000,N'Tiền mặt');
+    END;
 
     COMMIT TRANSACTION;
 END TRY

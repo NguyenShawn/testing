@@ -38,9 +38,10 @@ class IntegrationTests
             RunTest("8. Multi-line Cart Rollback on Second Line Error", TestMultiLineCartRollback);
             RunTest("9. Order Rejection on Ended or Paid Sessions", TestEndedAndPaidSessionRejected);
             RunTest("10. Session Totals Calculation for Checkout", TestSessionTotalsCalculation);
+            RunTest("11. Concurrent service order versus checkout", TestConcurrentOrderAndCheckout);
 
             Console.WriteLine("=================================================");
-            Console.WriteLine("ALL 10 INTEGRATION TESTS PASSED SUCCESSFULLY!");
+            Console.WriteLine("ALL 11 INTEGRATION TESTS PASSED SUCCESSFULLY!");
             Console.WriteLine("=================================================");
         }
         finally
@@ -73,6 +74,8 @@ class IntegrationTests
     {
         using (var db = new QuanLyKaraokeEntities())
         {
+            if (!db.Database.Connection.Database.StartsWith("KaraokePasswordTest_")) throw new InvalidOperationException("Integration tests require an isolated test database.");
+            if (!db.LOAIPHONGs.Any(x => x.MaLoaiPhong == 1)) db.LOAIPHONGs.Add(new LOAIPHONG { MaLoaiPhong = 1, TenLoaiPhong = "Phòng thử", DonGiaGio = 80000 });
             adminMaNV = "NV_ADM_" + Guid.NewGuid().ToString("N").Substring(0, 8);
             staffMaNV = "NV_STF_" + Guid.NewGuid().ToString("N").Substring(0, 8);
 
@@ -169,6 +172,10 @@ class IntegrationTests
 
             db.SaveChanges();
         }
+        ActAs(adminMaTK, "Admin");
+        var roles = new RoleService();
+        roles.AssignStaffRole(staffMaTK, roles.List().Single(r => r.TenNhom == "Nhân viên").MaNhom);
+        UserSession.Clear();
     }
 
     private static void CleanupTestFixtures()
@@ -199,6 +206,7 @@ class IntegrationTests
             var services = db.DICHVUs.Where(d => d.MaDV == testServiceId || d.MaDV == inactiveServiceId).ToList();
             db.DICHVUs.RemoveRange(services);
 
+            db.Database.ExecuteSqlCommand("DELETE FROM dbo.TAIKHOAN_NHOMQUYEN WHERE MaTK = {0} OR MaTK = {1}", adminMaTK, staffMaTK);
             var accounts = db.TAIKHOANs.Where(t => t.MaTK == adminMaTK || t.MaTK == staffMaTK).ToList();
             db.TAIKHOANs.RemoveRange(accounts);
             db.SaveChanges();
@@ -214,6 +222,7 @@ class IntegrationTests
     {
         UserSession.MaTK = maTK;
         UserSession.VaiTro = role;
+        using (var db = new QuanLyKaraokeEntities()) UserSession.PhienBanBaoMat = db.TAIKHOANs.Where(t => t.MaTK == maTK).Select(t => t.PhienBanBaoMat).Single();
     }
 
     // 1. Role & Database Account Permission Checks
@@ -450,6 +459,9 @@ class IntegrationTests
         // 4. Another booking on the room while it's in use cannot be checked in
         DateTime overlapStart = DateTime.Now.AddMinutes(20);
         DateTime overlapEnd = overlapStart.AddHours(1);
+        AssertThrows<InvalidOperationException>(() => svc.CreateBooking(testRoomId, "Khách trùng lịch", "0919998887", 4, overlapStart, overlapEnd, null));
+        if (svc.FindAvailableRooms(overlapStart, overlapEnd, 4).Any(r => r.MaPhong == testRoomId))
+            throw new Exception("Checked-in room was offered for an overlapping booking.");
         using (var db = new QuanLyKaraokeEntities())
         {
             // Direct insert for test to bypass create validation
@@ -662,6 +674,41 @@ class IntegrationTests
         }
 
         CloseTestSession(maPhien);
+    }
+
+    private static void TestConcurrentOrderAndCheckout()
+    {
+        ActAs(adminMaTK, "Admin");
+        for (int iteration = 0; iteration < 5; iteration++)
+        {
+            int session = CreateTestSession();
+            int invoice = 0; bool orderSucceeded = false; Exception orderError = null, paymentError = null;
+            try
+            {
+                Parallel.Invoke(
+                    () => { try { new ServiceOrderService().OrderServices(session, new List<CartItemInput> { new CartItemInput { MaDV = testServiceId, SoLuong = 2 } }); orderSucceeded = true; } catch (Exception ex) { orderError = ex; } },
+                    () => { try { invoice = new PaymentService().CompletePayment(session, 0m, "Tiền mặt"); } catch (Exception ex) { paymentError = ex; } });
+                if (orderError != null && !(orderError is InvalidOperationException) && !IsDeadlock(orderError)) throw new Exception("Unexpected order error", orderError);
+                if (paymentError != null && !IsDeadlock(paymentError)) throw new Exception("Unexpected checkout error", paymentError);
+                if (invoice == 0) invoice = new PaymentService().CompletePayment(session, 0m, "Tiền mặt");
+                using (var db = new QuanLyKaraokeEntities())
+                {
+                    var bill = db.HOADONs.Single(h => h.MaHD == invoice);
+                    var lines = db.CHITIETDICHVUs.Where(c => c.MaPhien == session).ToList();
+                    decimal sum = lines.Sum(c => c.SoLuong * c.DonGia);
+                    if (bill.TienDichVu != sum || (orderSucceeded ? lines.Count != 1 : lines.Count != 0))
+                        throw new Exception("Concurrent checkout produced inconsistent service charges.");
+                }
+                AssertThrows<InvalidOperationException>(() => new ServiceOrderService().OrderServices(session, new List<CartItemInput> { new CartItemInput { MaDV = testServiceId, SoLuong = 1 } }));
+            }
+            finally { CloseTestSession(session); }
+        }
+    }
+
+    private static bool IsDeadlock(Exception error)
+    {
+        var sql = error.GetBaseException() as System.Data.SqlClient.SqlException;
+        return sql != null && sql.Number == 1205;
     }
 
     private static int CreateTestSession()

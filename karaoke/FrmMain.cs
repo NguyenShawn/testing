@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Drawing;
 using System.Linq;
@@ -17,9 +17,45 @@ namespace karaoke
         public FrmMain()
         {
             InitializeComponent();
+            using (var iconStream = typeof(FrmMain).Assembly.GetManifestResourceStream("karaoke.Images.Karaoke404.ico"))
+            {
+                if (iconStream != null)
+                {
+                    using (var icon = new Icon(iconStream)) Icon = (Icon)icon.Clone();
+                }
+            }
+            FormBorderStyle = FormBorderStyle.None;
+            WindowState = FormWindowState.Maximized;
+            KeyPreview = true;
+            KeyDown += (sender, e) =>
+            {
+                if (e.KeyCode == Keys.Escape && FormBorderStyle == FormBorderStyle.None)
+                {
+                    FormBorderStyle = FormBorderStyle.Sizable;
+                    WindowState = FormWindowState.Normal;
+                    e.Handled = true;
+                }
+            };
             this.Load += FrmMain_Load;
             this.btnThanhToan.Click += btnThanhToan_Click;
             this.btnThongKe.Click += btnThongKe_Click;
+        }
+
+        private void changePassword_Click(object sender, EventArgs e)
+        { using (var dialog = new FrmDoiMatKhau()) dialog.ShowDialog(this); }
+        private void accountManagement_Click(object sender, EventArgs e)
+        { OpenAdminDialog("TAIKHOAN", "Tài khoản", () => new FrmQuanLyTaiKhoan()); }
+        private void staffManagement_Click(object sender, EventArgs e)
+        { OpenAdminDialog("NHANVIEN", "Nhân viên", () => new FrmQuanLyNhanVien()); }
+        private void roomTypes_Click(object sender, EventArgs e)
+        { OpenAdminDialog("LOAIPHONG", "Loại phòng", () => new FrmQuanLyLoaiPhong()); }
+        private void roleManagement_Click(object sender, EventArgs e)
+        { OpenAdminDialog("NHOMQUYEN", "Nhóm quyền", () => new FrmQuanLyNhomQuyen()); }
+        private void OpenAdminDialog(string permission, string title, Func<Form> create)
+        {
+            try { using (var db = new QuanLyKaraokeEntities()) AuthService.RequirePermission(db, permission);
+                using (var dialog = create()) dialog.ShowDialog(this); }
+            catch (Exception ex) { MessageBox.Show(ex.GetBaseException().Message, title); }
         }
 
         // ============================================
@@ -51,21 +87,27 @@ namespace karaoke
 
         private void ApplyAccountMode()
         {
-            bool admin = AuthService.IsAdmin(AuthService.RequireCurrentUser());
-            btnPhong.Enabled = btnDichVu.Enabled = btnDatPhong.Enabled = btnGoiDichVu.Enabled = true;
-            btnThanhToan.Enabled = true;
-            btnThongKe.Enabled = admin;
-            chart1.Visible = lbl4.Visible = admin;
-            if (!admin) { lblDoanhThu.Text = ""; chart1.Series.Clear(); }
+            accountManagement.Visible = AuthService.HasPermission("TAIKHOAN");
+            staffManagement.Visible = AuthService.HasPermission("NHANVIEN");
+            roomTypes.Visible = AuthService.HasPermission("LOAIPHONG");
+            roleManagement.Visible = AuthService.HasPermission("NHOMQUYEN");
+            btnPhong.Enabled = AuthService.HasPermission("PHONG_XEM");
+            btnDichVu.Enabled = AuthService.HasPermission("DICHVU_XEM");
+            btnDatPhong.Enabled = AuthService.HasPermission("DATPHONG");
+            btnGoiDichVu.Enabled = AuthService.HasPermission("GOIDICHVU");
+            btnThanhToan.Enabled = AuthService.HasPermission("THANHTOAN");
+            btnThongKe.Enabled = AuthService.HasPermission("THONGKE");
+            chart1.Visible = lbl4.Visible = btnThongKe.Enabled;
+            if (!btnThongKe.Enabled) { lblDoanhThu.Text = ""; chart1.Series.Clear(); }
         }
-        private void OpenInternal(Func<Form> factory, bool adminOnly = false)
+        private bool OpenInternal(Func<Form> factory, bool adminOnly = false)
         {
             try {
                 using (var db = new QuanLyKaraokeEntities())
                 { if (adminOnly) AuthService.RequireAdmin(db); else AuthService.RequireCurrentUser(db); }
-                OpenChildForm(factory());
+                return OpenChildForm(factory());
             }
-            catch (Exception ex) { MessageBox.Show(ex.GetBaseException().Message, "Tài khoản nội bộ"); }
+            catch (Exception ex) { MessageBox.Show(ex.GetBaseException().Message, "Tài khoản nội bộ"); return false; }
         }
         private void LoadDashboard()
         {
@@ -74,13 +116,13 @@ namespace karaoke
                 var account = AuthService.RequireCurrentUser(db);
                 lblTongPhong.Text = lblDangSuDung.Text = lblPhongTrong.Text = "—";
                 lblDoanhThu.Text = "";
-                if (AuthService.IsInternalAccount(account))
+                if (AuthService.HasPermission("PHONG_XEM"))
                 {
                     lblTongPhong.Text = db.PHONGs.Count().ToString();
                     lblDangSuDung.Text = db.PHONGs.Count(x => x.TrangThai == "Đang sử dụng").ToString();
                     lblPhongTrong.Text = db.PHONGs.Count(x => x.TrangThai == "Trống").ToString();
                 }
-                if (AuthService.IsAdmin(account))
+                if (AuthService.HasPermission("THONGKE"))
                 {
                     DateTime start = DateTime.Today, end = start.AddDays(1);
                     decimal revenue = db.HOADONs.Where(x => x.NgayThanhToan >= start && x.NgayThanhToan < end).Select(x => (decimal?)x.ThanhTien).Sum() ?? 0m;
@@ -96,7 +138,7 @@ namespace karaoke
         private void LoadChartDoanhThu()
         {
             chart1.Series.Clear();
-            if (!AuthService.IsAdmin(AuthService.RequireCurrentUser())) return;
+            if (!AuthService.HasPermission("THONGKE")) return;
             int nam = DateTime.Today.Year;
 
             DateTime tuNgay = new DateTime(nam, 1, 1);
@@ -169,8 +211,10 @@ namespace karaoke
         // 4. MO FORM CON TRONG PANEL CONTENT
         // ============================================
 
-        private void OpenChildForm(Form childForm)
+        private bool OpenChildForm(Form childForm)
         {
+            var orderForm = currentChildForm as FrmGoiDichVu;
+            if (orderForm != null && !orderForm.ConfirmLeave()) { childForm.Dispose(); return false; }
             if (currentChildForm != null)
             {
                 currentChildForm.Close();
@@ -178,6 +222,7 @@ namespace karaoke
             }
 
             panelDashboard.Visible = false;
+            panelTrangChuHeader.Visible = false;
 
             currentChildForm = childForm;
 
@@ -189,6 +234,7 @@ namespace karaoke
 
             childForm.BringToFront();
             childForm.Show();
+            return true;
         }
 
         // ============================================
@@ -197,8 +243,7 @@ namespace karaoke
 
         private void btnPhong_Click(object sender, EventArgs e)
         {
-            OpenInternal(() => new FrmQuanLyPhong());
-            SetActiveSidebar(btnPhong);
+            if (OpenInternal(() => new FrmQuanLyPhong())) SetActiveSidebar(btnPhong);
         }
 
         // ============================================
@@ -207,6 +252,8 @@ namespace karaoke
 
         private void btnTrangChu_Click(object sender, EventArgs e)
         {
+            var orderForm = currentChildForm as FrmGoiDichVu;
+            if (orderForm != null && !orderForm.ConfirmLeave()) return;
             SetActiveSidebar(btnTrangChu);
             if (currentChildForm != null)
             {
@@ -215,6 +262,7 @@ namespace karaoke
                 currentChildForm = null;
             }
 
+            panelTrangChuHeader.Visible = true;
             panelDashboard.Visible = true;
             panelDashboard.BringToFront();
             
@@ -237,32 +285,27 @@ namespace karaoke
 
         private void btnDichVu_Click(object sender, EventArgs e)
         {
-            OpenInternal(() => new FrmQuanLyDichVu());
-            SetActiveSidebar(btnDichVu);
+            if (OpenInternal(() => new FrmQuanLyDichVu())) SetActiveSidebar(btnDichVu);
         }
 
         private void btnDatPhong_Click(object sender, EventArgs e)
         {
-            OpenInternal(() => new FrmDanhSachDatPhong());
-            SetActiveSidebar(btnDatPhong);
+            if (OpenInternal(() => new FrmDanhSachDatPhong())) SetActiveSidebar(btnDatPhong);
         }
 
         private void btnGoiDichVu_Click(object sender, EventArgs e)
         {
-            OpenInternal(() => new FrmGoiDichVu());
-            SetActiveSidebar(btnGoiDichVu);
+            if (OpenInternal(() => new FrmGoiDichVu())) SetActiveSidebar(btnGoiDichVu);
         }
 
         private void btnThanhToan_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new FrmThanhToan());
-            SetActiveSidebar(btnThanhToan);
+            if (OpenChildForm(new FrmThanhToan())) SetActiveSidebar(btnThanhToan);
         }
 
         private void btnThongKe_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new FrmThongKe());
-            SetActiveSidebar(btnThongKe);
+            if (OpenChildForm(new FrmThongKe())) SetActiveSidebar(btnThongKe);
         }
 
         private void SetActiveSidebar(Guna.UI2.WinForms.Guna2Button button)

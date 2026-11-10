@@ -23,7 +23,11 @@ namespace karaoke
             public override string ToString() { return TenLoaiPhong; }
         }
 
-        public FrmDatPhong(int? maDatPhong = null)
+        public FrmDatPhong() : this(null)
+        {
+        }
+
+        public FrmDatPhong(int? maDatPhong)
         {
             InitializeComponent();
             foreach (var button in new[] { btnTimPhong, btnHuy, btnLuu })
@@ -68,45 +72,6 @@ namespace karaoke
         private void InitGrid()
         {
             dgvPhongTrong.AutoGenerateColumns = false;
-            dgvPhongTrong.Columns.Clear();
-
-            dgvPhongTrong.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "MaPhong",
-                HeaderText = "Mã phòng",
-                Width = 85
-            });
-            dgvPhongTrong.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenPhong",
-                HeaderText = "Tên phòng",
-                Width = 110
-            });
-            dgvPhongTrong.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TenLoaiPhong",
-                HeaderText = "Loại phòng",
-                Width = 110
-            });
-            dgvPhongTrong.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "DonGiaGio",
-                HeaderText = "Đơn giá/h",
-                DefaultCellStyle = { Format = "N0" },
-                Width = 100
-            });
-            dgvPhongTrong.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "SucChua",
-                HeaderText = "Sức chứa",
-                Width = 80
-            });
-            dgvPhongTrong.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "TrangThai",
-                HeaderText = "Hiện tại",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            });
 
             dgvPhongTrong.EnableHeadersVisualStyles = false;
             dgvPhongTrong.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(22, 101, 52);
@@ -123,17 +88,10 @@ namespace karaoke
 
             try
             {
-                using (var db = new QuanLyKaraokeEntities())
+                var types = bookingService.ListRoomTypes();
+                foreach (var t in types)
                 {
-                    var types = db.LOAIPHONGs.OrderBy(x => x.MaLoaiPhong).ToList();
-                    foreach (var t in types)
-                    {
-                        cbLoaiPhong.Items.Add(new LoaiPhongItem
-                        {
-                            MaLoaiPhong = t.MaLoaiPhong,
-                            TenLoaiPhong = t.TenLoaiPhong
-                        });
-                    }
+                    cbLoaiPhong.Items.Add(new LoaiPhongItem { MaLoaiPhong = t.MaLoaiPhong, TenLoaiPhong = t.TenLoaiPhong });
                 }
             }
             catch (Exception ex)
@@ -200,40 +158,7 @@ namespace karaoke
                 var selectedType = cbLoaiPhong.SelectedItem as LoaiPhongItem;
                 int? maLoaiPhong = selectedType != null ? selectedType.MaLoaiPhong : null;
 
-                var available = bookingService.FindAvailableRooms(start, end, guestCount, maLoaiPhong);
-
-                // If in edit mode and the currently assigned room is available for this booking (excluding its own reservation)
-                if (editingMaDatPhong.HasValue && !string.IsNullOrEmpty(selectedMaPhong) && !available.Any(x => x.MaPhong == selectedMaPhong))
-                {
-                    using (var db = new QuanLyKaraokeEntities())
-                    {
-                        var currentRoom = db.PHONGs.Include("LOAIPHONG").FirstOrDefault(p => p.MaPhong == selectedMaPhong);
-                        if (currentRoom != null)
-                        {
-                            bool overlapOther = db.DATPHONGs.Any(b =>
-                                b.MaDatPhong != editingMaDatPhong.Value &&
-                                b.MaPhong == selectedMaPhong &&
-                                b.TrangThai == "ChoNhan" &&
-                                start < b.GioKetThucDuKien &&
-                                end > b.GioBatDauDuKien
-                            );
-
-                            if (!overlapOther && currentRoom.TrangThai != "Bảo trì" && currentRoom.SucChua >= guestCount)
-                            {
-                                available.Insert(0, new AvailableRoomRow
-                                {
-                                    MaPhong = currentRoom.MaPhong,
-                                    TenPhong = currentRoom.TenPhong + " (Hiện tại)",
-                                    MaLoaiPhong = currentRoom.MaLoaiPhong,
-                                    TenLoaiPhong = currentRoom.LOAIPHONG.TenLoaiPhong,
-                                    DonGiaGio = selectedDonGia,
-                                    SucChua = currentRoom.SucChua,
-                                    TrangThai = currentRoom.TrangThai
-                                });
-                            }
-                        }
-                    }
-                }
+                var available = bookingService.FindAvailableRooms(start, end, guestCount, maLoaiPhong, editingMaDatPhong);
 
                 dgvPhongTrong.DataSource = available;
 
