@@ -32,13 +32,14 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cbLoaiPhong = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.numSucChua = new System.Windows.Forms.NumericUpDown();
             this.txtMaPhong = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.cbTrangThai = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txtDonGia = new System.Windows.Forms.TextBox();
-            this.txtLoaiPhong = new System.Windows.Forms.TextBox();
             this.txtTenPhong = new System.Windows.Forms.TextBox();
             this.btnLamMoi = new System.Windows.Forms.Button();
             this.btnXoa = new System.Windows.Forms.Button();
@@ -46,7 +47,6 @@
             this.btnThem = new System.Windows.Forms.Button();
             this.flowLayoutPanelPhong = new System.Windows.Forms.FlowLayoutPanel();
             this.dataGridViewPhong = new System.Windows.Forms.DataGridView();
-            this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSucChua)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPhong)).BeginInit();
@@ -81,6 +81,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cbLoaiPhong);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.numSucChua);
             this.groupBox1.Controls.Add(this.txtMaPhong);
@@ -88,7 +89,6 @@
             this.groupBox1.Controls.Add(this.cbTrangThai);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.txtDonGia);
-            this.groupBox1.Controls.Add(this.txtLoaiPhong);
             this.groupBox1.Controls.Add(this.txtTenPhong);
             this.groupBox1.Controls.Add(this.btnLamMoi);
             this.groupBox1.Controls.Add(this.btnXoa);
@@ -103,6 +103,23 @@
             this.groupBox1.TabIndex = 17;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông Tin Phòng";
+            // 
+            // cbLoaiPhong
+            // 
+            this.cbLoaiPhong.FormattingEnabled = true;
+            this.cbLoaiPhong.Location = new System.Drawing.Point(94, 92);
+            this.cbLoaiPhong.Name = "cbLoaiPhong";
+            this.cbLoaiPhong.Size = new System.Drawing.Size(98, 21);
+            this.cbLoaiPhong.TabIndex = 30;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(32, 147);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(54, 13);
+            this.label1.TabIndex = 29;
+            this.label1.Text = "Sức Chứa";
             // 
             // numSucChua
             // 
@@ -148,15 +165,9 @@
             // 
             this.txtDonGia.Location = new System.Drawing.Point(92, 119);
             this.txtDonGia.Name = "txtDonGia";
+            this.txtDonGia.ReadOnly = true;
             this.txtDonGia.Size = new System.Drawing.Size(100, 20);
             this.txtDonGia.TabIndex = 23;
-            // 
-            // txtLoaiPhong
-            // 
-            this.txtLoaiPhong.Location = new System.Drawing.Point(92, 93);
-            this.txtLoaiPhong.Name = "txtLoaiPhong";
-            this.txtLoaiPhong.Size = new System.Drawing.Size(100, 20);
-            this.txtLoaiPhong.TabIndex = 22;
             // 
             // txtTenPhong
             // 
@@ -224,15 +235,6 @@
             this.dataGridViewPhong.Size = new System.Drawing.Size(546, 244);
             this.dataGridViewPhong.TabIndex = 19;
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(32, 147);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(54, 13);
-            this.label1.TabIndex = 29;
-            this.label1.Text = "Sức Chứa";
-            // 
             // FrmQuanLyPhong
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -262,7 +264,6 @@
         private System.Windows.Forms.Button btnThem;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelPhong;
         private System.Windows.Forms.TextBox txtDonGia;
-        private System.Windows.Forms.TextBox txtLoaiPhong;
         private System.Windows.Forms.TextBox txtTenPhong;
         private System.Windows.Forms.ComboBox cbTrangThai;
         private System.Windows.Forms.Label label5;
@@ -271,5 +272,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.NumericUpDown numSucChua;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox cbLoaiPhong;
     }
 }
