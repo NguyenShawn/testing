@@ -19,6 +19,15 @@ namespace karaoke.Services
 
     public class RoomService
     {
+        public List<LOAIPHONG> ListRoomTypes()
+        {
+            using (var db = new QuanLyKaraokeEntities())
+            {
+                AuthService.RequireCurrentUser(db);
+                return db.LOAIPHONGs.AsNoTracking().OrderBy(x => x.MaLoaiPhong).ToList();
+            }
+        }
+
         public List<RoomRow> List()
         {
             using (var db = new QuanLyKaraokeEntities())

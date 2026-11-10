@@ -1,4 +1,4 @@
-namespace karaoke
+﻿namespace karaoke
 {
     partial class FrmGoiDichVu
     {
@@ -138,7 +138,7 @@ namespace karaoke
             this.cbPhienHat.Name = "cbPhienHat";
             this.cbPhienHat.Size = new System.Drawing.Size(190, 25);
             this.cbPhienHat.TabIndex = 1;
-            this.cbPhienHat.SelectionChangeCommitted += new System.EventHandler(this.cbPhienHat_SelectionChangeCommitted);
+
             // 
             // labelChonPhong
             // 

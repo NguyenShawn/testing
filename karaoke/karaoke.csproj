@@ -9,6 +9,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>karaoke</RootNamespace>
     <AssemblyName>karaoke</AssemblyName>
+    <ApplicationIcon>Images\Karaoke404.ico</ApplicationIcon>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -197,6 +198,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>KaraokeDB.dbml</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Images\Karaoke404.ico" />
+    <EmbeddedResource Include="Images\login-karaoke-logo.png" />
+    <EmbeddedResource Include="Images\login-forgot-icon.png" />
     <EmbeddedResource Include="FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>
     </EmbeddedResource>
