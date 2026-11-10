@@ -31,22 +31,17 @@
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.lblTieuDe = new System.Windows.Forms.Label();
-            this.panelHeader = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDichVu)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.panelHeader.SuspendLayout();
             this.SuspendLayout();
             // 
             // dgvDichVu
             // 
-            this.dgvDichVu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.dgvDichVu.BackgroundColor = System.Drawing.Color.White;
             this.dgvDichVu.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvDichVu.Location = new System.Drawing.Point(12, 235);
+            this.dgvDichVu.Location = new System.Drawing.Point(12, 191);
             this.dgvDichVu.Name = "dgvDichVu";
-            this.dgvDichVu.Size = new System.Drawing.Size(936, 468);
+            this.dgvDichVu.Size = new System.Drawing.Size(936, 512);
             this.dgvDichVu.TabIndex = 0;
             // 
             // btnThem
@@ -89,28 +84,28 @@
             // 
             this.txtMaDV.Location = new System.Drawing.Point(110, 30);
             this.txtMaDV.Name = "txtMaDV";
-            this.txtMaDV.Size = new System.Drawing.Size(145, 20);
+            this.txtMaDV.Size = new System.Drawing.Size(100, 20);
             this.txtMaDV.TabIndex = 5;
             // 
             // txtTenDV
             // 
             this.txtTenDV.Location = new System.Drawing.Point(110, 56);
             this.txtTenDV.Name = "txtTenDV";
-            this.txtTenDV.Size = new System.Drawing.Size(145, 20);
+            this.txtTenDV.Size = new System.Drawing.Size(100, 20);
             this.txtTenDV.TabIndex = 6;
             // 
             // txtDonViTinh
             // 
             this.txtDonViTinh.Location = new System.Drawing.Point(110, 88);
             this.txtDonViTinh.Name = "txtDonViTinh";
-            this.txtDonViTinh.Size = new System.Drawing.Size(145, 20);
+            this.txtDonViTinh.Size = new System.Drawing.Size(100, 20);
             this.txtDonViTinh.TabIndex = 7;
             // 
             // txtDonGia
             // 
             this.txtDonGia.Location = new System.Drawing.Point(110, 118);
             this.txtDonGia.Name = "txtDonGia";
-            this.txtDonGia.Size = new System.Drawing.Size(145, 20);
+            this.txtDonGia.Size = new System.Drawing.Size(100, 20);
             this.txtDonGia.TabIndex = 8;
             // 
             // chkTrangThai
@@ -170,8 +165,7 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.txtDonGia);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.groupBox1.Location = new System.Drawing.Point(224, 56);
+            this.groupBox1.Location = new System.Drawing.Point(224, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(272, 173);
             this.groupBox1.TabIndex = 14;
@@ -184,27 +178,12 @@
             this.groupBox2.Controls.Add(this.btnSua);
             this.groupBox2.Controls.Add(this.btnLamMoi);
             this.groupBox2.Controls.Add(this.btnXoa);
-            this.groupBox2.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.groupBox2.Location = new System.Drawing.Point(502, 56);
+            this.groupBox2.Location = new System.Drawing.Point(502, 12);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(245, 173);
             this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Chức Năng";
-            // lblTieuDe
-            this.lblTieuDe.AutoSize = true;
-            this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 13.5F, System.Drawing.FontStyle.Bold);
-            this.lblTieuDe.ForeColor = System.Drawing.Color.White;
-            this.lblTieuDe.Location = new System.Drawing.Point(14, 10);
-            this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Text = "QUẢN LÝ DỊCH VỤ";
-            // panelHeader
-            this.panelHeader.BackColor = System.Drawing.Color.FromArgb(22, 101, 52);
-            this.panelHeader.Controls.Add(this.lblTieuDe);
-            this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelHeader.Location = new System.Drawing.Point(0, 0);
-            this.panelHeader.Name = "panelHeader";
-            this.panelHeader.Size = new System.Drawing.Size(960, 46);
             // 
             // FrmQuanLyDichVu
             // 
@@ -212,16 +191,12 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.dgvDichVu);
-            this.Controls.Add(this.panelHeader);
             this.Name = "FrmQuanLyDichVu";
             ((System.ComponentModel.ISupportInitialize)(this.dgvDichVu)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
-            this.panelHeader.ResumeLayout(false);
-            this.panelHeader.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -241,7 +216,5 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label lblTieuDe;
-        private System.Windows.Forms.Panel panelHeader;
     }
 }

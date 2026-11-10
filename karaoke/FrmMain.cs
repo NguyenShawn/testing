@@ -17,25 +17,6 @@ namespace karaoke
         public FrmMain()
         {
             InitializeComponent();
-            using (var iconStream = typeof(FrmMain).Assembly.GetManifestResourceStream("karaoke.Images.Karaoke404.ico"))
-            {
-                if (iconStream != null)
-                {
-                    using (var icon = new Icon(iconStream)) Icon = (Icon)icon.Clone();
-                }
-            }
-            FormBorderStyle = FormBorderStyle.None;
-            WindowState = FormWindowState.Maximized;
-            KeyPreview = true;
-            KeyDown += (sender, e) =>
-            {
-                if (e.KeyCode == Keys.Escape && FormBorderStyle == FormBorderStyle.None)
-                {
-                    FormBorderStyle = FormBorderStyle.Sizable;
-                    WindowState = FormWindowState.Normal;
-                    e.Handled = true;
-                }
-            };
             this.Load += FrmMain_Load;
             this.btnThanhToan.Click += btnThanhToan_Click;
             this.btnThongKe.Click += btnThongKe_Click;
@@ -197,7 +178,6 @@ namespace karaoke
             }
 
             panelDashboard.Visible = false;
-            panelTrangChuHeader.Visible = false;
 
             currentChildForm = childForm;
 
@@ -235,7 +215,6 @@ namespace karaoke
                 currentChildForm = null;
             }
 
-            panelTrangChuHeader.Visible = true;
             panelDashboard.Visible = true;
             panelDashboard.BringToFront();
             

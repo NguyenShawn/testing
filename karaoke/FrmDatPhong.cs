@@ -23,11 +23,7 @@ namespace karaoke
             public override string ToString() { return TenLoaiPhong; }
         }
 
-        public FrmDatPhong() : this(null)
-        {
-        }
-
-        public FrmDatPhong(int? maDatPhong)
+        public FrmDatPhong(int? maDatPhong = null)
         {
             InitializeComponent();
             foreach (var button in new[] { btnTimPhong, btnHuy, btnLuu })
