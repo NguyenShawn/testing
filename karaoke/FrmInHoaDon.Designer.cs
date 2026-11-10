@@ -59,7 +59,6 @@ namespace karaoke
             // 
             // btnDong
             // 
-            this.btnDong.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDong.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.btnDong.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDong.FlatAppearance.BorderSize = 0;
@@ -76,7 +75,6 @@ namespace karaoke
             // 
             // btnIn
             // 
-            this.btnIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnIn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
             this.btnIn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnIn.FlatAppearance.BorderSize = 0;
@@ -100,8 +98,6 @@ namespace karaoke
             this.rtbHoaDon.Location = new System.Drawing.Point(0, 45);
             this.rtbHoaDon.Name = "rtbHoaDon";
             this.rtbHoaDon.ReadOnly = true;
-            this.rtbHoaDon.WordWrap = false;
-            this.rtbHoaDon.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Both;
             this.rtbHoaDon.Size = new System.Drawing.Size(520, 520);
             this.rtbHoaDon.TabIndex = 2;
             this.rtbHoaDon.Text = "";
