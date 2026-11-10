@@ -59,10 +59,39 @@ namespace karaoke
             cbTrangThai.SelectedIndex = 0;
             cboLocTrangThai.SelectedIndex = 0;
 
+            LoadComboBoxLoaiPhong();
+            cbLoaiPhong.SelectedIndexChanged += cbLoaiPhong_SelectedIndexChanged;
+
             numSucChua.Minimum = 1;
             numSucChua.Maximum = 1000;
 
             Run(LoadDanhSachPhong);
+        }
+
+        private void LoadComboBoxLoaiPhong()
+        {
+            cbLoaiPhong.Items.Clear();
+            cbLoaiPhong.Items.Add(new LoaiPhongItem { TenLoai = "Phòng thường", DonGia = 80000 });
+            cbLoaiPhong.Items.Add(new LoaiPhongItem { TenLoai = "Phòng VIP", DonGia = 150000 });
+
+
+            if (cbLoaiPhong.Items.Count > 0)
+                cbLoaiPhong.SelectedIndex = 0;
+        }
+
+        private void cbLoaiPhong_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbLoaiPhong.SelectedItem is LoaiPhongItem selectedType)
+            {
+                txtDonGia.Text = selectedType.DonGia.ToString("0.##");
+            }
+            else if (cbLoaiPhong.SelectedItem is string typeName)
+            {
+                if (typeName == "Phòng VIP")
+                    txtDonGia.Text = "150000";
+                else
+                    txtDonGia.Text = "80000";
+            }
         }
 
         private void LoadDanhSachPhong()
@@ -170,7 +199,9 @@ namespace karaoke
             txtMaPhong.Text = r.MaPhong;
             txtMaPhong.ReadOnly = true;
             txtTenPhong.Text = r.TenPhong;
-            txtLoaiPhong.Text = r.LoaiPhong;
+
+            cbLoaiPhong.Text = r.LoaiPhong;
+
             txtDonGia.Text = r.DonGia.ToString("0.##");
 
             int val = r.SucChua;
@@ -227,10 +258,12 @@ namespace karaoke
             if (string.IsNullOrEmpty(maPhong))
                 throw new InvalidOperationException("Mã phòng không được để trống.");
 
+            string loaiPhongStr = cbLoaiPhong.Text.Trim();
+
             service.Save(
                 maPhong,
                 txtTenPhong.Text.Trim(),
-                txtLoaiPhong.Text.Trim(),
+                loaiPhongStr,
                 price,
                 (int)numSucChua.Value,
                 Convert.ToString(cbTrangThai.SelectedItem),
@@ -275,12 +308,19 @@ namespace karaoke
             txtMaPhong.ReadOnly = false;
             txtMaPhong.Clear();
             txtTenPhong.Clear();
-            txtLoaiPhong.Clear();
+            if (cbLoaiPhong.Items.Count > 0) cbLoaiPhong.SelectedIndex = 0;
             txtDonGia.Clear();
             numSucChua.Value = 10;
             cbTrangThai.SelectedIndex = 0;
             dataGridViewPhong.ClearSelection();
             UpdateRoomCount(dataGridViewPhong.Rows.Count);
         }
+    }
+
+    public class LoaiPhongItem
+    {
+        public string TenLoai { get; set; }
+        public decimal DonGia { get; set; }
+        public override string ToString() => TenLoai;
     }
 }
