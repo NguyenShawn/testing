@@ -34,6 +34,8 @@ namespace karaoke
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.panelContent = new System.Windows.Forms.Panel();
             this.panelDashboard = new System.Windows.Forms.Panel();
+            this.panelTrangChuHeader = new System.Windows.Forms.Panel();
+            this.lblTrangChuHeader = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.lbl4 = new System.Windows.Forms.Panel();
             this.label9 = new System.Windows.Forms.Label();
@@ -61,6 +63,7 @@ namespace karaoke
             this.btnThongKe = new Guna.UI2.WinForms.Guna2Button();
             this.panelContent.SuspendLayout();
             this.panelDashboard.SuspendLayout();
+            this.panelTrangChuHeader.SuspendLayout();
             this.lbl4.SuspendLayout();
             this.lbl3.SuspendLayout();
             this.lbl2.SuspendLayout();
@@ -74,6 +77,7 @@ namespace karaoke
             // 
             this.panelContent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(248)))), ((int)(((byte)(245)))));
             this.panelContent.Controls.Add(this.panelDashboard);
+            this.panelContent.Controls.Add(this.panelTrangChuHeader);
             this.panelContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelContent.Location = new System.Drawing.Point(216, 0);
             this.panelContent.Name = "panelContent";
@@ -93,10 +97,24 @@ namespace karaoke
             this.panelDashboard.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelDashboard.Location = new System.Drawing.Point(34, 12);
+            this.panelDashboard.Location = new System.Drawing.Point(34, 58);
             this.panelDashboard.Name = "panelDashboard";
-            this.panelDashboard.Size = new System.Drawing.Size(922, 693);
+            this.panelDashboard.Size = new System.Drawing.Size(922, 647);
             this.panelDashboard.TabIndex = 11;
+            // panelTrangChuHeader
+            this.panelTrangChuHeader.BackColor = System.Drawing.Color.FromArgb(22, 101, 52);
+            this.panelTrangChuHeader.Controls.Add(this.lblTrangChuHeader);
+            this.panelTrangChuHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTrangChuHeader.Location = new System.Drawing.Point(0, 0);
+            this.panelTrangChuHeader.Name = "panelTrangChuHeader";
+            this.panelTrangChuHeader.Size = new System.Drawing.Size(968, 46);
+            // lblTrangChuHeader
+            this.lblTrangChuHeader.AutoSize = true;
+            this.lblTrangChuHeader.Font = new System.Drawing.Font("Segoe UI", 13.5F, System.Drawing.FontStyle.Bold);
+            this.lblTrangChuHeader.ForeColor = System.Drawing.Color.White;
+            this.lblTrangChuHeader.Location = new System.Drawing.Point(14, 10);
+            this.lblTrangChuHeader.Name = "lblTrangChuHeader";
+            this.lblTrangChuHeader.Text = "TRANG CHỦ";
             // 
             // label11
             // 
@@ -263,6 +281,7 @@ namespace karaoke
             legend2.Enabled = false;
             legend2.Name = "Legend1";
             this.chart1.Legends.Add(legend2);
+            this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.chart1.Location = new System.Drawing.Point(26, 309);
             this.chart1.Name = "chart1";
             this.chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
@@ -271,7 +290,7 @@ namespace karaoke
             series2.Legend = "Legend1";
             series2.Name = "Series1";
             this.chart1.Series.Add(series2);
-            this.chart1.Size = new System.Drawing.Size(827, 360);
+            this.chart1.Size = new System.Drawing.Size(827, 314);
             this.chart1.TabIndex = 11;
             this.chart1.Text = "chart1";
             // 
@@ -501,10 +520,13 @@ namespace karaoke
             this.Controls.Add(this.panelSidebar);
             this.MinimumSize = new System.Drawing.Size(1200, 750);
             this.Name = "FrmMain";
+            this.Text = "Karaoke404 - Quản lý karaoke";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.panelContent.ResumeLayout(false);
             this.panelDashboard.ResumeLayout(false);
             this.panelDashboard.PerformLayout();
+            this.panelTrangChuHeader.ResumeLayout(false);
+            this.panelTrangChuHeader.PerformLayout();
             this.lbl4.ResumeLayout(false);
             this.lbl4.PerformLayout();
             this.lbl3.ResumeLayout(false);
@@ -523,6 +545,8 @@ namespace karaoke
 
         #endregion
         private System.Windows.Forms.Panel panelContent;
+        private System.Windows.Forms.Panel panelTrangChuHeader;
+        private System.Windows.Forms.Label lblTrangChuHeader;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel panelDashboard;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;

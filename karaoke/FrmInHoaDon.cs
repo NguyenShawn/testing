@@ -92,6 +92,15 @@ namespace karaoke
             sb.AppendLine("==================================================");
 
             rtbHoaDon.Text = sb.ToString();
+            int widestLine = 0;
+            foreach (string line in rtbHoaDon.Lines)
+            {
+                int width = TextRenderer.MeasureText(line, rtbHoaDon.Font,
+                    Size.Empty, TextFormatFlags.NoPadding | TextFormatFlags.SingleLine).Width;
+                widestLine = Math.Max(widestLine, width);
+            }
+            int maxWidth = Screen.FromControl(this).WorkingArea.Width - (Width - ClientSize.Width) - 20;
+            ClientSize = new Size(Math.Max(300, Math.Min(maxWidth, widestLine + SystemInformation.VerticalScrollBarWidth + 12)), ClientSize.Height);
         }
 
         private void btnIn_Click(object sender, EventArgs e)
