@@ -1,4 +1,4 @@
-param([string]$Server = '(localdb)\MSSQLLocalDB')
+﻿param([string]$Server = '(localdb)\MSSQLLocalDB', [switch]$ResetAdminPassword)
 $ErrorActionPreference = 'Stop'
 $scriptPath = Join-Path $PSScriptRoot 'karaoke\Sql\Setup_QuanLyKaraoke.sql'
 if (!(Test-Path -LiteralPath $scriptPath)) { throw 'Không tìm thấy script khởi tạo CSDL trong project.' }
@@ -14,8 +14,24 @@ try {
     foreach ($batch in [regex]::Split($sql, '(?im)^\s*GO\s*\r?$')) {
         if (![string]::IsNullOrWhiteSpace($batch)) { $command.CommandText = $batch; [void]$command.ExecuteNonQuery() }
     }
+    if ($ResetAdminPassword) {
+        $match = [regex]::Match($sql, "DECLARE\s+@Hash\s+varchar\(255\)\s*=\s*'([^']+)'", [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+        if (!$match.Success) { throw 'Không tìm thấy mật khẩu khởi tạo Admin trong script SQL; không đặt lại mật khẩu.' }
+        $command.Parameters.Clear()
+        [void]$command.Parameters.Add('@hash', [System.Data.SqlDbType]::VarChar, 255)
+        $command.Parameters['@hash'].Value = $match.Groups[1].Value
+        $command.CommandText = @"
+UPDATE dbo.TAIKHOAN
+SET MatKhauHash = @hash, SoLanDangNhapSai = 0, KhoaDen = NULL,
+    PhienBanBaoMat = PhienBanBaoMat + 1
+WHERE TenDangNhap = 'admin' AND VaiTro = 'Admin';
+SELECT @@ROWCOUNT;
+"@
+        if ([int]$command.ExecuteScalar() -ne 1) { throw 'Không tìm thấy tài khoản admin có vai trò Admin; không đặt lại mật khẩu.' }
+        Write-Output 'Đã đặt lại mật khẩu admin, xóa khóa do đăng nhập sai và đăng xuất các phiên cũ.'
+    }
     Write-Output 'Đã kiểm tra và khởi tạo cấu trúc QuanLyKaraoke.'
     Write-Output 'Database mới: admin / AdminKaraoke2026!; hãy đổi mật khẩu sau khi đăng nhập.'
-    Write-Output 'Nếu tài khoản admin đã tồn tại, mật khẩu hiện có được giữ nguyên.'
+    if (!$ResetAdminPassword) { Write-Output 'Nếu tài khoản admin đã tồn tại, mật khẩu hiện có được giữ nguyên.' }
 }
 finally { $connection.Dispose() }
