@@ -299,11 +299,6 @@ namespace karaoke
                     return;
                 }
 
-                picQRCode.Visible = true;
-                lblQuetMaQR.Location = new Point(2, 206);
-                lblQuetMaQR.Size = new Size(214, 22);
-                lblQuetMaQR.ForeColor = Color.FromArgb(22, 101, 52);
-
                 decimal soTien = currentBilling != null ? currentBilling.ThanhTien : 0m;
                 string maHD = currentBilling != null ? currentBilling.MaPhien.ToString() : "0";
                 _ = UpdateQRCodeAsync(soTien, maHD);
@@ -481,6 +476,8 @@ namespace karaoke
             }
 
             int requestId = ++qrRequestVersion;
+            ShowLoadingQRState(requestId);
+
             long amount = (long)Math.Max(0m, Math.Round(soTien, 0));
             string cleanMaHoaDon = string.IsNullOrWhiteSpace(maHoaDon) ? "0" : maHoaDon.Trim();
             string transferContent = string.Format("THANH TOAN HOA DON {0}", cleanMaHoaDon);
@@ -511,6 +508,36 @@ namespace karaoke
             catch (Exception)
             {
                 ApplyQRCodeFailure(requestId, "Không thể tạo mã QR thanh toán");
+            }
+        }
+
+        private void ShowLoadingQRState(int requestId)
+        {
+            if (this.IsDisposed || (picQRCode != null && picQRCode.IsDisposed))
+            {
+                return;
+            }
+
+            if (this.InvokeRequired)
+            {
+                try
+                {
+                    this.BeginInvoke(new Action(() => ShowLoadingQRState(requestId)));
+                }
+                catch
+                {
+                }
+                return;
+            }
+
+            if (requestId == qrRequestVersion && !this.IsDisposed && !picQRCode.IsDisposed)
+            {
+                SetQRCodeImage(null);
+                picQRCode.Visible = false;
+                lblQuetMaQR.Location = new Point(10, 80);
+                lblQuetMaQR.Size = new Size(200, 60);
+                lblQuetMaQR.ForeColor = Color.FromArgb(22, 101, 52);
+                lblQuetMaQR.Text = "Đang tạo mã QR...";
             }
         }
 
