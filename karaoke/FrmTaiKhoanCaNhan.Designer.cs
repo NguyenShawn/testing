@@ -20,6 +20,7 @@
             this.txtNewPassword = new System.Windows.Forms.TextBox();
             this.txtConfirmPassword = new System.Windows.Forms.TextBox();
             this.btnChangePassword = new System.Windows.Forms.Button();
+            this.btnOpenChangePassword = new System.Windows.Forms.Button();
             this.lblPasswordStatus = new System.Windows.Forms.Label();
             this.profileTitle = new System.Windows.Forms.Label();
             this.nameLabel = new System.Windows.Forms.Label();
@@ -81,8 +82,9 @@
             this.passwordFields.Controls.Add(this.currentPasswordLabel, 0, 0); this.passwordFields.Controls.Add(this.newPasswordLabel, 1, 0); this.passwordFields.Controls.Add(this.confirmPasswordLabel, 2, 0);
             this.passwordFields.Controls.Add(this.txtCurrentPassword, 0, 1); this.passwordFields.Controls.Add(this.txtNewPassword, 1, 1); this.passwordFields.Controls.Add(this.txtConfirmPassword, 2, 1);
             this.btnChangePassword.Name = "btnChangePassword"; this.btnChangePassword.Text = "Lưu mật khẩu"; this.btnChangePassword.Location = new System.Drawing.Point(25, 134); this.btnChangePassword.Size = new System.Drawing.Size(140, 38); this.btnChangePassword.FlatStyle = System.Windows.Forms.FlatStyle.Flat; this.btnChangePassword.BackColor = System.Drawing.Color.FromArgb(22, 101, 52); this.btnChangePassword.ForeColor = System.Drawing.Color.White; this.btnChangePassword.Click += new System.EventHandler(this.btnChangePassword_Click);
-            this.lblPasswordStatus.Name = "lblPasswordStatus"; this.lblPasswordStatus.Location = new System.Drawing.Point(180, 134); this.lblPasswordStatus.Size = new System.Drawing.Size(640, 38); this.lblPasswordStatus.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right; this.lblPasswordStatus.AutoEllipsis = true; this.lblPasswordStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.passwordCard.Controls.AddRange(new System.Windows.Forms.Control[] { this.passwordTitle, this.passwordFields, this.btnChangePassword, this.lblPasswordStatus });
+            this.btnOpenChangePassword.Name = "btnOpenChangePassword"; this.btnOpenChangePassword.Text = "Mở cửa sổ đổi mật khẩu"; this.btnOpenChangePassword.Location = new System.Drawing.Point(180, 134); this.btnOpenChangePassword.Size = new System.Drawing.Size(200, 38); this.btnOpenChangePassword.FlatStyle = System.Windows.Forms.FlatStyle.Flat; this.btnOpenChangePassword.BackColor = System.Drawing.Color.FromArgb(22, 101, 52); this.btnOpenChangePassword.ForeColor = System.Drawing.Color.White; this.btnOpenChangePassword.Click += new System.EventHandler(this.btnOpenChangePassword_Click);
+            this.lblPasswordStatus.Name = "lblPasswordStatus"; this.lblPasswordStatus.Location = new System.Drawing.Point(395, 134); this.lblPasswordStatus.Size = new System.Drawing.Size(425, 38); this.lblPasswordStatus.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right; this.lblPasswordStatus.AutoEllipsis = true; this.lblPasswordStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.passwordCard.Controls.AddRange(new System.Windows.Forms.Control[] { this.passwordTitle, this.passwordFields, this.btnChangePassword, this.btnOpenChangePassword, this.lblPasswordStatus });
             this.profileCard.Controls.AddRange(new System.Windows.Forms.Control[] { this.profileTitle, this.nameLabel, this.txtName, this.btnEdit, this.btnSave, this.btnCancel, this.usernameLabel, this.lblUsernameValue, this.employeeLabel, this.lblEmployeeValue, this.roleLabel, this.lblRoleValue, this.btnLogout });
             this.permissionCard.Controls.AddRange(new System.Windows.Forms.Control[] { this.permissionTitle, this.permissionHint, this.lblEmpty, this.permissions, this.btnReload });
             this.content.Controls.Add(this.profileCard); this.content.Controls.Add(this.permissionCard); this.content.Controls.Add(this.passwordCard);
@@ -95,7 +97,7 @@
         private System.Windows.Forms.Label passwordTitle, currentPasswordLabel, newPasswordLabel, confirmPasswordLabel, lblPasswordStatus;
         private System.Windows.Forms.TextBox txtName;
         private System.Windows.Forms.TextBox txtCurrentPassword, txtNewPassword, txtConfirmPassword;
-        private System.Windows.Forms.Button btnEdit, btnSave, btnCancel, btnLogout, btnReload, btnChangePassword;
+        private System.Windows.Forms.Button btnEdit, btnSave, btnCancel, btnLogout, btnReload, btnChangePassword, btnOpenChangePassword;
         private System.Windows.Forms.ListBox permissions;
     }
 }

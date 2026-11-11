@@ -22,6 +22,7 @@ namespace karaoke
             ButtonActive.RoundButton(btnReload);
             ButtonActive.RoundButton(btnLogout);
             ButtonActive.RoundButton(btnChangePassword);
+            ButtonActive.RoundButton(btnOpenChangePassword);
             txtCurrentPassword.TextChanged += PasswordTextChanged;
             txtNewPassword.TextChanged += PasswordTextChanged;
             txtConfirmPassword.TextChanged += PasswordTextChanged;
@@ -116,6 +117,21 @@ namespace karaoke
             catch (Exception ex)
             {
                 lblPasswordStatus.Text = ex.GetBaseException().Message;
+            }
+        }
+        private void btnOpenChangePassword_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FrmDoiMatKhau())
+            {
+                var result = this.FindForm() != null ? dialog.ShowDialog(this.FindForm()) : dialog.ShowDialog(this);
+                if (result == DialogResult.OK)
+                {
+                    txtCurrentPassword.Clear();
+                    txtNewPassword.Clear();
+                    txtConfirmPassword.Clear();
+                    lblPasswordStatus.ForeColor = System.Drawing.Color.FromArgb(22, 101, 52);
+                    lblPasswordStatus.Text = "Đã đổi mật khẩu thành công.";
+                }
             }
         }
         private void btnLogout_Click(object sender, EventArgs e)
