@@ -1,63 +1,53 @@
 # Karaoke404
 
-Ứng dụng WinForms dùng .NET Framework 4.7.2, Entity Framework 6 và SQL Server LocalDB. Các chức năng gồm quản lý phòng/dịch vụ, đặt và nhận phòng, gọi dịch vụ, thanh toán, báo cáo doanh thu, quản lý nhân viên, tài khoản và nhóm quyền.
+Ứng dụng quản lý karaoke trên Windows, hỗ trợ quy trình từ đặt phòng đến thanh toán và báo cáo doanh thu.
 
-## Chuẩn bị
+## Chức năng
 
-- Windows, Visual Studio với workload phát triển .NET Desktop và .NET Framework 4.7.2 targeting pack.
-- SQL Server Express LocalDB và công cụ chạy SQL hỗ trợ các batch `GO`, ví dụ SQL Server Management Studio (SSMS).
-- Mở `karaoke.slnx`, khôi phục NuGet packages nếu Visual Studio yêu cầu, rồi Build. Guna.UI2 và Microsoft ReportViewer được khai báo trong `karaoke/packages.config`.
+- Quản lý phòng, loại phòng, dịch vụ và nhân viên.
+- Đặt, nhận phòng; kiểm tra trùng lịch và theo dõi phiên hát.
+- Gọi dịch vụ, tính tiền phòng, giảm giá và lưu hóa đơn bằng transaction.
+- Xem/in hóa đơn RDLC, lọc doanh thu theo ngày, biểu đồ và xuất CSV.
+- Quản lý tài khoản, phân quyền Admin/Manager/Staff và bảo mật mật khẩu bằng BCrypt.
+- Hiển thị VietQR chuyển khoản khi đã cấu hình tài khoản nhận tiền.
 
-Kết nối mặc định trong `karaoke/App.config` là `(localdb)\MSSQLLocalDB`, database `QuanLyKaraoke`, xác thực Windows. Nếu dùng instance khác, sửa **provider connection string** của `QuanLyKaraokeEntities` rồi build lại. LocalDB và database là dữ liệu cục bộ của từng máy. Khi mở ứng dụng, database mặc định được tạo tự động nếu chưa có; database đã tồn tại không bị thay đổi. Máy vẫn cần cài SQL Server Express LocalDB.
+## Công nghệ
 
-## Tạo database mới
+C# · Windows Forms · .NET Framework 4.7.2 · Entity Framework 6 · SQL Server LocalDB · Guna.UI2 · ReportViewer RDLC
 
-Ứng dụng tự tạo database mặc định khi mở lần đầu. Nếu muốn thiết lập thủ công, mở PowerShell **trên máy đang chạy ứng dụng**, tại thư mục repo, rồi chạy `powershell -NoProfile -ExecutionPolicy Bypass -File .\SetupLocalDb.ps1`. Script tạo cấu trúc, không tự thêm dữ liệu demo. Nếu thích dùng SSMS, làm theo các bước dưới đây.
+## Cài đặt và chạy
 
-1. Kết nối SSMS đến `(localdb)\MSSQLLocalDB` bằng Windows Authentication.
-2. Chạy toàn bộ `karaoke/Sql/Setup_QuanLyKaraoke.sql` để tạo database, bảng nghiệp vụ, nhóm quyền và Admin.
-3. Tài khoản Admin **chỉ được tạo nếu chưa tồn tại**: `admin` / `AdminKaraoke2026!`. Đăng nhập và đổi mật khẩu ngay. Script không thay đổi mật khẩu Admin hiện có.
-4. Nếu cần dữ liệu demo, chạy `karaoke/Sql/02_SampleData.sql` **trên database demo**, không chạy tùy tiện trên dữ liệu đang vận hành: script tạo phòng, phiên hát và hóa đơn mẫu.
-5. Mở ứng dụng, chọn **Nhân viên** để tạo nhân viên; trong **Tài khoản**, tạo tài khoản gắn với nhân viên đó và gán nhóm quyền phù hợp.
+**Yêu cầu:** Windows, Visual Studio hỗ trợ `.slnx` với workload **.NET Desktop Development**, .NET Framework 4.7.2 Targeting Pack và SQL Server Express LocalDB.
 
-## Đặt lại mật khẩu Admin
+1. Clone repository và mở `karaoke.slnx`.
+2. Khôi phục NuGet packages, chọn **Build Solution** rồi chạy dự án `karaoke`.
+3. Ứng dụng tự tạo database `QuanLyKaraoke` trên `(localdb)\MSSQLLocalDB` nếu chưa tồn tại.
+4. Với database mới, đăng nhập bằng `admin` / `AdminKaraoke2026!` và đổi mật khẩu ngay.
 
-Nếu quên mật khẩu tài khoản `admin` trên máy này, chạy tại thư mục repo:
+Có thể khởi tạo database thủ công từ thư mục repository:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\SetupLocalDb.ps1 -ResetAdminPassword
+powershell -NoProfile -ExecutionPolicy Bypass -File .\SetupLocalDb.ps1
 ```
 
-Lệnh đặt lại mật khẩu về `AdminKaraoke2026!`, xóa khóa do đăng nhập sai và vô hiệu hóa các phiên cũ. Nó không mở khóa tài khoản bị vô hiệu hóa hoặc đổi trạng thái nhân viên. Chỉ chạy khi cần khôi phục, vì mật khẩu mặc định được công khai; đổi mật khẩu ngay sau khi đăng nhập. Với instance khác, thêm `-Server 'ten-instance'`.
+Kết nối được cấu hình trong `karaoke/App.config`. Database hiện có không được tự nâng cấp; sao lưu trước khi chạy các script trong `karaoke/Sql`. Dữ liệu demo nằm ở `02_SampleData.sql`, chỉ dùng trên database demo.
 
-## Nâng cấp database cũ
+## Cấu hình VietQR
 
-Sao lưu trước khi nâng cấp. Nếu database đã có đầy đủ bảng nghiệp vụ và các cột bảo mật, chọn đúng database `QuanLyKaraoke` trong SSMS rồi chạy toàn bộ `karaoke/Sql/04_PhanQuyen_NangCap.sql` (bỏ vùng bôi chọn trước khi chạy). Có thể thêm `USE QuanLyKaraoke;` và `GO` ở đầu file nếu muốn chỉ rõ database. Script bổ sung bảng nhóm quyền và ánh xạ tài khoản hiện có, không đặt lại mật khẩu. Chạy lại không khôi phục các quyền đã bị quản trị viên chủ động bỏ.
+Điền `VietQR_BIN`, `VietQR_AccountNumber` và `VietQR_ReceiverName` trong phần `appSettings` của `karaoke/App.config`, rồi build lại. Khi chạy bản đã build, sửa `karaoke.exe.config` cạnh file EXE và khởi động lại ứng dụng.
 
-Nếu database thiếu bảng nghiệp vụ hoặc các cột bảo mật, kiểm tra cấu trúc hiện có và chạy `Setup_QuanLyKaraoke.sql`. Script này tạo các thành phần còn thiếu, giữ bảng nhật ký cũ và không đổi Admin đã tồn tại. Nó không tự sửa các schema cũ có cấu trúc khác biệt; kiểm tra lỗi SQL trước khi chạy ứng dụng.
-
-Nhóm **Admin** và **Nhân viên** ban đầu là nhóm hệ thống. Khi Admin đăng nhập, ứng dụng tạo thêm nhóm **Manager** nếu chưa có, với quyền làm việc cơ bản và quản lý nhân viên/tài khoản. Admin có thể chỉnh quyền của nhóm Manager trong **Nhóm quyền**; quyền đã chỉnh không bị đặt lại khi đăng nhập lại. Admin gán nhóm cho nhân viên trong **Quản lý tài khoản**. Chỉ Admin được gán hoặc quản lý Manager; Manager chỉ quản lý Staff, không quản lý Admin hay Manager khác. Khi đổi nhóm, nhân viên cần đăng nhập lại. Quyền được kiểm tra tại service; menu cũng bật/tắt theo quyền.
-
-Các nhóm tùy chỉnh khác được xem là Staff. Quyền quản lý nhân viên và tài khoản chỉ có hiệu lực với Admin hoặc Manager, kể cả nếu từng được gán cho nhóm Staff tùy chỉnh.
-
-Mục **Tài khoản** dành cho người đang đăng nhập: xem tên đăng nhập, mã nhân viên, vai trò và các quyền thực tế; chỉnh họ tên, đổi mật khẩu của chính mình hoặc đăng xuất. Họ tên này cũng là họ tên trên hồ sơ nhân viên. Tên đăng nhập không thay đổi khi chỉnh họ tên.
+Để trống cấu hình sẽ ẩn mã QR. Việc tạo mã cần kết nối internet; nhân viên xác nhận chuyển khoản trước khi hoàn tất thanh toán.
 
 ## Kiểm thử
 
-Sau khi build Debug, trong PowerShell tại thư mục repo:
+Sau khi build **Debug**, chạy tại thư mục repository:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File Tests\RunInternalAccountTests.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File Tests\RunInternalAccountTests.ps1 -Integration -Server '(localdb)\MSSQLLocalDB'
-powershell -NoProfile -ExecutionPolicy Bypass -File Tests\RunAccountProfileTests.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Tests\RunInternalAccountTests.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Tests\RunInternalAccountTests.ps1 -Integration
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Tests\RunAccountProfileTests.ps1
 ```
 
-Lệnh thứ hai cần quyền tạo/xóa database thử nghiệm trên LocalDB và một phiên Windows desktop. Test tạo DB tên `KaraokePasswordTest_<id>`, chạy kiểm thử nghiệp vụ và form, rồi xóa **chỉ DB thử nghiệm đó**. Không chạy test tích hợp trên database thật. Test giao diện sẽ mở các cửa sổ trong thời gian ngắn.
+Các bài test tích hợp cần LocalDB, quyền tạo/xóa database và phiên Windows desktop. Chúng sử dụng database thử nghiệm riêng và mở một số cửa sổ giao diện.
 
-Lệnh thứ ba kiểm tra trang cá nhân và phân cấp Admin/Manager/Staff trên database thử nghiệm `KaraokeProfileTest_<id>`, sau đó xóa database thử nghiệm.
-
-Mở **Thanh toán** để xem/in hóa đơn bằng ReportViewer RDLC. Trong **Thống kê**, nút **Báo cáo** cho phép xem/in RDLC theo khoảng ngày hoặc xuất CSV. Máy chạy ứng dụng cần đủ các DLL NuGet trong thư mục build; không chỉ copy riêng `karaoke.exe`.
-
-## Phần nhóm cần hoàn thiện khi nộp
-
-Đề yêu cầu báo cáo học thuật, WBS ghi người thực hiện và tỷ lệ đóng góp, link code và video demo. Nhóm tự chuẩn bị các tài liệu đó theo quy định của giảng viên; repo không thể xác nhận thay nhóm các thông tin phân công hoặc video.
+Khi bàn giao bản chạy, giữ đầy đủ DLL và file cấu hình trong thư mục build cùng `karaoke.exe`.
