@@ -52,7 +52,7 @@ namespace karaoke
             this.panelTrangChuHeader = new System.Windows.Forms.Panel();
             this.lblTrangChuHeader = new System.Windows.Forms.Label();
             this.panelSidebar = new System.Windows.Forms.Panel();
-            this.changePassword = new Guna.UI2.WinForms.Guna2Button();
+            this.personalAccount = new Guna.UI2.WinForms.Guna2Button();
             this.accountManagement = new Guna.UI2.WinForms.Guna2Button();
             this.staffManagement = new Guna.UI2.WinForms.Guna2Button();
             this.roomTypes = new Guna.UI2.WinForms.Guna2Button();
@@ -324,7 +324,7 @@ namespace karaoke
             //
             this.panelSidebar.AutoScroll = true;
             this.panelSidebar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(55)))), ((int)(((byte)(42)))));
-            this.panelSidebar.Controls.Add(this.changePassword);
+            this.panelSidebar.Controls.Add(this.personalAccount);
             this.panelSidebar.Controls.Add(this.accountManagement);
             this.panelSidebar.Controls.Add(this.staffManagement);
             this.panelSidebar.Controls.Add(this.roomTypes);
@@ -344,19 +344,19 @@ namespace karaoke
             this.panelSidebar.Size = new System.Drawing.Size(216, 711);
             this.panelSidebar.TabIndex = 12;
             //
-            // changePassword
-            //
-            this.changePassword.BorderRadius = 10;
-            this.changePassword.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
-            this.changePassword.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.changePassword.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.changePassword.Location = new System.Drawing.Point(18, 495);
-            this.changePassword.Name = "changePassword";
-            this.changePassword.Size = new System.Drawing.Size(180, 45);
-            this.changePassword.TabIndex = 0;
-            this.changePassword.Text = "Đổi mật khẩu";
-            this.changePassword.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.changePassword.Click += new System.EventHandler(this.changePassword_Click);
+            // personalAccount
+            this.personalAccount.BorderRadius = 10;
+            this.personalAccount.FillColor = System.Drawing.Color.FromArgb(22, 101, 52);
+            this.personalAccount.CheckedState.FillColor = System.Drawing.Color.FromArgb(34, 197, 94);
+            this.personalAccount.CheckedState.ForeColor = System.Drawing.Color.FromArgb(5, 46, 22);
+            this.personalAccount.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
+            this.personalAccount.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.personalAccount.Location = new System.Drawing.Point(18, 495);
+            this.personalAccount.Name = "personalAccount";
+            this.personalAccount.Size = new System.Drawing.Size(180, 45);
+            this.personalAccount.Text = "Tài khoản";
+            this.personalAccount.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.personalAccount.Click += new System.EventHandler(this.personalAccount_Click);
             //
             // accountManagement
             //
@@ -368,7 +368,7 @@ namespace karaoke
             this.accountManagement.Name = "accountManagement";
             this.accountManagement.Size = new System.Drawing.Size(180, 45);
             this.accountManagement.TabIndex = 1;
-            this.accountManagement.Text = "Tài khoản";
+            this.accountManagement.Text = "Quản lý tài khoản";
             this.accountManagement.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.accountManagement.Click += new System.EventHandler(this.accountManagement_Click);
             //
@@ -653,7 +653,7 @@ namespace karaoke
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label lblPhongTrong;
         private System.Windows.Forms.Label label11;
-        private Guna.UI2.WinForms.Guna2Button changePassword;
+        private Guna.UI2.WinForms.Guna2Button personalAccount;
         private Guna.UI2.WinForms.Guna2Button accountManagement;
         private Guna.UI2.WinForms.Guna2Button staffManagement;
         private Guna.UI2.WinForms.Guna2Button roomTypes;

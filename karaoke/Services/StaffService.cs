@@ -13,8 +13,15 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
-                AuthService.RequirePermission(db, "NHANVIEN");
-                return db.NHANVIENs.AsNoTracking().OrderBy(x => x.MaNV).ToList();
+                var actor = AuthService.RequirePersonnelPermission(db, "NHANVIEN");
+                var staff = db.NHANVIENs.AsNoTracking().OrderBy(x => x.MaNV).ToList();
+                if (AuthService.IsAdmin(actor)) return staff;
+                var groups = RoleService.GetAccountGroups(db);
+                var protectedStaff = db.TAIKHOANs.AsNoTracking().ToList()
+                    .Where(a => a.VaiTro == "Admin" || (groups.ContainsKey(a.MaTK) &&
+                        string.Equals(groups[a.MaTK].TenNhom, "Manager", StringComparison.OrdinalIgnoreCase)))
+                    .Select(a => a.MaNV).ToHashSet();
+                return staff.Where(s => !protectedStaff.Contains(s.MaNV)).ToList();
             }
         }
 
@@ -28,7 +35,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                var admin = AuthService.RequirePermission(db, "NHANVIEN");
+                var admin = AuthService.RequirePersonnelPermission(db, "NHANVIEN");
                 if (!working && admin.MaNV == id) throw new InvalidOperationException("Không thể cho chính mình nghỉ việc khi đang đăng nhập.");
                 var staff = db.NHANVIENs.SingleOrDefault(x => x.MaNV == id);
                 if (create && staff != null) throw new InvalidOperationException("Mã nhân viên đã tồn tại.");

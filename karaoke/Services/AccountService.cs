@@ -9,6 +9,15 @@ using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace karaoke.Services
 {
+    public sealed class OwnAccountProfile
+    {
+        public string HoTen { get; set; }
+        public string MaNV { get; set; }
+        public string TenDangNhap { get; set; }
+        public string NhomQuyen { get; set; }
+        public List<string> Quyen { get; set; }
+    }
+
     public sealed class AccountRow
     {
         public int MaTK { get; set; }
@@ -23,6 +32,39 @@ namespace karaoke.Services
 
     public sealed class AccountService
     {
+        public OwnAccountProfile GetOwnProfile()
+        {
+            using (var db = new QuanLyKaraokeEntities())
+            {
+                var account = AuthService.RequireCurrentUser(db);
+                var staff = db.NHANVIENs.AsNoTracking().Single(x => x.MaNV == account.MaNV);
+                var profile = new OwnAccountProfile
+                {
+                    HoTen = staff.HoTen,
+                    MaNV = staff.MaNV,
+                    TenDangNhap = account.TenDangNhap
+                };
+                RoleService.PopulateOwnRole(db, account, profile);
+                return profile;
+            }
+        }
+
+        public void UpdateOwnName(string name)
+        {
+            name = (name ?? "").Trim();
+            if (name.Length == 0 || name.Length > 100 || name.Any(char.IsControl))
+                throw new ArgumentException("Họ tên phải có từ 1 đến 100 ký tự và không chứa ký tự điều khiển.");
+            using (var db = new QuanLyKaraokeEntities())
+            using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
+            {
+                var account = AuthService.RequireCurrentUser(db);
+                var staff = db.NHANVIENs.Single(x => x.MaNV == account.MaNV);
+                staff.HoTen = name;
+                db.SaveChanges();
+                tx.Commit();
+            }
+        }
+
         private static void ValidatePassword(string password)
         {
             if (string.IsNullOrEmpty(password) || password.Length < 8 || System.Text.Encoding.UTF8.GetByteCount(password) > 72)
@@ -33,7 +75,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
-                AuthService.RequirePermission(db, "TAIKHOAN");
+                var actor = AuthService.RequirePersonnelPermission(db, "TAIKHOAN");
                 var accounts = (from t in db.TAIKHOANs join n in db.NHANVIENs on t.MaNV equals n.MaNV
                         orderby t.TenDangNhap
                         select new AccountRow { MaTK = t.MaTK, MaNV = t.MaNV, HoTen = n.HoTen, TenDangNhap = t.TenDangNhap, VaiTro = t.VaiTro, TrangThai = t.TrangThai }).ToList();
@@ -44,7 +86,8 @@ namespace karaoke.Services
                     if (assigned.TryGetValue(account.MaTK, out group)) { account.MaNhom = group.MaNhom; account.NhomQuyen = group.TenNhom; }
                     else account.NhomQuyen = account.VaiTro == "Admin" ? "Admin (hệ thống)" : "Chưa gán";
                 }
-                return accounts;
+                return AuthService.IsAdmin(actor) ? accounts : accounts.Where(a => a.VaiTro != "Admin" &&
+                    !string.Equals(a.NhomQuyen, "Manager", StringComparison.OrdinalIgnoreCase)).ToList();
             }
         }
 
@@ -52,7 +95,7 @@ namespace karaoke.Services
         {
             using (var db = new QuanLyKaraokeEntities())
             {
-                AuthService.RequirePermission(db, "TAIKHOAN");
+                AuthService.RequirePersonnelPermission(db, "TAIKHOAN");
                 return db.NHANVIENs.AsNoTracking().Where(n => n.TrangThai == "Đang làm việc" && !db.TAIKHOANs.Any(t => t.MaNV == n.MaNV)).OrderBy(n => n.HoTen).ToList();
             }
         }
@@ -65,7 +108,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                AuthService.RequirePermission(db, "TAIKHOAN");
+                AuthService.RequirePersonnelPermission(db, "TAIKHOAN");
                 if (!db.NHANVIENs.Any(n => n.MaNV == employeeId && n.TrangThai == "Đang làm việc")) throw new InvalidOperationException("Nhân viên không tồn tại hoặc đã nghỉ việc.");
                 if (db.TAIKHOANs.Any(t => t.MaNV == employeeId || t.TenDangNhap == username)) throw new InvalidOperationException("Nhân viên hoặc tên đăng nhập đã có tài khoản.");
                 var account = new TAIKHOAN { MaNV = employeeId, TenDangNhap = username, MatKhauHash = BCryptNet.HashPassword(password), VaiTro = "NhanVien", TrangThai = true };
@@ -80,7 +123,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                var actor = AuthService.RequirePermission(db, "TAIKHOAN");
+                var actor = AuthService.RequirePersonnelPermission(db, "TAIKHOAN");
                 var account = db.TAIKHOANs.SingleOrDefault(t => t.MaTK == accountId);
                 if (account == null || account.VaiTro != "NhanVien") throw new InvalidOperationException("Chỉ quản lý trạng thái tài khoản nhân viên.");
                 RoleService.EnsureCanManageAccount(db, actor, accountId);
@@ -94,7 +137,7 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                var actor = AuthService.RequirePermission(db, "TAIKHOAN");
+                var actor = AuthService.RequirePersonnelPermission(db, "TAIKHOAN");
                 var account = db.TAIKHOANs.SingleOrDefault(t => t.MaTK == accountId);
                 if (account == null || account.VaiTro != "NhanVien") throw new InvalidOperationException("Chỉ xóa được tài khoản nhân viên.");
                 if (actor.MaTK == accountId) throw new InvalidOperationException("Không thể xóa tài khoản đang đăng nhập.");
@@ -112,11 +155,11 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                var admin = AuthService.RequirePermission(db, "TAIKHOAN");
+                var admin = AuthService.RequirePersonnelPermission(db, "TAIKHOAN");
                 bool verified;
                 try { verified = !string.IsNullOrEmpty(administratorPassword) && BCryptNet.Verify(administratorPassword, admin.MatKhauHash); }
                 catch (BCrypt.Net.SaltParseException) { verified = false; }
-                if (!verified) throw new UnauthorizedAccessException("Mật khẩu Admin không đúng.");
+                if (!verified) throw new UnauthorizedAccessException("Mật khẩu tài khoản hiện tại không đúng.");
                 var account = db.TAIKHOANs.SingleOrDefault(t => t.MaTK == accountId);
                 if (account == null || account.VaiTro != "NhanVien") throw new InvalidOperationException("Chỉ đặt lại mật khẩu tài khoản nhân viên.");
                 RoleService.EnsureCanManageAccount(db, admin, accountId);

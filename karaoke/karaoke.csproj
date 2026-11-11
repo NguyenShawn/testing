@@ -204,6 +204,8 @@
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="FrmDoiMatKhau.cs"><SubType>Form</SubType></Compile>
     <Compile Include="FrmDoiMatKhau.Designer.cs"><DependentUpon>FrmDoiMatKhau.cs</DependentUpon></Compile>
+    <Compile Include="FrmTaiKhoanCaNhan.cs"><SubType>Form</SubType></Compile>
+    <Compile Include="FrmTaiKhoanCaNhan.Designer.cs"><DependentUpon>FrmTaiKhoanCaNhan.cs</DependentUpon></Compile>
     <Compile Include="FrmQuanLyTaiKhoan.cs"><SubType>Form</SubType></Compile>
     <Compile Include="FrmQuanLyTaiKhoan.Designer.cs"><DependentUpon>FrmQuanLyTaiKhoan.cs</DependentUpon></Compile>
     <Compile Include="FrmQuanLyNhanVien.cs"><SubType>Form</SubType></Compile>
