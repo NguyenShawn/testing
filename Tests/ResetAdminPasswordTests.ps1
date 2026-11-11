@@ -3,13 +3,12 @@ $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent $PSScriptRoot
 $testDb = 'KaraokeResetTest_' + [Guid]::NewGuid().ToString('N')
 $testFolder = Join-Path (Split-Path -Parent $repo) $testDb
-$sqlDir = Join-Path $testFolder 'karaoke\Sql'
 $connection = New-Object System.Data.SqlClient.SqlConnection "Server=$Server;Database=master;Integrated Security=True;Connect Timeout=10"
 try {
-    New-Item -ItemType Directory -Path $sqlDir -Force | Out-Null
+    New-Item -ItemType Directory -Path $testFolder -Force | Out-Null
     Copy-Item -LiteralPath (Join-Path $repo 'SetupLocalDb.ps1') -Destination (Join-Path $testFolder 'SetupLocalDb.ps1')
-    $sql = (Get-Content -LiteralPath (Join-Path $repo 'karaoke\Sql\Setup_QuanLyKaraoke.sql') -Raw -Encoding UTF8).Replace('QuanLyKaraoke', $testDb)
-    Set-Content -LiteralPath (Join-Path $sqlDir 'Setup_QuanLyKaraoke.sql') -Value $sql -Encoding UTF8
+    $sql = (Get-Content -LiteralPath (Join-Path $repo 'Karaoke404_Setup.sql') -Raw -Encoding UTF8).Replace('QuanLyKaraoke', $testDb)
+    Set-Content -LiteralPath (Join-Path $testFolder 'Karaoke404_Setup.sql') -Value $sql -Encoding UTF8
     & (Join-Path $testFolder 'SetupLocalDb.ps1') -Server $Server
     $connection.Open(); $connection.ChangeDatabase($testDb); $cmd = $connection.CreateCommand()
     $cmd.CommandText = "SELECT MatKhauHash FROM dbo.TAIKHOAN WHERE TenDangNhap='admin' AND VaiTro='Admin'"

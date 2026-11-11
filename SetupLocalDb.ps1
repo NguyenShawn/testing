@@ -1,6 +1,6 @@
 ﻿param([string]$Server = '(localdb)\MSSQLLocalDB', [switch]$ResetAdminPassword)
 $ErrorActionPreference = 'Stop'
-$scriptPath = Join-Path $PSScriptRoot 'karaoke\Sql\Setup_QuanLyKaraoke.sql'
+$scriptPath = Join-Path $PSScriptRoot 'Karaoke404_Setup.sql'
 if (!(Test-Path -LiteralPath $scriptPath)) { throw 'Không tìm thấy script khởi tạo CSDL trong project.' }
 if ($Server -eq '(localdb)\MSSQLLocalDB') {
     & sqllocaldb start MSSQLLocalDB
@@ -30,7 +30,7 @@ SELECT @@ROWCOUNT;
         if ([int]$command.ExecuteScalar() -ne 1) { throw 'Không tìm thấy tài khoản admin có vai trò Admin; không đặt lại mật khẩu.' }
         Write-Output 'Đã đặt lại mật khẩu admin, xóa khóa do đăng nhập sai và đăng xuất các phiên cũ.'
     }
-    Write-Output 'Đã kiểm tra và khởi tạo cấu trúc QuanLyKaraoke.'
+    Write-Output 'Đã chạy file SQL tổng Karaoke404_Setup.sql (cấu trúc, phân quyền, tồn kho và demo nếu database trống).'
     Write-Output 'Database mới: admin / AdminKaraoke2026!; hãy đổi mật khẩu sau khi đăng nhập.'
     if (!$ResetAdminPassword) { Write-Output 'Nếu tài khoản admin đã tồn tại, mật khẩu hiện có được giữ nguyên.' }
 }

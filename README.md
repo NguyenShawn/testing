@@ -20,19 +20,19 @@ C# · Windows Forms · .NET Framework 4.7.2 · Entity Framework 6 · SQL Server 
 **Yêu cầu:** Windows, Visual Studio hỗ trợ `.slnx` với workload **.NET Desktop Development**, .NET Framework 4.7.2 Targeting Pack và SQL Server Express LocalDB.
 
 1. Clone repository và mở `karaoke.slnx`.
-2. Khôi phục NuGet packages, chọn **Build Solution** rồi chạy dự án `karaoke`.
-3. Ứng dụng tự tạo database `QuanLyKaraoke` trên `(localdb)\MSSQLLocalDB` nếu chưa tồn tại.
+2. Trong SSMS, kết nối `(localdb)\MSSQLLocalDB` bằng Windows Authentication và chạy toàn bộ **[Karaoke404_Setup.sql](Karaoke404_Setup.sql)**.
+3. Khôi phục NuGet packages, chọn **Build Solution** rồi chạy dự án `karaoke`.
 4. Với database mới, đăng nhập bằng `admin` / `AdminKaraoke2026!` và đổi mật khẩu ngay.
 
-Có thể khởi tạo database thủ công từ thư mục repository:
+Có thể chạy cùng file SQL tổng bằng PowerShell tại thư mục repository thay cho SSMS:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\SetupLocalDb.ps1
 ```
 
-Kết nối được cấu hình trong `karaoke/App.config`. Database hiện có không được tự nâng cấp; sao lưu trước khi chạy các script trong `karaoke/Sql`. Dữ liệu demo nằm ở `02_SampleData.sql`, chỉ dùng trên database demo.
+**Chỉ cần một file SQL:** `Karaoke404_Setup.sql` gồm cấu trúc, Admin, phân quyền, tồn kho và dữ liệu demo cho database trống. Đổi `TaoDuLieuMau` từ `1` thành `0` ở đầu file nếu chỉ cần cấu trúc. Chạy lại giữ mật khẩu, tồn kho và giao dịch hiện có; demo tự bỏ qua khi đã có dữ liệu nghiệp vụ.
 
-**Nâng cấp tồn kho:** với database đã có, chạy `karaoke/Sql/05_TonKho_DichVu.sql` trước khi dùng bản mới. Tồn kho ban đầu là 0; người có quyền quản lý dịch vụ nhập số lượng thực tế tại **Dịch vụ**.
+Kết nối được cấu hình trong `karaoke/App.config`. Sao lưu database trước khi nâng cấp bằng file tổng. Dịch vụ cũ mới bổ sung cột tồn kho có giá trị 0; người có quyền quản lý dịch vụ nhập số lượng thực tế tại **Dịch vụ**. Nếu chưa chạy SQL, ứng dụng tự tạo database trống khi chưa tồn tại. Các SQL trong `karaoke/Sql` phục vụ mã nguồn và kiểm thử, không cần chạy lần lượt.
 
 ## Cấu hình VietQR
 
