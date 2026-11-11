@@ -13,7 +13,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using QRCoder;
 using karaoke.Services;
 using karaoke.UI;
 
@@ -23,15 +22,100 @@ namespace karaoke
     {
         // =========================================================================
         // CẤU HÌNH TÀI KHOẢN NGÂN HÀNG NHẬN THANH TOÁN QR (VIETQR)
-        // Ghi chú các Mã BIN ngân hàng phổ biến tại Việt Nam để dễ dàng thay đổi:
-        // - VietinBank : 970415 | Vietcombank: 970436 | BIDV       : 970418
-        // - Agribank   : 970405 | MB Bank    : 970422 | Techcombank: 970407
-        // - ACB        : 970416 | VPBank     : 970432 | TPBank     : 970423
-        // - Sacombank  : 970403 | VIB        : 970441 | HDBank     : 970437
+        // Các thông số được nạp tự động từ appSettings trong App.config:
+        // - VietQR_BIN
+        // - VietQR_AccountNumber
+        // - VietQR_ReceiverName
         // =========================================================================
-        private string BANK_BIN = "123456"; // Ví dụ: Đổi thành "970415" (VietinBank) hoặc mã BIN ngân hàng thực tế
-        private string BANK_ACC_NUM = "123456789"; // Số tài khoản nhận tiền
-        private string ACCOUNT_NAME = "HO KINH DOANH KARAOKE"; // Tên chủ tài khoản viết không dấu
+        private string bankBinOverride = null;
+        private string bankAccNumOverride = null;
+        private string accountNameOverride = null;
+
+        internal string BANK_BIN
+        {
+            get => bankBinOverride ?? (GetAppSetting("VietQR_BIN", "BANK_BIN") ?? string.Empty).Trim();
+            set => bankBinOverride = value;
+        }
+
+        internal string BANK_ACC_NUM
+        {
+            get => bankAccNumOverride ?? (GetAppSetting("VietQR_AccountNumber", "BANK_ACC_NUM") ?? string.Empty).Trim();
+            set => bankAccNumOverride = value;
+        }
+
+        internal string ACCOUNT_NAME
+        {
+            get => accountNameOverride ?? (GetAppSetting("VietQR_ReceiverName", "ACCOUNT_NAME") ?? string.Empty).Trim();
+            set => accountNameOverride = value;
+        }
+
+        internal bool IsVietQrConfigured()
+        {
+            return !string.IsNullOrWhiteSpace(BANK_BIN) && !string.IsNullOrWhiteSpace(BANK_ACC_NUM);
+        }
+
+        private static string GetAppSetting(params string[] keys)
+        {
+            if (keys == null) return string.Empty;
+
+            foreach (var key in keys)
+            {
+                if (string.IsNullOrEmpty(key)) continue;
+
+                try
+                {
+#pragma warning disable 0618
+                    string val = System.Configuration.ConfigurationSettings.AppSettings[key];
+#pragma warning restore 0618
+                    if (!string.IsNullOrEmpty(val))
+                    {
+                        return val;
+                    }
+                }
+                catch { }
+
+                try
+                {
+                    var mgrType = Type.GetType("System.Configuration.ConfigurationManager, System.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
+                    if (mgrType != null)
+                    {
+                        var prop = mgrType.GetProperty("AppSettings", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                        if (prop != null)
+                        {
+                            var col = prop.GetValue(null) as System.Collections.Specialized.NameValueCollection;
+                            if (col != null && !string.IsNullOrEmpty(col[key]))
+                            {
+                                return col[key];
+                            }
+                        }
+                    }
+                }
+                catch { }
+            }
+
+            try
+            {
+                string configFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+                if (!string.IsNullOrEmpty(configFile) && File.Exists(configFile))
+                {
+                    var doc = XDocument.Load(configFile);
+                    foreach (var key in keys)
+                    {
+                        var el = doc.Descendants("appSettings")
+                                    .Elements("add")
+                                    .FirstOrDefault(e => string.Equals((string)e.Attribute("key"), key, StringComparison.OrdinalIgnoreCase));
+                        if (el != null)
+                        {
+                            string val = (string)el.Attribute("value");
+                            if (!string.IsNullOrEmpty(val)) return val;
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return string.Empty;
+        }
 
         private static readonly HttpClient qrHttpClient = CreateQrHttpClient();
         private readonly PaymentService paymentService = new PaymentService();
@@ -202,6 +286,24 @@ namespace karaoke
             if (IsBankTransferSelected())
             {
                 panelQRCode.Visible = true;
+
+                if (!IsVietQrConfigured())
+                {
+                    qrRequestVersion++;
+                    SetQRCodeImage(null);
+                    picQRCode.Visible = false;
+                    lblQuetMaQR.Location = new Point(10, 80);
+                    lblQuetMaQR.Size = new Size(200, 60);
+                    lblQuetMaQR.ForeColor = Color.FromArgb(220, 38, 38);
+                    lblQuetMaQR.Text = "Chưa cấu hình tài khoản nhận chuyển khoản";
+                    return;
+                }
+
+                picQRCode.Visible = true;
+                lblQuetMaQR.Location = new Point(2, 206);
+                lblQuetMaQR.Size = new Size(214, 22);
+                lblQuetMaQR.ForeColor = Color.FromArgb(22, 101, 52);
+
                 decimal soTien = currentBilling != null ? currentBilling.ThanhTien : 0m;
                 string maHD = currentBilling != null ? currentBilling.MaPhien.ToString() : "0";
                 _ = UpdateQRCodeAsync(soTien, maHD);
@@ -347,7 +449,6 @@ namespace karaoke
             numGiamGia.Value = 0;
             txtTienKhachDua.Clear();
             lblTienThuaVal.Text = "0 đ";
-            lblQuetMaQR.Text = "Quét mã để thanh toán nhanh";
 
             qrRequestVersion++;
             if (cboPhuongThuc.Items.Count > 0)
@@ -356,18 +457,29 @@ namespace karaoke
             }
             panelQRCode.Visible = false;
             SetQRCodeImage(null);
+            picQRCode.Visible = true;
+            lblQuetMaQR.Location = new Point(2, 206);
+            lblQuetMaQR.Size = new Size(214, 22);
+            lblQuetMaQR.ForeColor = Color.FromArgb(22, 101, 52);
+            lblQuetMaQR.Text = "Quét mã để thanh toán nhanh";
         }
 
         // ==========================================
-        // LOGIC TẠO MÃ QR THANH TOÁN (VIETQR + QRCODER FALLBACK)
+        // LOGIC TẠO MÃ QR THANH TOÁN (VIETQR)
         // ==========================================
 
         /// <summary>
         /// Tự động tạo mã VietQR bất đồng bộ theo Tổng tiền và Mã hóa đơn.
-        /// Nếu mất mạng hoặc API VietQR lỗi, tự động fallback sang QRCoder offline.
         /// </summary>
         public async Task UpdateQRCodeAsync(decimal soTien, string maHoaDon)
         {
+            if (!IsVietQrConfigured())
+            {
+                qrRequestVersion++;
+                ApplyQRCodeFailure(qrRequestVersion, "Chưa cấu hình tài khoản nhận chuyển khoản");
+                return;
+            }
+
             int requestId = ++qrRequestVersion;
             long amount = (long)Math.Max(0m, Math.Round(soTien, 0));
             string cleanMaHoaDon = string.IsNullOrWhiteSpace(maHoaDon) ? "0" : maHoaDon.Trim();
@@ -398,16 +510,7 @@ namespace karaoke
             }
             catch (Exception)
             {
-                // Fallback sang tạo mã QR tĩnh bằng thư viện QRCoder offline khi không có mạng hoặc API lỗi
-                try
-                {
-                    Bitmap offlineQrBitmap = await Task.Run(() => GenerateOfflineQRCode(amount, transferContent)).ConfigureAwait(false);
-                    ApplyQRCodeResult(requestId, offlineQrBitmap);
-                }
-                catch
-                {
-                    // Đảm bảo không bao giờ gây crash giao diện WinForms
-                }
+                ApplyQRCodeFailure(requestId, "Không thể tạo mã QR thanh toán");
             }
         }
 
@@ -436,7 +539,11 @@ namespace karaoke
 
             if (requestId == qrRequestVersion && !this.IsDisposed && !picQRCode.IsDisposed)
             {
+                picQRCode.Visible = true;
                 SetQRCodeImage(bitmap);
+                lblQuetMaQR.Location = new Point(2, 206);
+                lblQuetMaQR.Size = new Size(214, 22);
+                lblQuetMaQR.ForeColor = Color.FromArgb(22, 101, 52);
                 lblQuetMaQR.Text = "Quét mã để thanh toán nhanh";
             }
             else
@@ -445,26 +552,40 @@ namespace karaoke
             }
         }
 
-        /// <summary>
-        /// Tạo mã QR chứa thông tin chuyển khoản tĩnh bằng thư viện QRCoder offline.
-        /// </summary>
-        private Bitmap GenerateOfflineQRCode(decimal soTien, string transferContent)
+        private void ApplyQRCodeFailure(int requestId, string errorMessage)
         {
-            long amount = (long)Math.Max(0m, Math.Round(soTien, 0));
-            string payload = string.Format(
-                "NGAN HANG (BIN): {0}\nSO TK: {1}\nCHU TK: {2}\nSO TIEN: {3}\nNOI DUNG: {4}",
-                BANK_BIN,
-                BANK_ACC_NUM,
-                ACCOUNT_NAME,
-                amount,
-                transferContent);
-
-            using (var qrGenerator = new QRCodeGenerator())
-            using (var qrCodeData = qrGenerator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q))
-            using (var qrCode = new QRCode(qrCodeData))
+            if (this.IsDisposed || (picQRCode != null && picQRCode.IsDisposed))
             {
-                return qrCode.GetGraphic(20);
+                return;
             }
+
+            if (this.InvokeRequired)
+            {
+                try
+                {
+                    this.BeginInvoke(new Action(() => ApplyQRCodeFailure(requestId, errorMessage)));
+                }
+                catch
+                {
+                }
+                return;
+            }
+
+            if (requestId == qrRequestVersion && !this.IsDisposed && !picQRCode.IsDisposed)
+            {
+                SetQRCodeImage(null);
+                picQRCode.Visible = false;
+                lblQuetMaQR.Location = new Point(10, 80);
+                lblQuetMaQR.Size = new Size(200, 60);
+                lblQuetMaQR.ForeColor = Color.FromArgb(220, 38, 38);
+                lblQuetMaQR.Text = errorMessage;
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            qrRequestVersion++;
+            base.OnFormClosing(e);
         }
 
         /// <summary>
