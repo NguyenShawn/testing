@@ -1,5 +1,74 @@
-param([string]$Server = '(localdb)\MSSQLLocalDB', [string]$AppDirectory = '')
+﻿param([string]$Server = '(localdb)\MSSQLLocalDB', [string]$AppDirectory = '')
 $ErrorActionPreference = 'Stop'
+
+function Assert-SqlSafety {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$SqlText,
+        [Parameter(Mandatory = $true)]
+        [string]$ExpectedDatabase
+    )
+    if ([string]::IsNullOrWhiteSpace($SqlText)) { return }
+    $cleanSql = [regex]::Replace($SqlText, '(?m)--.*?$', '')
+    $cleanSql = [regex]::Replace($cleanSql, '(?s)/\*.*?\*/', '')
+    $useMatches = [regex]::Matches($cleanSql, '(?im)\bUSE\s+(?:\[(?<db>[^\]]+)\]|(?<db>[a-zA-Z0-9_#$]+))')
+    foreach ($m in $useMatches) {
+        $targetDb = $m.Groups['db'].Value.Trim()
+        if ($targetDb -ne $ExpectedDatabase) {
+            throw "Database safety violation: SQL contains 'USE $targetDb' which does not match expected test database '$ExpectedDatabase'."
+        }
+    }
+}
+
+function Assert-ActiveDatabase {
+    param(
+        [Parameter(Mandatory = $true)]
+        [System.Data.SqlClient.SqlCommand]$Command,
+        [Parameter(Mandatory = $true)]
+        [string]$ExpectedDatabase
+    )
+    $Command.CommandText = 'SELECT DB_NAME()'
+    $activeDb = [string]$Command.ExecuteScalar()
+    if ($activeDb -ne $ExpectedDatabase) {
+        throw "Database safety violation: active database is '$activeDb', expected '$ExpectedDatabase'."
+    }
+}
+
+function Invoke-TestDbBatchSafe {
+    param(
+        [Parameter(Mandatory = $true)]
+        [System.Data.SqlClient.SqlCommand]$Command,
+        [Parameter(Mandatory = $true)]
+        [string]$BatchSql,
+        [Parameter(Mandatory = $true)]
+        [string]$ExpectedDatabase
+    )
+    if ([string]::IsNullOrWhiteSpace($BatchSql)) { return }
+    Assert-SqlSafety -SqlText $BatchSql -ExpectedDatabase $ExpectedDatabase
+    Assert-ActiveDatabase -Command $Command -ExpectedDatabase $ExpectedDatabase
+    $Command.CommandText = $BatchSql
+    [void]$Command.ExecuteNonQuery()
+    Assert-ActiveDatabase -Command $Command -ExpectedDatabase $ExpectedDatabase
+}
+
+function Invoke-TestDbScriptSafe {
+    param(
+        [Parameter(Mandatory = $true)]
+        [System.Data.SqlClient.SqlCommand]$Command,
+        [Parameter(Mandatory = $true)]
+        [string]$ScriptSql,
+        [Parameter(Mandatory = $true)]
+        [string]$ExpectedDatabase
+    )
+    Assert-SqlSafety -SqlText $ScriptSql -ExpectedDatabase $ExpectedDatabase
+    $batches = [regex]::Split($ScriptSql, '(?im)^\s*GO\s*\r?$')
+    foreach ($batch in $batches) {
+        if (![string]::IsNullOrWhiteSpace($batch)) {
+            Invoke-TestDbBatchSafe -Command $Command -BatchSql $batch -ExpectedDatabase $ExpectedDatabase
+        }
+    }
+}
+
 $repo = Split-Path -Parent $PSScriptRoot
 $app = if ($AppDirectory) { $AppDirectory } else { Join-Path $repo 'karaoke\bin\Debug' }
 $exe = Join-Path $app 'PasswordChangeTests.exe'
@@ -12,30 +81,44 @@ if ($LASTEXITCODE -ne 0) { throw 'Integration test compilation failed.' }
 $uiExe = Join-Path $app 'AdminUiTests.exe'
 & $compiler /nologo "/out:$uiExe" "/r:$app\karaoke.exe" "/r:$app\EntityFramework.dll" "/r:$app\Microsoft.ReportViewer.WinForms.dll" "/r:$app\Microsoft.ReportViewer.Common.dll" /r:System.Data.dll /r:System.Drawing.dll /r:System.Windows.Forms.dll /r:System.Core.dll (Join-Path $PSScriptRoot 'AdminUiTests.cs')
 if ($LASTEXITCODE -ne 0) { throw 'UI test compilation failed.' }
+
 $testDb = 'KaraokePasswordTest_' + [Guid]::NewGuid().ToString('N')
 $connection = New-Object System.Data.SqlClient.SqlConnection "Server=$Server;Database=master;Integrated Security=True;Connect Timeout=5;ConnectRetryCount=0"
 $created = $false
 try {
     $connection.Open(); $command = $connection.CreateCommand()
+    Assert-ActiveDatabase -Command $command -ExpectedDatabase 'master'
     $command.CommandText = "CREATE DATABASE [$testDb]"; [void]$command.ExecuteNonQuery(); $created = $true
     $connection.ChangeDatabase($testDb)
-    $sql = (Get-Content -LiteralPath (Join-Path $repo 'karaoke\Sql\Setup_QuanLyKaraoke.sql') -Raw -Encoding UTF8).Replace('QuanLyKaraoke', $testDb)
-    foreach ($batch in [regex]::Split($sql, '(?im)^\s*GO\s*\r?$')) {
-        if (![string]::IsNullOrWhiteSpace($batch)) { $command.CommandText = $batch; [void]$command.ExecuteNonQuery() }
-    }
-    $migration = Get-Content -LiteralPath (Join-Path $repo 'karaoke\Sql\04_PhanQuyen_NangCap.sql') -Raw -Encoding UTF8
-    $command.CommandText = $migration; [void]$command.ExecuteNonQuery()
-    $command.CommandText = "SELECT COUNT(*) FROM dbo.TAIKHOAN_NHOMQUYEN"; if ([int]$command.ExecuteScalar() -ne 1) { throw 'Existing admin was not assigned a group.' }
-    $command.CommandText = "DELETE c FROM dbo.NHOMQUYEN_CHITIET c JOIN dbo.NHOMQUYEN n ON n.MaNhom=c.MaNhom WHERE n.TenNhom=N'Nhân viên' AND c.MaQuyen='GOIDICHVU'"; [void]$command.ExecuteNonQuery()
-    $command.CommandText = $migration; [void]$command.ExecuteNonQuery()
+    Assert-ActiveDatabase -Command $command -ExpectedDatabase $testDb
+
+    $sql = (Get-Content -LiteralPath (Join-Path $repo 'karaoke\Sql\Setup_QuanLyKaraoke.sql') -Raw -Encoding UTF8) -replace 'QuanLyKaraoke', $testDb
+    Invoke-TestDbScriptSafe -Command $command -ScriptSql $sql -ExpectedDatabase $testDb
+
+    $migration = (Get-Content -LiteralPath (Join-Path $repo 'karaoke\Sql\04_PhanQuyen_NangCap.sql') -Raw -Encoding UTF8) -replace 'QuanLyKaraoke', $testDb
+    Invoke-TestDbScriptSafe -Command $command -ScriptSql $migration -ExpectedDatabase $testDb
+
+    Assert-ActiveDatabase -Command $command -ExpectedDatabase $testDb
+    $command.CommandText = "SELECT COUNT(*) FROM dbo.TAIKHOAN_NHOMQUYEN"
+    if ([int]$command.ExecuteScalar() -ne 1) { throw 'Existing admin was not assigned a group.' }
+
+    Invoke-TestDbBatchSafe -Command $command -BatchSql "DELETE c FROM dbo.NHOMQUYEN_CHITIET c JOIN dbo.NHOMQUYEN n ON n.MaNhom=c.MaNhom WHERE n.TenNhom=N'Nhân viên' AND c.MaQuyen='GOIDICHVU'" -ExpectedDatabase $testDb
+
+    Invoke-TestDbScriptSafe -Command $command -ScriptSql $migration -ExpectedDatabase $testDb
+
+    Assert-ActiveDatabase -Command $command -ExpectedDatabase $testDb
     $command.CommandText = "SELECT COUNT(*) FROM dbo.NHOMQUYEN_CHITIET c JOIN dbo.NHOMQUYEN n ON n.MaNhom=c.MaNhom WHERE n.TenNhom=N'Nhân viên' AND c.MaQuyen='GOIDICHVU'"
     if ([int]$command.ExecuteScalar() -ne 0) { throw 'Migration reset a customized permission.' }
     Write-Output 'PASS: role migration assigns existing admin and preserves custom permissions on rerun'
-    $command.CommandText = "CREATE TABLE dbo.NHATKYTAIKHOAN (Sentinel int NOT NULL); INSERT dbo.NHATKYTAIKHOAN VALUES (42); SELECT MatKhauHash FROM dbo.TAIKHOAN WHERE TenDangNhap='admin'"
+
+    Invoke-TestDbBatchSafe -Command $command -BatchSql "CREATE TABLE dbo.NHATKYTAIKHOAN (Sentinel int NOT NULL); INSERT dbo.NHATKYTAIKHOAN VALUES (42)" -ExpectedDatabase $testDb
+    Assert-ActiveDatabase -Command $command -ExpectedDatabase $testDb
+    $command.CommandText = "SELECT MatKhauHash FROM dbo.TAIKHOAN WHERE TenDangNhap='admin'"
     $originalHash = [string]$command.ExecuteScalar()
-    foreach ($batch in [regex]::Split($sql, '(?im)^\s*GO\s*\r?$')) {
-        if (![string]::IsNullOrWhiteSpace($batch)) { $command.CommandText = $batch; [void]$command.ExecuteNonQuery() }
-    }
+
+    Invoke-TestDbScriptSafe -Command $command -ScriptSql $sql -ExpectedDatabase $testDb
+
+    Assert-ActiveDatabase -Command $command -ExpectedDatabase $testDb
     $command.CommandText = "SELECT COUNT(*) FROM dbo.NHATKYTAIKHOAN WHERE Sentinel=42"
     if ([int]$command.ExecuteScalar() -ne 1) { throw 'Setup removed or changed the existing audit table.' }
     $command.CommandText = "SELECT MatKhauHash FROM dbo.TAIKHOAN WHERE TenDangNhap='admin'"
@@ -43,6 +126,7 @@ try {
     $command.CommandText = "SELECT COUNT(*) FROM dbo.NHOMQUYEN_CHITIET c JOIN dbo.NHOMQUYEN n ON n.MaNhom=c.MaNhom WHERE n.TenNhom=N'Nhân viên' AND c.MaQuyen='GOIDICHVU'"
     if ([int]$command.ExecuteScalar() -ne 0) { throw 'Setup reset a customized permission.' }
     Write-Output 'PASS: rerunning setup preserves audit data, admin password, and custom permissions'
+
     [xml]$config = Get-Content -LiteralPath (Join-Path $app 'karaoke.exe.config') -Raw
     $entry = $config.configuration.connectionStrings.add | Where-Object name -EQ 'QuanLyKaraokeEntities'
     $provider = "Server=$Server;Database=$testDb;Integrated Security=True;MultipleActiveResultSets=True;Connect Timeout=5;ConnectRetryCount=0"
@@ -50,14 +134,15 @@ try {
     $entry.SetAttribute('connectionString', $entityConnection); $config.Save("$exe.config")
     & $exe
     if ($LASTEXITCODE -ne 0) { throw 'Password-change tests failed.' }
+
     $config.Save("$integrationExe.config")
     & $integrationExe
     if ($LASTEXITCODE -ne 0) { throw 'Booking/service integration tests failed.' }
-    $sample = (Get-Content -LiteralPath (Join-Path $repo 'karaoke\Sql\02_SampleData.sql') -Raw -Encoding UTF8).Replace('QuanLyKaraoke', $testDb)
+
+    $sample = (Get-Content -LiteralPath (Join-Path $repo 'karaoke\Sql\02_SampleData.sql') -Raw -Encoding UTF8) -replace 'QuanLyKaraoke', $testDb
     foreach ($iteration in 1..2) {
-        foreach ($batch in [regex]::Split($sample, '(?im)^\s*GO\s*\r?$')) {
-            if (![string]::IsNullOrWhiteSpace($batch)) { $command.CommandText = $batch; [void]$command.ExecuteNonQuery() }
-        }
+        Invoke-TestDbScriptSafe -Command $command -ScriptSql $sample -ExpectedDatabase $testDb
+        Assert-ActiveDatabase -Command $command -ExpectedDatabase $testDb
         $command.CommandText = "SELECT COUNT(*) FROM dbo.HOADON WHERE MaNV='NV001'"
         $count = [int]$command.ExecuteScalar()
         if ($count -ne 7) { throw "Expected seven sample invoices, got $count on run $iteration." }
@@ -65,15 +150,32 @@ try {
         if ([int]$command.ExecuteScalar() -ne 0) { throw "Sample invoice service totals do not match line items on run $iteration." }
     }
     Write-Output 'PASS: sample invoices match their service lines and seeding is repeatable'
+
     $config.Save("$uiExe.config")
     & $uiExe
     if ($LASTEXITCODE -ne 0) { throw 'Admin UI tests failed.' }
 }
 finally {
     if ($created) {
-        $connection.ChangeDatabase('master')
-        $command.CommandText = "ALTER DATABASE [$testDb] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [$testDb]"
-        [void]$command.ExecuteNonQuery()
+        if ([string]::IsNullOrWhiteSpace($testDb) -or $testDb -eq 'QuanLyKaraoke' -or -not ($testDb -like 'KaraokePasswordTest_*')) {
+            throw "Database safety violation: Refusing to drop invalid or protected database '$testDb'."
+        }
+        try {
+            if ($connection) {
+                if ($connection.State.ToString() -ne 'Open') {
+                    $connection.Open()
+                }
+                $connection.ChangeDatabase('master')
+                Assert-ActiveDatabase -Command $command -ExpectedDatabase 'master'
+                $command.CommandText = "ALTER DATABASE [$testDb] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [$testDb]"
+                [void]$command.ExecuteNonQuery()
+            }
+        }
+        catch {
+            Write-Warning "Cleanup failed for test database '$testDb': $_"
+        }
     }
-    $connection.Dispose()
+    if ($connection) {
+        $connection.Dispose()
+    }
 }
