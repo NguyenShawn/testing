@@ -24,6 +24,8 @@
             this.txtTenDV = new System.Windows.Forms.TextBox();
             this.txtDonViTinh = new System.Windows.Forms.TextBox();
             this.txtDonGia = new System.Windows.Forms.TextBox();
+            this.numTonKho = new System.Windows.Forms.NumericUpDown();
+            this.lblTonKho = new System.Windows.Forms.Label();
             this.chkTrangThai = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -34,6 +36,7 @@
             this.lblTieuDe = new System.Windows.Forms.Label();
             this.panelHeader = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDichVu)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTonKho)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panelHeader.SuspendLayout();
@@ -161,6 +164,17 @@
             // 
             // groupBox1
             // 
+            this.lblTonKho.AutoSize = true;
+            this.lblTonKho.Location = new System.Drawing.Point(285, 28);
+            this.lblTonKho.Text = "Số lượng tồn kho";
+            this.numTonKho.Name = "numTonKho";
+            this.numTonKho.Location = new System.Drawing.Point(285, 50);
+            this.numTonKho.Size = new System.Drawing.Size(140, 20);
+            this.numTonKho.Maximum = int.MaxValue;
+            this.numTonKho.ThousandsSeparator = true;
+            this.numTonKho.TabIndex = 10;
+            this.groupBox1.Controls.Add(this.lblTonKho);
+            this.groupBox1.Controls.Add(this.numTonKho);
             this.groupBox1.Controls.Add(this.txtMaDV);
             this.groupBox1.Controls.Add(this.chkTrangThai);
             this.groupBox1.Controls.Add(this.label4);
@@ -171,9 +185,9 @@
             this.groupBox1.Controls.Add(this.txtDonGia);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.groupBox1.Location = new System.Drawing.Point(224, 56);
+            this.groupBox1.Location = new System.Drawing.Point(138, 56);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(272, 173);
+            this.groupBox1.Size = new System.Drawing.Size(450, 173);
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông Tin Dịch Vụ";
@@ -185,7 +199,7 @@
             this.groupBox2.Controls.Add(this.btnLamMoi);
             this.groupBox2.Controls.Add(this.btnXoa);
             this.groupBox2.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.groupBox2.Location = new System.Drawing.Point(502, 56);
+            this.groupBox2.Location = new System.Drawing.Point(594, 56);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(245, 173);
             this.groupBox2.TabIndex = 15;
@@ -215,6 +229,7 @@
             this.Controls.Add(this.panelHeader);
             this.Name = "FrmQuanLyDichVu";
             ((System.ComponentModel.ISupportInitialize)(this.dgvDichVu)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTonKho)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -234,6 +249,8 @@
         private System.Windows.Forms.TextBox txtTenDV;
         private System.Windows.Forms.TextBox txtDonViTinh;
         private System.Windows.Forms.TextBox txtDonGia;
+        private System.Windows.Forms.NumericUpDown numTonKho;
+        private System.Windows.Forms.Label lblTonKho;
         private System.Windows.Forms.CheckBox chkTrangThai;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;

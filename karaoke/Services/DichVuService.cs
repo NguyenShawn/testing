@@ -13,6 +13,7 @@ namespace karaoke.Services
         public string TenDV { get; set; }
         public string DonViTinh { get; set; }
         public decimal DonGia { get; set; }
+        public int TonKho { get; set; }
         public bool TrangThai { get; set; }
     }
 
@@ -31,20 +32,21 @@ namespace karaoke.Services
                         TenDV = d.TenDV,
                         DonViTinh = d.DonViTinh,
                         DonGia = d.DonGia,
+                        TonKho = d.TonKho,
                         TrangThai = d.TrangThai
                     })
                     .ToList();
             }
         }
 
-        public void Save(string maDV, string tenDV, string donViTinh, decimal donGia, bool trangThai, bool create)
+        public void Save(string maDV, string tenDV, string donViTinh, decimal donGia, bool trangThai, bool create, int? tonKho = null, int? expectedTonKho = null)
         {
 
             if (string.IsNullOrWhiteSpace(maDV) || maDV.Length > 20 ||
                 string.IsNullOrWhiteSpace(tenDV) || tenDV.Length > 100 ||
-                string.IsNullOrWhiteSpace(donViTinh) || donGia < 0)
+                string.IsNullOrWhiteSpace(donViTinh) || donGia < 0 || tonKho < 0)
             {
-                throw new InvalidOperationException("Vui lòng kiểm tra lại thông tin dịch vụ (Mã, Tên, Đơn vị tính, Đơn giá).");
+                throw new InvalidOperationException("Vui lòng kiểm tra lại Mã, Tên, Đơn vị tính, Đơn giá và Tồn kho. Đơn giá và Tồn kho không được âm.");
             }
 
             using (var db = new QuanLyKaraokeEntities())
@@ -57,6 +59,8 @@ namespace karaoke.Services
                     throw new InvalidOperationException("Mã dịch vụ này đã tồn tại.");
                 if (!create && dv == null)
                     throw new InvalidOperationException("Dịch vụ không tồn tại trong hệ thống.");
+                if (!create && tonKho.HasValue && expectedTonKho.HasValue && dv.TonKho != expectedTonKho.Value)
+                    throw new InvalidOperationException("Tồn kho vừa thay đổi. Hãy bấm Làm mới và chọn lại dịch vụ trước khi lưu.");
 
                 if (create)
                 {
@@ -68,6 +72,7 @@ namespace karaoke.Services
                 dv.DonViTinh = donViTinh;
                 dv.DonGia = donGia;
                 dv.TrangThai = trangThai;
+                if (tonKho.HasValue) dv.TonKho = tonKho.Value;
 
                 db.SaveChanges();
                 tx.Commit();

@@ -7,6 +7,7 @@ namespace karaoke
     public partial class FrmQuanLyDichVu : Form
     {
         private DichVuService dvService = new DichVuService();
+        private int? loadedTonKho;
 
         public FrmQuanLyDichVu()
         {
@@ -43,6 +44,7 @@ namespace karaoke
                 bool admin = AuthService.HasPermission("DICHVU_SUA");
                 btnThem.Enabled = btnSua.Enabled = admin;
                 btnXoa.Enabled = admin;
+                numTonKho.Enabled = admin;
             } catch (Exception ex) { MessageBox.Show(ex.Message); Close(); return; }
             LoadData();
         }
@@ -62,6 +64,7 @@ namespace karaoke
                     dgvDichVu.Columns["DonGia"].DefaultCellStyle.Format = "N0";
                 }
                 if (dgvDichVu.Columns["TrangThai"] != null) dgvDichVu.Columns["TrangThai"].HeaderText = "Trạng thái";
+                if (dgvDichVu.Columns["TonKho"] != null) dgvDichVu.Columns["TonKho"].HeaderText = "Tồn kho";
 
                 ClearForm();
             }
@@ -77,6 +80,8 @@ namespace karaoke
             txtTenDV.Clear();
             txtDonViTinh.Clear();
             txtDonGia.Clear();
+            numTonKho.Value = 0;
+            loadedTonKho = null;
             chkTrangThai.Checked = true;
 
             txtMaDV.Enabled = true;
@@ -94,6 +99,8 @@ namespace karaoke
                 txtTenDV.Text = row.Cells["TenDV"].Value?.ToString();
                 txtDonViTinh.Text = row.Cells["DonViTinh"].Value?.ToString();
                 txtDonGia.Text = row.Cells["DonGia"].Value?.ToString();
+                loadedTonKho = Convert.ToInt32(row.Cells["TonKho"].Value);
+                numTonKho.Value = loadedTonKho.Value;
 
                 if (row.Cells["TrangThai"].Value != null)
                 {
@@ -144,7 +151,8 @@ namespace karaoke
                     txtDonViTinh.Text.Trim(),
                     donGia,
                     chkTrangThai.Checked,
-                    true 
+                    true,
+                    (int)numTonKho.Value
                 );
 
                 MessageBox.Show("Thêm dịch vụ thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -176,7 +184,9 @@ namespace karaoke
                     txtDonViTinh.Text.Trim(),
                     donGia,
                     chkTrangThai.Checked,
-                    false
+                    false,
+                    (int)numTonKho.Value,
+                    loadedTonKho
                 );
 
                 MessageBox.Show("Cập nhật dịch vụ thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -215,7 +225,7 @@ namespace karaoke
 
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
-            ClearForm();
+            LoadData();
         }
 
 

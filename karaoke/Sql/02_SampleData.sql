@@ -39,20 +39,20 @@ BEGIN TRY
     END;
 
     IF NOT EXISTS (SELECT 1 FROM dbo.DICHVU WHERE MaDV='DV001')
-        INSERT INTO dbo.DICHVU(MaDV,TenDV,DonViTinh,DonGia,TrangThai)
-        VALUES ('DV001',N'Nước suối',N'Chai',10000,1);
+        INSERT INTO dbo.DICHVU(MaDV,TenDV,DonViTinh,DonGia,TrangThai,TonKho)
+        VALUES ('DV001',N'Nước suối',N'Chai',10000,1,100);
     IF NOT EXISTS (SELECT 1 FROM dbo.DICHVU WHERE MaDV='DV002')
-        INSERT INTO dbo.DICHVU(MaDV,TenDV,DonViTinh,DonGia,TrangThai)
-        VALUES ('DV002',N'Coca-Cola',N'Lon',15000,1);
+        INSERT INTO dbo.DICHVU(MaDV,TenDV,DonViTinh,DonGia,TrangThai,TonKho)
+        VALUES ('DV002',N'Coca-Cola',N'Lon',15000,1,100);
     IF NOT EXISTS (SELECT 1 FROM dbo.DICHVU WHERE MaDV='DV003')
-        INSERT INTO dbo.DICHVU(MaDV,TenDV,DonViTinh,DonGia,TrangThai)
-        VALUES ('DV003',N'Trái cây',N'Đĩa',50000,1);
+        INSERT INTO dbo.DICHVU(MaDV,TenDV,DonViTinh,DonGia,TrangThai,TonKho)
+        VALUES ('DV003',N'Trái cây',N'Đĩa',50000,1,100);
     IF NOT EXISTS (SELECT 1 FROM dbo.DICHVU WHERE MaDV='DV004')
-        INSERT INTO dbo.DICHVU(MaDV,TenDV,DonViTinh,DonGia,TrangThai)
-        VALUES ('DV004',N'Khô bò',N'Gói',35000,1);
+        INSERT INTO dbo.DICHVU(MaDV,TenDV,DonViTinh,DonGia,TrangThai,TonKho)
+        VALUES ('DV004',N'Khô bò',N'Gói',35000,1,100);
     IF NOT EXISTS (SELECT 1 FROM dbo.DICHVU WHERE MaDV='DV005')
-        INSERT INTO dbo.DICHVU(MaDV,TenDV,DonViTinh,DonGia,TrangThai)
-        VALUES ('DV005',N'Bia',N'Lon',25000,1);
+        INSERT INTO dbo.DICHVU(MaDV,TenDV,DonViTinh,DonGia,TrangThai,TonKho)
+        VALUES ('DV005',N'Bia',N'Lon',25000,1,100);
 
     -- 3 phien dang hat theo 3 phong da dat TrangThai = 'Dang su dung'.
     DECLARE @now DATETIME2 = SYSDATETIME();

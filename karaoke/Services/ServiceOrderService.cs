@@ -25,6 +25,7 @@ namespace karaoke.Services
         public string TenDV { get; set; }
         public string DonViTinh { get; set; }
         public decimal DonGia { get; set; }
+        public int TonKho { get; set; }
         public bool TrangThai { get; set; }
     }
 
@@ -126,6 +127,7 @@ namespace karaoke.Services
                                 TenDV = d.TenDV,
                                 DonViTinh = d.DonViTinh,
                                 DonGia = d.DonGia,
+                                TonKho = d.TonKho,
                                 TrangThai = d.TrangThai
                             })
                             .ToList();
@@ -213,7 +215,7 @@ namespace karaoke.Services
 
                 DateTime orderTime = DateTime.Now;
 
-                foreach (var item in cart)
+                foreach (var item in cart.OrderBy(c => c.MaDV))
                 {
                     var service = db.DICHVUs.FirstOrDefault(d => d.MaDV == item.MaDV);
                     if (service == null)
@@ -225,6 +227,10 @@ namespace karaoke.Services
                     {
                         throw new InvalidOperationException(string.Format("Dịch vụ '{0}' hiện đã ngưng phục vụ.", service.TenDV));
                     }
+
+                    if (service.TonKho < item.SoLuong)
+                        throw new InvalidOperationException(string.Format("Dịch vụ '{0}' chỉ còn {1} trong kho, không đủ số lượng {2}.", service.TenDV, service.TonKho, item.SoLuong));
+                    service.TonKho -= item.SoLuong;
 
                     // Freeze price snapshot from catalog at order time
                     decimal frozenPrice = service.DonGia;

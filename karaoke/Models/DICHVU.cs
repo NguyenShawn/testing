@@ -24,6 +24,7 @@ namespace karaoke.Models
         public string TenDV { get; set; }
         public string DonViTinh { get; set; }
         public decimal DonGia { get; set; }
+        public int TonKho { get; set; }
         public bool TrangThai { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

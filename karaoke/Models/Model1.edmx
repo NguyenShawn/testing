@@ -40,6 +40,7 @@
           <Property Name="TenDV" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="DonViTinh" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="DonGia" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="TonKho" Type="int" Nullable="false" />
           <Property Name="TrangThai" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="HOADON">
@@ -324,6 +325,7 @@
           <csdl:Property Name="TenDV" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <csdl:Property Name="DonViTinh" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
           <csdl:Property Name="DonGia" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <csdl:Property Name="TonKho" Type="Int32" Nullable="false" ConcurrencyMode="Fixed" />
           <csdl:Property Name="TrangThai" Type="Boolean" Nullable="false" />
           <csdl:NavigationProperty Name="CHITIETDICHVUs" Relationship="Self.FK_CTDV_DICHVU" FromRole="DICHVU" ToRole="CHITIETDICHVU" />
         </csdl:EntityType>
@@ -626,6 +628,7 @@
                 <mapping:ScalarProperty Name="TenDV" ColumnName="TenDV" />
                 <mapping:ScalarProperty Name="DonViTinh" ColumnName="DonViTinh" />
                 <mapping:ScalarProperty Name="DonGia" ColumnName="DonGia" />
+                <mapping:ScalarProperty Name="TonKho" ColumnName="TonKho" />
                 <mapping:ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
               </mapping:MappingFragment>
             </mapping:EntityTypeMapping>

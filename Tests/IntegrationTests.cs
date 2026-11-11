@@ -39,9 +39,11 @@ class IntegrationTests
             RunTest("9. Order Rejection on Ended or Paid Sessions", TestEndedAndPaidSessionRejected);
             RunTest("10. Session Totals Calculation for Checkout", TestSessionTotalsCalculation);
             RunTest("11. Concurrent service order versus checkout", TestConcurrentOrderAndCheckout);
+            RunTest("12. Stock consumption and insufficient-stock rollback", TestStockConsumption);
+            RunTest("13. Concurrent orders cannot oversell the last item", TestConcurrentStockOrders);
 
             Console.WriteLine("=================================================");
-            Console.WriteLine("ALL 11 INTEGRATION TESTS PASSED SUCCESSFULLY!");
+            Console.WriteLine("ALL 13 INTEGRATION TESTS PASSED SUCCESSFULLY!");
             Console.WriteLine("=================================================");
         }
         finally
@@ -155,6 +157,7 @@ class IntegrationTests
             {
                 MaDV = testServiceId,
                 TenDV = "Bia Test Heineken",
+                TonKho = 1000,
                 DonViTinh = "Lon",
                 DonGia = 25000,
                 TrangThai = true
@@ -165,6 +168,7 @@ class IntegrationTests
             {
                 MaDV = inactiveServiceId,
                 TenDV = "Món Ngừng Phục Vụ",
+                TonKho = 1000,
                 DonViTinh = "Đĩa",
                 DonGia = 50000,
                 TrangThai = false
@@ -726,6 +730,94 @@ class IntegrationTests
             db.PHIENHATs.Add(ph);
             db.SaveChanges();
             return ph.MaPhien;
+        }
+    }
+
+    private static void TestStockConsumption()
+    {
+        ActAs(adminMaTK, "Admin");
+        var service = new ServiceOrderService();
+        int session = CreateTestSession();
+        string emptyItem = "ZSTOCK_" + Guid.NewGuid().ToString("N").Substring(0, 8);
+        int originalStock;
+        using (var db = new QuanLyKaraokeEntities())
+        {
+            originalStock = db.DICHVUs.Find(testServiceId).TonKho;
+            db.DICHVUs.Add(new DICHVU { MaDV = emptyItem, TenDV = "Hết hàng thử", DonViTinh = "Chai", DonGia = 10000, TrangThai = true, TonKho = 0 });
+            db.SaveChanges();
+        }
+        try
+        {
+            service.OrderServices(session, new List<CartItemInput> { new CartItemInput { MaDV = testServiceId, SoLuong = 2 } });
+            using (var db = new QuanLyKaraokeEntities())
+                if (db.DICHVUs.Find(testServiceId).TonKho != originalStock - 2) throw new Exception("Confirmed order did not deduct stock.");
+
+            AssertThrows<InvalidOperationException>(() => service.OrderServices(session, new List<CartItemInput> {
+                new CartItemInput { MaDV = testServiceId, SoLuong = originalStock }
+            }));
+            AssertThrows<InvalidOperationException>(() => service.OrderServices(session, new List<CartItemInput> {
+                new CartItemInput { MaDV = testServiceId, SoLuong = 1 },
+                new CartItemInput { MaDV = emptyItem, SoLuong = 1 }
+            }));
+            using (var db = new QuanLyKaraokeEntities())
+            {
+                if (db.DICHVUs.Find(testServiceId).TonKho != originalStock - 2 ||
+                    db.DICHVUs.Find(emptyItem).TonKho != 0 ||
+                    db.CHITIETDICHVUs.Count(c => c.MaPhien == session) != 1)
+                    throw new Exception("Rejected cart changed stock or saved partial order lines.");
+            }
+        }
+        finally
+        {
+            CloseTestSession(session);
+            using (var db = new QuanLyKaraokeEntities())
+            {
+                db.DICHVUs.Find(testServiceId).TonKho = originalStock;
+                db.DICHVUs.Remove(db.DICHVUs.Find(emptyItem));
+                db.SaveChanges();
+            }
+        }
+    }
+
+    private static void TestConcurrentStockOrders()
+    {
+        ActAs(adminMaTK, "Admin");
+        int session = CreateTestSession();
+        int originalStock;
+        using (var db = new QuanLyKaraokeEntities())
+        {
+            var item = db.DICHVUs.Find(testServiceId);
+            originalStock = item.TonKho;
+            item.TonKho = 1;
+            db.SaveChanges();
+        }
+        try
+        {
+            int successes = 0;
+            Action order = () => {
+                try
+                {
+                    new ServiceOrderService().OrderServices(session, new List<CartItemInput> { new CartItemInput { MaDV = testServiceId, SoLuong = 1 } });
+                    System.Threading.Interlocked.Increment(ref successes);
+                }
+                catch { /* A competing order may be rejected for stock or a deadlock. */ }
+            };
+            Parallel.Invoke(order, order);
+            using (var db = new QuanLyKaraokeEntities())
+            {
+                if (successes != 1 || db.DICHVUs.Find(testServiceId).TonKho != 0 ||
+                    db.CHITIETDICHVUs.Where(c => c.MaPhien == session).Sum(c => (int?)c.SoLuong) != 1)
+                    throw new Exception("Concurrent orders oversold stock or failed to persist exactly one sale.");
+            }
+        }
+        finally
+        {
+            CloseTestSession(session);
+            using (var db = new QuanLyKaraokeEntities())
+            {
+                db.DICHVUs.Find(testServiceId).TonKho = originalStock;
+                db.SaveChanges();
+            }
         }
     }
 

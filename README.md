@@ -6,7 +6,7 @@
 
 - Quản lý phòng, loại phòng, dịch vụ và nhân viên.
 - Đặt, nhận phòng; kiểm tra trùng lịch và theo dõi phiên hát.
-- Gọi dịch vụ, tính tiền phòng, giảm giá và lưu hóa đơn bằng transaction.
+- Quản lý tồn kho, tự trừ khi gọi dịch vụ, tính tiền phòng và lưu hóa đơn bằng transaction.
 - Xem/in hóa đơn RDLC, lọc doanh thu theo ngày, biểu đồ và xuất CSV.
 - Quản lý tài khoản, phân quyền Admin/Manager/Staff và bảo mật mật khẩu bằng BCrypt.
 - Hiển thị VietQR chuyển khoản khi đã cấu hình tài khoản nhận tiền.
@@ -31,6 +31,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\SetupLocalDb.ps1
 ```
 
 Kết nối được cấu hình trong `karaoke/App.config`. Database hiện có không được tự nâng cấp; sao lưu trước khi chạy các script trong `karaoke/Sql`. Dữ liệu demo nằm ở `02_SampleData.sql`, chỉ dùng trên database demo.
+
+**Nâng cấp tồn kho:** với database đã có, chạy `karaoke/Sql/05_TonKho_DichVu.sql` trước khi dùng bản mới. Tồn kho ban đầu là 0; người có quyền quản lý dịch vụ nhập số lượng thực tế tại **Dịch vụ**.
 
 ## Cấu hình VietQR
 

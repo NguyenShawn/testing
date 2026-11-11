@@ -82,8 +82,8 @@ class PasswordChangeTests
             using (var db = new QuanLyKaraokeEntities())
             {
                 db.PHONGs.Add(new PHONG { MaPhong = "FLOWROOM", TenPhong = "Phòng liên thông", MaLoaiPhong = 83, SucChua = 6, TrangThai = "Trống" });
-                db.DICHVUs.Add(new DICHVU { MaDV = "FLOWDRINK", TenDV = "Nước thử", DonViTinh = "Chai", DonGia = 15000, TrangThai = true });
-                db.DICHVUs.Add(new DICHVU { MaDV = "FLOWSNACK", TenDV = "Món thử", DonViTinh = "Đĩa", DonGia = 25000, TrangThai = true });
+                db.DICHVUs.Add(new DICHVU { MaDV = "FLOWDRINK", TenDV = "Nước thử", DonViTinh = "Chai", DonGia = 15000, TrangThai = true, TonKho = 100 });
+                db.DICHVUs.Add(new DICHVU { MaDV = "FLOWSNACK", TenDV = "Món thử", DonViTinh = "Đĩa", DonGia = 25000, TrangThai = true, TonKho = 100 });
                 db.SaveChanges();
             }
             var bookingService = new BookingService();

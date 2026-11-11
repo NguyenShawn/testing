@@ -139,6 +139,7 @@ namespace karaoke.Services
         {
             int ready = db.Database.SqlQuery<int>(@"SELECT CASE WHEN COL_LENGTH('dbo.TAIKHOAN','PhienBanBaoMat') IS NOT NULL
  AND COL_LENGTH('dbo.TAIKHOAN','SoLanDangNhapSai') IS NOT NULL AND COL_LENGTH('dbo.TAIKHOAN','KhoaDen') IS NOT NULL
+ AND COL_LENGTH('dbo.DICHVU','TonKho') IS NOT NULL
  AND OBJECT_ID('dbo.NHOMQUYEN','U') IS NOT NULL AND OBJECT_ID('dbo.QUYEN','U') IS NOT NULL
  AND OBJECT_ID('dbo.NHOMQUYEN_CHITIET','U') IS NOT NULL AND OBJECT_ID('dbo.TAIKHOAN_NHOMQUYEN','U') IS NOT NULL THEN 1 ELSE 0 END").Single();
             if (ready != 1) throw new InvalidOperationException("Cơ sở dữ liệu chưa được nâng cấp. Chạy Sql/Setup_QuanLyKaraoke.sql, sau đó thử lại.");

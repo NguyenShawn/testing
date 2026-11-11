@@ -126,6 +126,7 @@ namespace karaoke
         {
             // Menu Catalog Grid
             dgvMenu.AutoGenerateColumns = false;
+            dgvMenu.Columns.Add(new DataGridViewTextBoxColumn { Name = "TonKho", DataPropertyName = "TonKho", HeaderText = "Tồn kho", Width = 70 });
 
             FormatGridStyle(dgvMenu);
 
@@ -229,6 +230,11 @@ namespace karaoke
             }
 
             var existing = unconfirmedCart.FirstOrDefault(x => x.MaDV == item.MaDV);
+            if ((long)(existing == null ? 0 : existing.SoLuong) + qty > item.TonKho)
+            {
+                MessageBox.Show(string.Format("Dịch vụ '{0}' chỉ còn {1} trong kho.", item.TenDV, item.TonKho), "Không đủ tồn kho", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             if (existing != null)
             {
                 existing.SoLuong += qty;
@@ -315,6 +321,7 @@ namespace karaoke
                 unconfirmedCart.Clear();
                 UpdateCartTotal();
                 LoadSessionDetails(currentMaPhien);
+                LoadCatalog();
             }
             catch (Exception ex)
             {
