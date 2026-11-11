@@ -1,5 +1,7 @@
 -- Nâng cấp phân quyền cho CSDL QuanLyKaraoke hiện có. Chạy trên đúng database.
 -- Không xóa hay sửa tài khoản, mật khẩu, lịch đặt, hóa đơn hiện có.
+USE QuanLyKaraoke;
+GO
 SET XACT_ABORT ON;
 SET QUOTED_IDENTIFIER ON;
 BEGIN TRY
