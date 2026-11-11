@@ -8,11 +8,11 @@
 - SQL Server Express LocalDB và công cụ chạy SQL hỗ trợ các batch `GO`, ví dụ SQL Server Management Studio (SSMS).
 - Mở `karaoke.slnx`, khôi phục NuGet packages nếu Visual Studio yêu cầu, rồi Build. Guna.UI2 và Microsoft ReportViewer được khai báo trong `karaoke/packages.config`.
 
-Kết nối mặc định trong `karaoke/App.config` là `(localdb)\MSSQLLocalDB`, database `QuanLyKaraoke`, xác thực Windows. Nếu dùng instance khác, sửa **provider connection string** của `QuanLyKaraokeEntities` rồi build lại. LocalDB và database là dữ liệu cục bộ của từng máy, không được tạo tự động chỉ bằng cách pull code.
+Kết nối mặc định trong `karaoke/App.config` là `(localdb)\MSSQLLocalDB`, database `QuanLyKaraoke`, xác thực Windows. Nếu dùng instance khác, sửa **provider connection string** của `QuanLyKaraokeEntities` rồi build lại. LocalDB và database là dữ liệu cục bộ của từng máy. Khi mở ứng dụng, database mặc định được tạo tự động nếu chưa có; database đã tồn tại không bị thay đổi. Máy vẫn cần cài SQL Server Express LocalDB.
 
 ## Tạo database mới
 
-Có thể mở PowerShell **trên máy đang chạy ứng dụng**, tại thư mục repo, rồi chạy `powershell -NoProfile -ExecutionPolicy Bypass -File .\SetupLocalDb.ps1`. Script tạo cấu trúc, không tự thêm dữ liệu demo. Nếu thích dùng SSMS, làm theo các bước dưới đây.
+Ứng dụng tự tạo database mặc định khi mở lần đầu. Nếu muốn thiết lập thủ công, mở PowerShell **trên máy đang chạy ứng dụng**, tại thư mục repo, rồi chạy `powershell -NoProfile -ExecutionPolicy Bypass -File .\SetupLocalDb.ps1`. Script tạo cấu trúc, không tự thêm dữ liệu demo. Nếu thích dùng SSMS, làm theo các bước dưới đây.
 
 1. Kết nối SSMS đến `(localdb)\MSSQLLocalDB` bằng Windows Authentication.
 2. Chạy toàn bộ `karaoke/Sql/Setup_QuanLyKaraoke.sql` để tạo database, bảng nghiệp vụ, nhóm quyền và Admin.

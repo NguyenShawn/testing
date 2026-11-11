@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -24,7 +24,31 @@ namespace karaoke
             txtMatKhau.IconRight = eyeIcon;
             passwordToolTip.SetToolTip(txtMatKhau, "Nhấn biểu tượng con mắt để hiện hoặc ẩn mật khẩu");
             this.AcceptButton = btnDangNhap;
+            this.Shown += FrmLogin_Shown;
             txtTenDangNhap.MaxLength = 50; txtMatKhau.MaxLength = 72;
+        }
+
+        private async void FrmLogin_Shown(object sender, EventArgs e)
+        {
+            btnDangNhap.Enabled = false;
+            lblThongBao.Text = "Đang kiểm tra cơ sở dữ liệu...";
+            try
+            {
+                bool created = await Task.Run(() => LocalDatabaseSetup.EnsureCreated());
+                if (IsDisposed || Disposing) return;
+                lblThongBao.Text = "";
+                if (created)
+                    MessageBox.Show("Đã tạo cơ sở dữ liệu. Đăng nhập lần đầu bằng admin / AdminKaraoke2026!, sau đó đổi mật khẩu.",
+                        "Thiết lập lần đầu", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                if (IsDisposed || Disposing) return;
+                lblThongBao.Text = "Không thể chuẩn bị cơ sở dữ liệu.";
+                MessageBox.Show("Không thể chuẩn bị LocalDB. Hãy kiểm tra SQL Server Express LocalDB và kết nối.\n\n" + ex.GetBaseException().Message,
+                    "Lỗi cơ sở dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally { if (!IsDisposed && !Disposing) btnDangNhap.Enabled = true; }
         }
 
         private static Image LoadLoginImage(string fileName)
