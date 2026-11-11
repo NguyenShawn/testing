@@ -314,10 +314,10 @@
       <DependentUpon>Model1.edmx</DependentUpon>
       <LastGenOutput>Model1.cs</LastGenOutput>
     </Content>
-    <EmbeddedResource Include="Sql\Setup_QuanLyKaraoke.sql" />
-    <Content Include="Sql\02_SampleData.sql" />
-    <Content Include="Sql\04_PhanQuyen_NangCap.sql" />
-    <Content Include="Sql\05_TonKho_DichVu.sql" />
+    <EmbeddedResource Include="..\Karaoke404_Setup.sql">
+      <Link>Sql\Karaoke404_Setup.sql</Link>
+      <LogicalName>karaoke.Sql.Karaoke404_Setup.sql</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />

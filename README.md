@@ -32,7 +32,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\SetupLocalDb.ps1
 
 **Chỉ cần một file SQL:** `Karaoke404_Setup.sql` gồm cấu trúc, Admin, phân quyền, tồn kho và dữ liệu demo cho database trống. Đổi `TaoDuLieuMau` từ `1` thành `0` ở đầu file nếu chỉ cần cấu trúc. Chạy lại giữ mật khẩu, tồn kho và giao dịch hiện có; demo tự bỏ qua khi đã có dữ liệu nghiệp vụ.
 
-Kết nối được cấu hình trong `karaoke/App.config`. Sao lưu database trước khi nâng cấp bằng file tổng. Dịch vụ cũ mới bổ sung cột tồn kho có giá trị 0; người có quyền quản lý dịch vụ nhập số lượng thực tế tại **Dịch vụ**. Nếu chưa chạy SQL, ứng dụng tự tạo database trống khi chưa tồn tại. Các SQL trong `karaoke/Sql` phục vụ mã nguồn và kiểm thử, không cần chạy lần lượt.
+Kết nối được cấu hình trong `karaoke/App.config`. Sao lưu database trước khi nâng cấp bằng file tổng. Dịch vụ cũ mới bổ sung cột tồn kho có giá trị 0; người có quyền quản lý dịch vụ nhập số lượng thực tế tại **Dịch vụ**. Nếu chưa chạy SQL, ứng dụng tự tạo database trống khi chưa tồn tại, dùng phần cấu trúc nhúng từ cùng file SQL tổng.
 
 ## Cấu hình VietQR
 

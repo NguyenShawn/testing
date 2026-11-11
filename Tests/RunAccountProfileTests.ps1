@@ -13,7 +13,7 @@ try {
     $connection.Open(); $command = $connection.CreateCommand(); $command.CommandTimeout = 120
     $command.CommandText = "CREATE DATABASE [$testDb]"; [void]$command.ExecuteNonQuery(); $created = $true
     $connection.ChangeDatabase($testDb)
-    $sql = (Get-Content -LiteralPath (Join-Path $repo 'karaoke\Sql\Setup_QuanLyKaraoke.sql') -Raw -Encoding UTF8).Replace('QuanLyKaraoke', $testDb)
+    $sql = (Get-Content -LiteralPath (Join-Path $repo 'Karaoke404_Setup.sql') -Raw -Encoding UTF8).Replace('QuanLyKaraoke', $testDb)
     foreach ($batch in [regex]::Split($sql, '(?im)^\s*GO\s*\r?$')) { if (![string]::IsNullOrWhiteSpace($batch)) { $command.CommandText = $batch; [void]$command.ExecuteNonQuery() } }
     [xml]$config = Get-Content -LiteralPath (Join-Path $app 'karaoke.exe.config') -Raw
     $entry = $config.configuration.connectionStrings.add | Where-Object name -EQ 'QuanLyKaraokeEntities'

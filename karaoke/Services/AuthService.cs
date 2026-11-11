@@ -142,7 +142,7 @@ namespace karaoke.Services
  AND COL_LENGTH('dbo.DICHVU','TonKho') IS NOT NULL
  AND OBJECT_ID('dbo.NHOMQUYEN','U') IS NOT NULL AND OBJECT_ID('dbo.QUYEN','U') IS NOT NULL
  AND OBJECT_ID('dbo.NHOMQUYEN_CHITIET','U') IS NOT NULL AND OBJECT_ID('dbo.TAIKHOAN_NHOMQUYEN','U') IS NOT NULL THEN 1 ELSE 0 END").Single();
-            if (ready != 1) throw new InvalidOperationException("Cơ sở dữ liệu chưa được nâng cấp. Chạy Sql/Setup_QuanLyKaraoke.sql, sau đó thử lại.");
+            if (ready != 1) throw new InvalidOperationException("Cơ sở dữ liệu chưa được nâng cấp. Chạy Karaoke404_Setup.sql, sau đó thử lại.");
         }
     }
 }

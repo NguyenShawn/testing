@@ -29,11 +29,20 @@ namespace karaoke.Services
                     if (Convert.ToInt32(command.ExecuteScalar()) < 0) throw new InvalidOperationException("Không thể khóa quá trình tạo database.");
                     command.CommandText = "SELECT DB_ID(N'QuanLyKaraoke')";
                     if (command.ExecuteScalar() != DBNull.Value) return false;
-                    using (var stream = typeof(LocalDatabaseSetup).Assembly.GetManifestResourceStream("karaoke.Sql.Setup_QuanLyKaraoke.sql"))
+                    using (var stream = typeof(LocalDatabaseSetup).Assembly.GetManifestResourceStream("karaoke.Sql.Karaoke404_Setup.sql"))
                     {
                         if (stream == null) throw new InvalidOperationException("Thiếu dữ liệu khởi tạo database trong ứng dụng.");
                         string sql;
                         using (var reader = new StreamReader(stream)) sql = reader.ReadToEnd();
+                        // Automatic provisioning creates schema only; demo data is opt-in via the SQL file.
+                        const string startMarker = "-- KARAOKE404_SCHEMA_BEGIN";
+                        const string endMarker = "-- KARAOKE404_SCHEMA_END";
+                        int start = sql.IndexOf(startMarker, StringComparison.Ordinal);
+                        int end = sql.IndexOf(endMarker, StringComparison.Ordinal);
+                        if (start < 0 || end <= start)
+                            throw new InvalidOperationException("File SQL tổng thiếu phần cấu trúc database.");
+                        start += startMarker.Length;
+                        sql = sql.Substring(start, end - start);
                         foreach (string batch in Regex.Split(sql, @"(?im)^\s*GO\s*\r?$"))
                         {
                             if (string.IsNullOrWhiteSpace(batch)) continue;

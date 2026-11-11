@@ -123,10 +123,10 @@ try {
     $connection.ChangeDatabase($testDb)
     Assert-ActiveDatabase -Command $command -ExpectedDatabase $testDb
 
-    $sql = (Get-Content -LiteralPath (Join-Path $repo 'karaoke\Sql\Setup_QuanLyKaraoke.sql') -Raw -Encoding UTF8) -replace 'QuanLyKaraoke', $testDb
+    $sql = (Get-Content -LiteralPath (Join-Path $repo 'Karaoke404_Setup.sql') -Raw -Encoding UTF8) -replace 'QuanLyKaraoke', $testDb
     Invoke-TestDbScriptSafe -Command $command -ScriptSql $sql -ExpectedDatabase $testDb
 
-    $migration = (Get-Content -LiteralPath (Join-Path $repo 'karaoke\Sql\04_PhanQuyen_NangCap.sql') -Raw -Encoding UTF8) -replace 'QuanLyKaraoke', $testDb
+    $migration = $sql
     Invoke-TestDbScriptSafe -Command $command -ScriptSql $migration -ExpectedDatabase $testDb
 
     Assert-ActiveDatabase -Command $command -ExpectedDatabase $testDb
@@ -170,7 +170,7 @@ try {
     & $integrationExe
     if ($LASTEXITCODE -ne 0) { throw 'Booking/service integration tests failed.' }
 
-    $sample = (Get-Content -LiteralPath (Join-Path $repo 'karaoke\Sql\02_SampleData.sql') -Raw -Encoding UTF8) -replace 'QuanLyKaraoke', $testDb
+    $sample = $sql
     foreach ($iteration in 1..2) {
         Invoke-TestDbScriptSafe -Command $command -ScriptSql $sample -ExpectedDatabase $testDb
         Assert-ActiveDatabase -Command $command -ExpectedDatabase $testDb
