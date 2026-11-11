@@ -13,6 +13,7 @@ namespace karaoke
     public partial class FrmMain : Form
     {
         private Form currentChildForm = null;
+        private bool staffDashboard;
 
         public FrmMain()
         {
@@ -97,6 +98,7 @@ namespace karaoke
             bool canManageStaff;
             using (var db = new QuanLyKaraokeEntities())
                 canManageStaff = AuthService.CanManageStaff(db, AuthService.RequireCurrentUser(db));
+            staffDashboard = !canManageStaff;
             accountManagement.Visible = canManageStaff && AuthService.HasPermission("TAIKHOAN");
             staffManagement.Visible = canManageStaff && AuthService.HasPermission("NHANVIEN");
             roomTypes.Visible = AuthService.HasPermission("LOAIPHONG");
@@ -106,9 +108,13 @@ namespace karaoke
             btnDatPhong.Enabled = AuthService.HasPermission("DATPHONG");
             btnGoiDichVu.Enabled = AuthService.HasPermission("GOIDICHVU");
             btnThanhToan.Enabled = AuthService.HasPermission("THANHTOAN");
-            btnThongKe.Enabled = AuthService.HasPermission("THONGKE");
-            chart1.Visible = lbl4.Visible = btnThongKe.Enabled;
-            if (!btnThongKe.Enabled) { lblDoanhThu.Text = ""; chart1.Series.Clear(); }
+            bool canViewStatistics = AuthService.HasPermission("THONGKE");
+            bool showStatistics = !staffDashboard && canViewStatistics;
+            btnThongKe.Visible = btnThongKe.Enabled = showStatistics;
+            personalAccount.Top = showStatistics ? 495 : 440;
+            chart1.Visible = lbl4.Visible = label11.Visible = staffDashboard || canViewStatistics;
+            label11.Text = staffDashboard ? "Doanh thu hôm nay (" + DateTime.Today.ToString("dd/MM/yyyy") + ")" : "Doanh thu theo tháng";
+            if (!staffDashboard && !canViewStatistics) { lblDoanhThu.Text = ""; chart1.Series.Clear(); }
         }
         private bool OpenInternal(Func<Form> factory, bool adminOnly = false)
         {
@@ -132,7 +138,7 @@ namespace karaoke
                     lblDangSuDung.Text = db.PHONGs.Count(x => x.TrangThai == "Đang sử dụng").ToString();
                     lblPhongTrong.Text = db.PHONGs.Count(x => x.TrangThai == "Trống").ToString();
                 }
-                if (AuthService.HasPermission("THONGKE"))
+                if (staffDashboard || AuthService.HasPermission("THONGKE"))
                 {
                     DateTime start = DateTime.Today, end = start.AddDays(1);
                     decimal revenue = db.HOADONs.Where(x => x.NgayThanhToan >= start && x.NgayThanhToan < end).Select(x => (decimal?)x.ThanhTien).Sum() ?? 0m;
@@ -148,32 +154,34 @@ namespace karaoke
         private void LoadChartDoanhThu()
         {
             chart1.Series.Clear();
-            if (!AuthService.HasPermission("THONGKE")) return;
+            if (!staffDashboard && !AuthService.HasPermission("THONGKE")) return;
+            bool daily = staffDashboard;
             int nam = DateTime.Today.Year;
 
-            DateTime tuNgay = new DateTime(nam, 1, 1);
-            DateTime denNgay = tuNgay.AddYears(1);
+            DateTime tuNgay = daily ? DateTime.Today : new DateTime(nam, 1, 1);
+            DateTime denNgay = daily ? tuNgay.AddDays(1) : tuNgay.AddYears(1);
 
-            decimal[] doanhThuThang = new decimal[13];
+            decimal[] doanhThu = new decimal[daily ? 24 : 13];
 
             using (var db = new QuanLyKaraokeEntities())
             {
+                AuthService.RequireCurrentUser(db);
                 var duLieu = db.HOADONs
                     .Where(h =>
                         h.NgayThanhToan >= tuNgay &&
                         h.NgayThanhToan < denNgay
                     )
-                    .GroupBy(h => h.NgayThanhToan.Month)
+                    .GroupBy(h => daily ? h.NgayThanhToan.Hour : h.NgayThanhToan.Month)
                     .Select(g => new
                     {
-                        Thang = g.Key,
+                        Moc = g.Key,
                         DoanhThu = g.Sum(h => h.ThanhTien)
                     })
                     .ToList();
 
                 foreach (var item in duLieu)
                 {
-                    doanhThuThang[item.Thang] = item.DoanhThu;
+                    doanhThu[item.Moc] = item.DoanhThu;
                 }
             }
 
@@ -185,13 +193,13 @@ namespace karaoke
             series.ChartType = SeriesChartType.Column;
             series.IsVisibleInLegend = false;
 
-            for (int thang = 1; thang <= 12; thang++)
+            for (int moc = daily ? 0 : 1; moc <= (daily ? 23 : 12); moc++)
             {
                 // Chuyen VND sang trieu dong
                 double giaTri =
-                    (double)(doanhThuThang[thang] / 1000000m);
+                    (double)(doanhThu[moc] / 1000000m);
 
-                series.Points.AddXY(thang, giaTri);
+                series.Points.AddXY(moc, giaTri);
             }
 
             chart1.Series.Add(series);
@@ -199,11 +207,11 @@ namespace karaoke
             ChartArea area = chart1.ChartAreas[0];
 
             // Cau hinh truc X
-            area.AxisX.Minimum = 1;
-            area.AxisX.Maximum = 12;
+            area.AxisX.Minimum = daily ? 0 : 1;
+            area.AxisX.Maximum = daily ? 23 : 12;
             area.AxisX.Interval = 1;
             area.AxisX.LabelStyle.Format = "0";
-            area.AxisX.Title = "Tháng";
+            area.AxisX.Title = daily ? "Giờ trong ngày" : "Tháng";
             area.AxisX.MajorGrid.Enabled = false;
 
             // Cau hinh truc Y tu dong

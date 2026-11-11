@@ -92,6 +92,8 @@ class AccountProfileTests
             main.Show(); Application.DoEvents();
             var personal = Field<Guna.UI2.WinForms.Guna2Button>(main, "personalAccount");
             Check(personal.Visible, "staff sees personal account page");
+            Check(!Field<Guna.UI2.WinForms.Guna2Button>(main, "btnThongKe").Visible, "staff statistics button is hidden");
+            Check(Field<Panel>(main, "lbl4").Visible && Field<Label>(main, "label11").Text.Contains(DateTime.Today.ToString("dd/MM/yyyy")), "staff sees today's revenue dashboard");
             Check(!Field<Panel>(main, "panelSidebar").Controls.Cast<Control>().Any(c => c.Text == "Đổi mật khẩu"), "sidebar no longer has separate password page");
             Check(!Field<Guna.UI2.WinForms.Guna2Button>(main, "accountManagement").Visible, "staff does not see account management");
             personal.PerformClick(); Application.DoEvents();
