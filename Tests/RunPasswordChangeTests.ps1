@@ -11,9 +11,40 @@ function Assert-SqlSafety {
     if ([string]::IsNullOrWhiteSpace($SqlText)) { return }
     $cleanSql = [regex]::Replace($SqlText, '(?m)--.*?$', '')
     $cleanSql = [regex]::Replace($cleanSql, '(?s)/\*.*?\*/', '')
-    $useMatches = [regex]::Matches($cleanSql, '(?im)\bUSE\s+(?:\[(?<db>[^\]]+)\]|(?<db>[a-zA-Z0-9_#$]+))')
-    foreach ($m in $useMatches) {
-        $targetDb = $m.Groups['db'].Value.Trim()
+
+    $useKeywordMatches = [regex]::Matches($cleanSql, '(?im)\bUSE\b')
+    foreach ($useMatch in $useKeywordMatches) {
+        $startIndex = $useMatch.Index + $useMatch.Length
+        $rest = $cleanSql.Substring($startIndex)
+
+        if ($rest -notmatch '^\s+') {
+            throw 'Database safety violation: Unsupported USE syntax (missing whitespace after USE).'
+        }
+
+        $trimmedRest = $rest.TrimStart()
+
+        if ($trimmedRest.StartsWith('[')) {
+            $m = [regex]::Match($trimmedRest, '^\[(?<db>[^\]\r\n]+)\](?:\s*;|\s+|$)')
+            if (-not $m.Success) {
+                throw 'Database safety violation: Unsupported USE syntax (malformed bracketed identifier).'
+            }
+            $targetDb = $m.Groups['db'].Value.Trim()
+        }
+        elseif ($trimmedRest.StartsWith('"')) {
+            $m = [regex]::Match($trimmedRest, '^"(?<db>[^"\r\n]+)"(?:\s*;|\s+|$)')
+            if (-not $m.Success) {
+                throw 'Database safety violation: Unsupported USE syntax (malformed double-quoted identifier).'
+            }
+            $targetDb = $m.Groups['db'].Value.Trim()
+        }
+        elseif ($trimmedRest -match '^(?<db>[a-zA-Z0-9_#$]+)(?:\s*;|\s+|$)') {
+            $targetDb = $Matches['db'].Trim()
+        }
+        else {
+            $badSnippet = [regex]::Match($trimmedRest, '^[^\r\n;]*').Value.Trim()
+            throw "Database safety violation: Unsupported USE syntax: '$badSnippet'."
+        }
+
         if ($targetDb -ne $ExpectedDatabase) {
             throw "Database safety violation: SQL contains 'USE $targetDb' which does not match expected test database '$ExpectedDatabase'."
         }
