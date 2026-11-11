@@ -1,0 +1,290 @@
+﻿-- KHỞI TẠO QUẢN LÝ KARAOKE: 01 + 03 + 08
+-- Chạy toàn bộ file bằng SSMS. Không cần SQLCMD mode.
+-- Bao gồm các cột bảo mật mà code đăng nhập hiện tại yêu cầu.
+-- Không gộp dữ liệu mẫu 02. Giữ nguyên bảng nhật ký tài khoản nếu có.
+-- Chạy lại không đổi mật khẩu hoặc trạng thái Admin hiện có.
+SET QUOTED_IDENTIFIER ON;
+GO
+
+-- PHẦN 1: BẢNG NGHIỆP VỤ
+IF DB_ID(N'QuanLyKaraoke') IS NULL
+BEGIN
+    CREATE DATABASE QuanLyKaraoke;
+END;
+GO
+USE QuanLyKaraoke;
+GO
+
+IF OBJECT_ID(N'dbo.NHANVIEN', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.NHANVIEN (
+        MaNV VARCHAR(20) NOT NULL CONSTRAINT PK_NHANVIEN PRIMARY KEY,
+        HoTen NVARCHAR(100) NOT NULL,
+        NgaySinh DATE NULL,
+        SDT VARCHAR(15) NULL,
+        ChucVu NVARCHAR(50) NOT NULL,
+        TrangThai NVARCHAR(30) NOT NULL CONSTRAINT DF_NHANVIEN_TRANGTHAI DEFAULT N'Đang làm việc'
+    );
+END;
+GO
+
+IF OBJECT_ID(N'dbo.TAIKHOAN', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.TAIKHOAN (
+        MaTK INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_TAIKHOAN PRIMARY KEY,
+        MaNV VARCHAR(20) NOT NULL CONSTRAINT UQ_TAIKHOAN_MANV UNIQUE,
+        TenDangNhap VARCHAR(50) NOT NULL CONSTRAINT UQ_TAIKHOAN_TENDANGNHAP UNIQUE,
+        MatKhauHash VARCHAR(255) NOT NULL,
+        VaiTro VARCHAR(20) NOT NULL,
+        TrangThai BIT NOT NULL CONSTRAINT DF_TAIKHOAN_TRANGTHAI DEFAULT (1),
+        CONSTRAINT FK_TAIKHOAN_NHANVIEN FOREIGN KEY (MaNV) REFERENCES dbo.NHANVIEN(MaNV),
+        CONSTRAINT CK_TAIKHOAN_VAITRO CHECK (VaiTro IN ('Admin','NhanVien'))
+    );
+END;
+GO
+
+IF OBJECT_ID(N'dbo.LOAIPHONG', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.LOAIPHONG (
+        MaLoaiPhong INT NOT NULL CONSTRAINT PK_LOAIPHONG PRIMARY KEY,
+        TenLoaiPhong NVARCHAR(50) NOT NULL,
+        DonGiaGio DECIMAL(18,2) NOT NULL,
+        CONSTRAINT CK_LOAIPHONG_DONGIA CHECK (DonGiaGio >= 0)
+    );
+END;
+GO
+
+IF OBJECT_ID(N'dbo.PHONG', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.PHONG (
+        MaPhong VARCHAR(20) NOT NULL CONSTRAINT PK_PHONG PRIMARY KEY,
+        TenPhong NVARCHAR(50) NOT NULL,
+        MaLoaiPhong INT NOT NULL,
+        SucChua INT NOT NULL,
+        TrangThai NVARCHAR(30) NOT NULL CONSTRAINT DF_PHONG_TRANGTHAI DEFAULT N'Trống',
+        CONSTRAINT FK_PHONG_LOAIPHONG FOREIGN KEY (MaLoaiPhong) REFERENCES dbo.LOAIPHONG(MaLoaiPhong),
+        CONSTRAINT CK_PHONG_SUCCHUA CHECK (SucChua > 0),
+        CONSTRAINT CK_PHONG_TRANGTHAI CHECK (TrangThai IN (N'Trống',N'Đang sử dụng',N'Bảo trì'))
+    );
+END;
+GO
+
+IF OBJECT_ID(N'dbo.DICHVU', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.DICHVU (
+        MaDV VARCHAR(20) NOT NULL CONSTRAINT PK_DICHVU PRIMARY KEY,
+        TenDV NVARCHAR(100) NOT NULL,
+        DonViTinh NVARCHAR(30) NOT NULL,
+        DonGia DECIMAL(18,2) NOT NULL,
+        TrangThai BIT NOT NULL CONSTRAINT DF_DICHVU_TRANGTHAI DEFAULT(1),
+        CONSTRAINT CK_DICHVU_DONGIA CHECK (DonGia >= 0)
+    );
+END;
+GO
+
+IF OBJECT_ID(N'dbo.PHIENHAT', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.PHIENHAT (
+        MaPhien INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PHIENHAT PRIMARY KEY,
+        MaPhong VARCHAR(20) NOT NULL,
+        MaNV VARCHAR(20) NOT NULL,
+        GioBatDau DATETIME2 NOT NULL CONSTRAINT DF_PHIENHAT_GIOBATDAU DEFAULT SYSDATETIME(),
+        GioKetThuc DATETIME2 NULL,
+        DonGiaGio DECIMAL(18,2) NOT NULL,
+        TrangThai VARCHAR(20) NOT NULL CONSTRAINT DF_PHIENHAT_TRANGTHAI DEFAULT 'DangHat',
+        CONSTRAINT FK_PHIENHAT_PHONG FOREIGN KEY (MaPhong) REFERENCES dbo.PHONG(MaPhong),
+        CONSTRAINT FK_PHIENHAT_NHANVIEN FOREIGN KEY (MaNV) REFERENCES dbo.NHANVIEN(MaNV),
+        CONSTRAINT CK_PHIENHAT_DONGIA CHECK (DonGiaGio >= 0),
+        CONSTRAINT CK_PHIENHAT_TRANGTHAI CHECK (TrangThai IN ('DangHat','DaKetThuc')),
+        CONSTRAINT CK_PHIENHAT_THOIGIAN CHECK (GioKetThuc IS NULL OR GioKetThuc >= GioBatDau)
+    );
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE object_id = OBJECT_ID(N'dbo.PHIENHAT') AND name = N'UX_PHIENHAT_PHONG_DANGHAT'
+)
+BEGIN
+    CREATE UNIQUE INDEX UX_PHIENHAT_PHONG_DANGHAT
+    ON dbo.PHIENHAT(MaPhong)
+    WHERE TrangThai = 'DangHat';
+END;
+GO
+
+IF OBJECT_ID(N'dbo.CHITIETDICHVU', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.CHITIETDICHVU (
+        MaCTDV INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_CHITIETDICHVU PRIMARY KEY,
+        MaPhien INT NOT NULL,
+        MaDV VARCHAR(20) NOT NULL,
+        SoLuong INT NOT NULL,
+        DonGia DECIMAL(18,2) NOT NULL,
+        ThoiGianGoi DATETIME2 NOT NULL CONSTRAINT DF_CTDV_THOIGIANGOI DEFAULT SYSDATETIME(),
+        CONSTRAINT FK_CTDV_PHIENHAT FOREIGN KEY (MaPhien) REFERENCES dbo.PHIENHAT(MaPhien),
+        CONSTRAINT FK_CTDV_DICHVU FOREIGN KEY (MaDV) REFERENCES dbo.DICHVU(MaDV),
+        CONSTRAINT CK_CTDV_SOLUONG CHECK (SoLuong > 0),
+        CONSTRAINT CK_CTDV_DONGIA CHECK (DonGia >= 0)
+    );
+END;
+GO
+
+IF OBJECT_ID(N'dbo.HOADON', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.HOADON (
+        MaHD INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_HOADON PRIMARY KEY,
+        MaPhien INT NOT NULL CONSTRAINT UQ_HOADON_MAPHIEN UNIQUE,
+        MaNV VARCHAR(20) NOT NULL,
+        NgayThanhToan DATETIME2 NOT NULL CONSTRAINT DF_HOADON_NGAYTT DEFAULT SYSDATETIME(),
+        TienPhong DECIMAL(18,2) NOT NULL,
+        TienDichVu DECIMAL(18,2) NOT NULL,
+        GiamGia DECIMAL(18,2) NOT NULL CONSTRAINT DF_HOADON_GIAMGIA DEFAULT(0),
+        ThanhTien DECIMAL(18,2) NOT NULL,
+        PhuongThucTT NVARCHAR(30) NOT NULL,
+        CONSTRAINT FK_HOADON_PHIENHAT FOREIGN KEY (MaPhien) REFERENCES dbo.PHIENHAT(MaPhien),
+        CONSTRAINT FK_HOADON_NHANVIEN FOREIGN KEY (MaNV) REFERENCES dbo.NHANVIEN(MaNV),
+        CONSTRAINT CK_HOADON_TIENPHONG CHECK (TienPhong >= 0),
+        CONSTRAINT CK_HOADON_TIENDICHVU CHECK (TienDichVu >= 0),
+        CONSTRAINT CK_HOADON_GIAMGIA CHECK (GiamGia >= 0),
+        CONSTRAINT CK_HOADON_THANHTIEN CHECK (ThanhTien >= 0),
+        CONSTRAINT CK_HOADON_TIEN CHECK (ThanhTien = TienPhong + TienDichVu - GiamGia)
+    );
+END;
+GO
+PRINT N'Da kiem tra/tao 8 bang cho QuanLyKaraoke.';
+GO
+
+-- PHẦN 2: ĐẶT PHÒNG
+USE QuanLyKaraoke;
+GO
+SET QUOTED_IDENTIFIER ON;
+SET XACT_ABORT ON;
+BEGIN TRANSACTION;
+IF OBJECT_ID('dbo.DATPHONG') IS NULL
+BEGIN
+ CREATE TABLE dbo.DATPHONG (
+ MaDatPhong int IDENTITY PRIMARY KEY, MaPhong varchar(20) NOT NULL REFERENCES dbo.PHONG(MaPhong),
+ TenKhach nvarchar(100) NOT NULL, SDT varchar(15) NOT NULL, SoKhach int NOT NULL CHECK(SoKhach>0),
+ GioBatDauDuKien datetime2 NOT NULL, GioKetThucDuKien datetime2 NOT NULL,
+ DonGiaGioDaChot decimal(18,2) NOT NULL CHECK(DonGiaGioDaChot>=0),
+ TrangThai varchar(20) NOT NULL CHECK(TrangThai IN ('ChoNhan','DaNhan','DaHuy')),
+ MaNV varchar(20) NOT NULL REFERENCES dbo.NHANVIEN(MaNV), GhiChu nvarchar(500) NULL,
+ CHECK(GioKetThucDuKien>GioBatDauDuKien));
+ CREATE INDEX IX_DATPHONG_Lich ON dbo.DATPHONG(MaPhong,TrangThai,GioBatDauDuKien,GioKetThucDuKien);
+END;
+IF COL_LENGTH('dbo.PHIENHAT','MaDatPhong') IS NULL
+ ALTER TABLE dbo.PHIENHAT ADD MaDatPhong int NULL REFERENCES dbo.DATPHONG(MaDatPhong);
+IF NOT EXISTS(SELECT 1 FROM sys.indexes WHERE name='UX_PHIENHAT_DATPHONG' AND object_id=OBJECT_ID('dbo.PHIENHAT'))
+ EXEC('CREATE UNIQUE INDEX UX_PHIENHAT_DATPHONG ON dbo.PHIENHAT(MaDatPhong) WHERE MaDatPhong IS NOT NULL');
+COMMIT;
+GO
+
+-- PHẦN 3: TÀI KHOẢN NỘI BỘ
+SET XACT_ABORT ON;
+SET QUOTED_IDENTIFIER ON;
+BEGIN TRANSACTION;
+IF COL_LENGTH('dbo.TAIKHOAN','PhienBanBaoMat') IS NULL
+ EXEC('ALTER TABLE dbo.TAIKHOAN ADD PhienBanBaoMat int NOT NULL CONSTRAINT DF_TK_SECURITY_VERSION DEFAULT(0)');
+IF COL_LENGTH('dbo.TAIKHOAN','SoLanDangNhapSai') IS NULL
+ EXEC('ALTER TABLE dbo.TAIKHOAN ADD SoLanDangNhapSai int NOT NULL CONSTRAINT DF_TK_FAILURES DEFAULT(0)');
+IF COL_LENGTH('dbo.TAIKHOAN','KhoaDen') IS NULL
+ ALTER TABLE dbo.TAIKHOAN ADD KhoaDen datetime2 NULL;
+-- Giữ nguyên nhật ký tài khoản cũ, kể cả khi ứng dụng không còn sử dụng.
+COMMIT;
+GO
+
+-- PHẦN 4: KHỞI TẠO ADMIN
+SET XACT_ABORT ON;
+BEGIN TRY
+ BEGIN TRANSACTION;
+ DECLARE @TenDangNhap varchar(50)='admin';
+ -- Mật khẩu khởi tạo: AdminKaraoke2026!; chỉ dùng khi chưa có tài khoản admin.
+ -- Đổi mật khẩu ngay sau lần đăng nhập đầu tiên.
+ DECLARE @Hash varchar(255)='$2a$11$t.titrtcM0Han36ubpOabevEhk3bQG6ofAO5itSe0I6dii7MILWue';
+ IF EXISTS(SELECT 1 FROM dbo.TAIKHOAN WITH(UPDLOCK,HOLDLOCK) WHERE TenDangNhap=@TenDangNhap)
+ BEGIN
+  IF NOT EXISTS(SELECT 1 FROM dbo.TAIKHOAN t JOIN dbo.NHANVIEN n ON n.MaNV=t.MaNV
+                WHERE t.TenDangNhap=@TenDangNhap AND t.VaiTro='Admin')
+   THROW 50002,N'Tên admin đã thuộc tài khoản khác. Đổi @TenDangNhap ở phần tạo Admin.',1;
+  PRINT N'Admin đã tồn tại. Giữ nguyên mật khẩu và trạng thái hiện có.';
+ END
+ ELSE
+ BEGIN
+  DECLARE @MaNV varchar(20)='ADM'+LEFT(REPLACE(CONVERT(varchar(36),NEWID()),'-',''),17);
+  INSERT dbo.NHANVIEN(MaNV,HoTen,NgaySinh,SDT,ChucVu,TrangThai)
+  VALUES(@MaNV,N'Quản trị hệ thống',NULL,NULL,N'Admin',N'Đang làm việc');
+  INSERT dbo.TAIKHOAN(MaNV,TenDangNhap,MatKhauHash,VaiTro,TrangThai)
+  VALUES(@MaNV,@TenDangNhap,@Hash,'Admin',1);
+  PRINT N'Đã tạo tài khoản Admin.';
+ END;
+ COMMIT;
+ SELECT MaTK,TenDangNhap,VaiTro,TrangThai FROM dbo.TAIKHOAN WHERE TenDangNhap=@TenDangNhap;
+END TRY
+BEGIN CATCH
+ IF @@TRANCOUNT>0 ROLLBACK;
+ THROW;
+END CATCH;
+GO
+
+-- PHẦN 5: PHÂN QUYỀN (đồng bộ với 04_PhanQuyen_NangCap.sql)
+-- Nâng cấp phân quyền cho CSDL QuanLyKaraoke hiện có. Chạy trên đúng database.
+-- Không xóa hay sửa tài khoản, mật khẩu, lịch đặt, hóa đơn hiện có.
+SET XACT_ABORT ON;
+SET QUOTED_IDENTIFIER ON;
+BEGIN TRY
+    BEGIN TRANSACTION;
+    IF OBJECT_ID(N'dbo.TAIKHOAN', N'U') IS NULL
+        THROW 51000, N'Chưa có bảng TAIKHOAN. Hãy chọn CSDL Karaoke đã cài đặt.', 1;
+
+    DECLARE @firstInstall bit = CASE WHEN OBJECT_ID(N'dbo.NHOMQUYEN', N'U') IS NULL THEN 1 ELSE 0 END;
+    IF OBJECT_ID(N'dbo.NHOMQUYEN', N'U') IS NULL
+        CREATE TABLE dbo.NHOMQUYEN (
+            MaNhom int IDENTITY(1,1) NOT NULL CONSTRAINT PK_NHOMQUYEN PRIMARY KEY,
+            TenNhom nvarchar(100) NOT NULL CONSTRAINT UQ_NHOMQUYEN_TEN UNIQUE,
+            LaHeThong bit NOT NULL CONSTRAINT DF_NHOMQUYEN_LAHETHONG DEFAULT (0)
+        );
+    IF OBJECT_ID(N'dbo.QUYEN', N'U') IS NULL
+        CREATE TABLE dbo.QUYEN (
+            MaQuyen varchar(50) NOT NULL CONSTRAINT PK_QUYEN PRIMARY KEY,
+            TenQuyen nvarchar(100) NOT NULL
+        );
+    IF OBJECT_ID(N'dbo.NHOMQUYEN_CHITIET', N'U') IS NULL
+        CREATE TABLE dbo.NHOMQUYEN_CHITIET (
+            MaNhom int NOT NULL CONSTRAINT FK_NQCT_NHOM REFERENCES dbo.NHOMQUYEN(MaNhom),
+            MaQuyen varchar(50) NOT NULL CONSTRAINT FK_NQCT_QUYEN REFERENCES dbo.QUYEN(MaQuyen),
+            CONSTRAINT PK_NHOMQUYEN_CHITIET PRIMARY KEY (MaNhom, MaQuyen)
+        );
+    IF OBJECT_ID(N'dbo.TAIKHOAN_NHOMQUYEN', N'U') IS NULL
+        CREATE TABLE dbo.TAIKHOAN_NHOMQUYEN (
+            MaTK int NOT NULL CONSTRAINT PK_TAIKHOAN_NHOMQUYEN PRIMARY KEY CONSTRAINT FK_TKNQ_TK REFERENCES dbo.TAIKHOAN(MaTK),
+            MaNhom int NOT NULL CONSTRAINT FK_TKNQ_NHOM REFERENCES dbo.NHOMQUYEN(MaNhom)
+        );
+    DECLARE @permissions TABLE (MaQuyen varchar(50) PRIMARY KEY, TenQuyen nvarchar(100));
+    INSERT @permissions VALUES
+      ('PHONG_XEM', N'Xem phòng'), ('PHONG_SUA', N'Quản lý phòng'),
+      ('DICHVU_XEM', N'Xem dịch vụ'), ('DICHVU_SUA', N'Quản lý dịch vụ'),
+      ('DATPHONG', N'Đặt và nhận phòng'), ('GOIDICHVU', N'Gọi dịch vụ'),
+      ('THANHTOAN', N'Thanh toán'), ('THONGKE', N'Xem doanh thu'),
+      ('NHANVIEN', N'Quản lý nhân viên'), ('TAIKHOAN', N'Quản lý tài khoản'),
+      ('NHOMQUYEN', N'Quản lý nhóm quyền'), ('LOAIPHONG', N'Quản lý loại phòng');
+    INSERT dbo.QUYEN(MaQuyen, TenQuyen)
+      SELECT p.MaQuyen, p.TenQuyen FROM @permissions p WHERE NOT EXISTS (SELECT 1 FROM dbo.QUYEN q WHERE q.MaQuyen=p.MaQuyen);
+    IF @firstInstall = 1
+    BEGIN
+        INSERT dbo.NHOMQUYEN(TenNhom, LaHeThong) VALUES (N'Admin', 1), (N'Nhân viên', 1);
+        INSERT dbo.NHOMQUYEN_CHITIET(MaNhom, MaQuyen)
+          SELECT n.MaNhom, q.MaQuyen FROM dbo.NHOMQUYEN n CROSS JOIN dbo.QUYEN q WHERE n.TenNhom=N'Admin';
+        INSERT dbo.NHOMQUYEN_CHITIET(MaNhom, MaQuyen)
+          SELECT n.MaNhom, q.MaQuyen FROM dbo.NHOMQUYEN n CROSS JOIN dbo.QUYEN q
+          WHERE n.TenNhom=N'Nhân viên' AND q.MaQuyen IN ('PHONG_XEM','DICHVU_XEM','DATPHONG','GOIDICHVU','THANHTOAN');
+        INSERT dbo.TAIKHOAN_NHOMQUYEN(MaTK, MaNhom)
+          SELECT t.MaTK, n.MaNhom FROM dbo.TAIKHOAN t JOIN dbo.NHOMQUYEN n
+            ON n.TenNhom=CASE WHEN t.VaiTro='Admin' THEN N'Admin' ELSE N'Nhân viên' END;
+    END;
+    COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+    IF XACT_STATE() <> 0 ROLLBACK TRANSACTION;
+    THROW;
+END CATCH;
+GO
