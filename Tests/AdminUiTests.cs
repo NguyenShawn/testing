@@ -44,7 +44,14 @@ class AdminUiTests
             Check(new AuthService().DangNhap("admin", "AdminKaraoke2026!"), "admin login for UI tests");
             var main = new FrmMain();
             ShowAndCapture(main, "main", () => {
-                Check(main.WindowState == FormWindowState.Maximized && main.FormBorderStyle == FormBorderStyle.None, "main form starts fullscreen");
+                var workArea = Screen.FromControl(main).WorkingArea;
+                Check(main.WindowState == FormWindowState.Maximized && main.FormBorderStyle == FormBorderStyle.Sizable &&
+                    main.ControlBox && main.MaximizeBox && main.MinimizeBox, "main opens maximized with standard window controls");
+                Check(main.Bounds.Left <= workArea.Left && main.Bounds.Top <= workArea.Top &&
+                    main.Bounds.Right >= workArea.Right && main.Bounds.Bottom >= workArea.Bottom, "maximized window reaches the edges of the working area");
+                main.WindowState = FormWindowState.Normal; Application.DoEvents();
+                Check(main.WindowState == FormWindowState.Normal && main.FormBorderStyle == FormBorderStyle.Sizable, "main can be restored to a resizable window");
+                main.WindowState = FormWindowState.Maximized; Application.DoEvents();
                 Check(Descendants(main).Any(c => c.Text == "Nhóm quyền" && c.Visible), "admin sees group management entry");
                 foreach (var pair in new[] { new[] { "label3", "lblTongPhong" }, new[] { "label5", "lblDangSuDung" }, new[] { "label7", "lblPhongTrong" }, new[] { "label9", "lblDoanhThu" } })
                     Check(!Field<Label>(main, pair[0]).Bounds.IntersectsWith(Field<Label>(main, pair[1]).Bounds), "dashboard caption does not overlap value: " + pair[0]);

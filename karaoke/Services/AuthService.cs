@@ -110,6 +110,17 @@ namespace karaoke.Services
                 throw new UnauthorizedAccessException("Tài khoản không có quyền thực hiện chức năng này.");
             return account;
         }
+        public static bool CanManageStaff(QuanLyKaraokeEntities db, TAIKHOAN account)
+        {
+            return IsAdmin(account) || new RoleService().IsManager(db, account);
+        }
+        public static TAIKHOAN RequirePersonnelPermission(QuanLyKaraokeEntities db, string permission)
+        {
+            var account = RequirePermission(db, permission);
+            if (!CanManageStaff(db, account))
+                throw new UnauthorizedAccessException("Chỉ Admin hoặc Manager được quản lý nhân viên và tài khoản.");
+            return account;
+        }
         public static bool HasPermission(string permission)
         {
             using (var db = new QuanLyKaraokeEntities())

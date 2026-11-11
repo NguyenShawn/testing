@@ -24,27 +24,30 @@ namespace karaoke
                     using (var icon = new Icon(iconStream)) Icon = (Icon)icon.Clone();
                 }
             }
-            FormBorderStyle = FormBorderStyle.None;
+            FormBorderStyle = FormBorderStyle.Sizable;
             WindowState = FormWindowState.Maximized;
-            KeyPreview = true;
-            KeyDown += (sender, e) =>
-            {
-                if (e.KeyCode == Keys.Escape && FormBorderStyle == FormBorderStyle.None)
-                {
-                    FormBorderStyle = FormBorderStyle.Sizable;
-                    WindowState = FormWindowState.Normal;
-                    e.Handled = true;
-                }
-            };
+            FormClosing += FrmMain_FormClosing;
             this.Load += FrmMain_Load;
             this.btnThanhToan.Click += btnThanhToan_Click;
             this.btnThongKe.Click += btnThongKe_Click;
         }
 
-        private void changePassword_Click(object sender, EventArgs e)
-        { if (OpenChildForm(new FrmDoiMatKhau())) SetActiveSidebar(changePassword); }
+        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            var orderForm = currentChildForm as FrmGoiDichVu;
+            if (e.CloseReason == CloseReason.UserClosing && orderForm != null && !orderForm.ConfirmLeave())
+                e.Cancel = true;
+        }
+
+        private void personalAccount_Click(object sender, EventArgs e)
+        {
+            var profile = new FrmTaiKhoanCaNhan();
+            profile.LogoutRequested += (s, args) => { DialogResult = DialogResult.Retry; Close(); };
+            profile.ProfileRefreshed += (s, args) => ApplyAccountMode();
+            if (OpenChildForm(profile)) SetActiveSidebar(personalAccount);
+        }
         private void accountManagement_Click(object sender, EventArgs e)
-        { OpenAdminPage("TAIKHOAN", "Tài khoản", () => new FrmQuanLyTaiKhoan(), accountManagement); }
+        { OpenAdminPage("TAIKHOAN", "Quản lý tài khoản", () => new FrmQuanLyTaiKhoan(), accountManagement); }
         private void staffManagement_Click(object sender, EventArgs e)
         { OpenAdminPage("NHANVIEN", "Nhân viên", () => new FrmQuanLyNhanVien(), staffManagement); }
         private void roomTypes_Click(object sender, EventArgs e)
@@ -69,6 +72,7 @@ namespace karaoke
         {
             try
             {
+                if (AuthService.IsAdmin(AuthService.RequireCurrentUser())) new RoleService().EnsureManagerRole();
                 ApplyAccountMode();
                 LoadDashboard();
                 LoadChartDoanhThu();
@@ -90,8 +94,11 @@ namespace karaoke
 
         private void ApplyAccountMode()
         {
-            accountManagement.Visible = AuthService.HasPermission("TAIKHOAN");
-            staffManagement.Visible = AuthService.HasPermission("NHANVIEN");
+            bool canManageStaff;
+            using (var db = new QuanLyKaraokeEntities())
+                canManageStaff = AuthService.CanManageStaff(db, AuthService.RequireCurrentUser(db));
+            accountManagement.Visible = canManageStaff && AuthService.HasPermission("TAIKHOAN");
+            staffManagement.Visible = canManageStaff && AuthService.HasPermission("NHANVIEN");
             roomTypes.Visible = AuthService.HasPermission("LOAIPHONG");
             roleManagement.Visible = AuthService.HasPermission("NHOMQUYEN");
             btnPhong.Enabled = AuthService.HasPermission("PHONG_XEM");
@@ -334,7 +341,7 @@ namespace karaoke
                 btnGoiDichVu,
                 btnThanhToan,
                 btnThongKe,
-                changePassword,
+                personalAccount,
                 accountManagement,
                 staffManagement,
                 roomTypes,

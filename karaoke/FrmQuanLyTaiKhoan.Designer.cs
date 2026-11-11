@@ -42,7 +42,7 @@ namespace karaoke
             this.username.Name = "username"; this.username.Location = new System.Drawing.Point(290, 32); this.username.Size = new System.Drawing.Size(180, 23); this.fields.Controls.Add(this.lblUsername); this.fields.Controls.Add(this.username);
             this.lblPassword.Name = "lblPassword"; this.lblPassword.Text = "Mật khẩu mới"; this.lblPassword.AutoSize = true; this.lblPassword.Location = new System.Drawing.Point(485, 10);
             this.newPassword.Name = "newPassword"; this.newPassword.Location = new System.Drawing.Point(485, 32); this.newPassword.Size = new System.Drawing.Size(180, 23); this.fields.Controls.Add(this.lblPassword); this.fields.Controls.Add(this.newPassword);
-            this.lblAdminPassword.Name = "lblAdminPassword"; this.lblAdminPassword.Text = "Mật khẩu Admin (để đặt lại)"; this.lblAdminPassword.AutoSize = true; this.lblAdminPassword.Location = new System.Drawing.Point(680, 10);
+            this.lblAdminPassword.Name = "lblAdminPassword"; this.lblAdminPassword.Text = "Mật khẩu của bạn (để đặt lại)"; this.lblAdminPassword.AutoSize = true; this.lblAdminPassword.Location = new System.Drawing.Point(680, 10);
             this.adminPassword.Name = "adminPassword"; this.adminPassword.Location = new System.Drawing.Point(680, 32); this.adminPassword.Size = new System.Drawing.Size(205, 23); this.fields.Controls.Add(this.lblAdminPassword); this.fields.Controls.Add(this.adminPassword);
             this.employees.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList; this.employees.DisplayMember = "HoTen"; this.employees.ValueMember = "MaNV";
             this.newPassword.UseSystemPasswordChar = true; this.adminPassword.UseSystemPasswordChar = true;

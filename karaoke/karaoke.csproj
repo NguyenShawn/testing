@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\EntityFramework.6.5.2\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.5.2\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -197,12 +197,15 @@
     <Compile Include="Helpers\ButtonActive.cs" />
     <Compile Include="Helpers\UserSession.cs" />
     <Compile Include="Services\AuthService.cs" />
+    <Compile Include="Services\LocalDatabaseSetup.cs" />
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\StaffService.cs" />
     <Compile Include="Services\RoomTypeService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="FrmDoiMatKhau.cs"><SubType>Form</SubType></Compile>
     <Compile Include="FrmDoiMatKhau.Designer.cs"><DependentUpon>FrmDoiMatKhau.cs</DependentUpon></Compile>
+    <Compile Include="FrmTaiKhoanCaNhan.cs"><SubType>Form</SubType></Compile>
+    <Compile Include="FrmTaiKhoanCaNhan.Designer.cs"><DependentUpon>FrmTaiKhoanCaNhan.cs</DependentUpon></Compile>
     <Compile Include="FrmQuanLyTaiKhoan.cs"><SubType>Form</SubType></Compile>
     <Compile Include="FrmQuanLyTaiKhoan.Designer.cs"><DependentUpon>FrmQuanLyTaiKhoan.cs</DependentUpon></Compile>
     <Compile Include="FrmQuanLyNhanVien.cs"><SubType>Form</SubType></Compile>
@@ -305,7 +308,7 @@
       <DependentUpon>Model1.edmx</DependentUpon>
       <LastGenOutput>Model1.cs</LastGenOutput>
     </Content>
-    <Content Include="Sql\Setup_QuanLyKaraoke.sql" />
+    <EmbeddedResource Include="Sql\Setup_QuanLyKaraoke.sql" />
     <Content Include="Sql\02_SampleData.sql" />
     <Content Include="Sql\04_PhanQuyen_NangCap.sql" />
   </ItemGroup>

@@ -8,11 +8,11 @@
 - SQL Server Express LocalDB và công cụ chạy SQL hỗ trợ các batch `GO`, ví dụ SQL Server Management Studio (SSMS).
 - Mở `karaoke.slnx`, khôi phục NuGet packages nếu Visual Studio yêu cầu, rồi Build. Guna.UI2 và Microsoft ReportViewer được khai báo trong `karaoke/packages.config`.
 
-Kết nối mặc định trong `karaoke/App.config` là `(localdb)\MSSQLLocalDB`, database `QuanLyKaraoke`, xác thực Windows. Nếu dùng instance khác, sửa **provider connection string** của `QuanLyKaraokeEntities` rồi build lại. LocalDB và database là dữ liệu cục bộ của từng máy, không được tạo tự động chỉ bằng cách pull code.
+Kết nối mặc định trong `karaoke/App.config` là `(localdb)\MSSQLLocalDB`, database `QuanLyKaraoke`, xác thực Windows. Nếu dùng instance khác, sửa **provider connection string** của `QuanLyKaraokeEntities` rồi build lại. LocalDB và database là dữ liệu cục bộ của từng máy. Khi mở ứng dụng, database mặc định được tạo tự động nếu chưa có; database đã tồn tại không bị thay đổi. Máy vẫn cần cài SQL Server Express LocalDB.
 
 ## Tạo database mới
 
-Có thể mở PowerShell **trên máy đang chạy ứng dụng**, tại thư mục repo, rồi chạy `powershell -NoProfile -ExecutionPolicy Bypass -File .\SetupLocalDb.ps1`. Script tạo cấu trúc, không tự thêm dữ liệu demo. Nếu thích dùng SSMS, làm theo các bước dưới đây.
+Ứng dụng tự tạo database mặc định khi mở lần đầu. Nếu muốn thiết lập thủ công, mở PowerShell **trên máy đang chạy ứng dụng**, tại thư mục repo, rồi chạy `powershell -NoProfile -ExecutionPolicy Bypass -File .\SetupLocalDb.ps1`. Script tạo cấu trúc, không tự thêm dữ liệu demo. Nếu thích dùng SSMS, làm theo các bước dưới đây.
 
 1. Kết nối SSMS đến `(localdb)\MSSQLLocalDB` bằng Windows Authentication.
 2. Chạy toàn bộ `karaoke/Sql/Setup_QuanLyKaraoke.sql` để tạo database, bảng nghiệp vụ, nhóm quyền và Admin.
@@ -36,7 +36,11 @@ Sao lưu trước khi nâng cấp. Nếu database đã có đầy đủ bảng n
 
 Nếu database thiếu bảng nghiệp vụ hoặc các cột bảo mật, kiểm tra cấu trúc hiện có và chạy `Setup_QuanLyKaraoke.sql`. Script này tạo các thành phần còn thiếu, giữ bảng nhật ký cũ và không đổi Admin đã tồn tại. Nó không tự sửa các schema cũ có cấu trúc khác biệt; kiểm tra lỗi SQL trước khi chạy ứng dụng.
 
-Nhóm **Admin** và **Nhân viên** ban đầu là nhóm hệ thống. Admin có thể tạo nhóm tùy chỉnh trong **Nhóm quyền** và gán cho nhân viên trong **Tài khoản**. Khi đổi nhóm, nhân viên cần đăng nhập lại. Quyền được kiểm tra tại service; menu cũng bật/tắt theo quyền.
+Nhóm **Admin** và **Nhân viên** ban đầu là nhóm hệ thống. Khi Admin đăng nhập, ứng dụng tạo thêm nhóm **Manager** nếu chưa có, với quyền làm việc cơ bản và quản lý nhân viên/tài khoản. Admin có thể chỉnh quyền của nhóm Manager trong **Nhóm quyền**; quyền đã chỉnh không bị đặt lại khi đăng nhập lại. Admin gán nhóm cho nhân viên trong **Quản lý tài khoản**. Chỉ Admin được gán hoặc quản lý Manager; Manager chỉ quản lý Staff, không quản lý Admin hay Manager khác. Khi đổi nhóm, nhân viên cần đăng nhập lại. Quyền được kiểm tra tại service; menu cũng bật/tắt theo quyền.
+
+Các nhóm tùy chỉnh khác được xem là Staff. Quyền quản lý nhân viên và tài khoản chỉ có hiệu lực với Admin hoặc Manager, kể cả nếu từng được gán cho nhóm Staff tùy chỉnh.
+
+Mục **Tài khoản** dành cho người đang đăng nhập: xem tên đăng nhập, mã nhân viên, vai trò và các quyền thực tế; chỉnh họ tên, đổi mật khẩu của chính mình hoặc đăng xuất. Họ tên này cũng là họ tên trên hồ sơ nhân viên. Tên đăng nhập không thay đổi khi chỉnh họ tên.
 
 ## Kiểm thử
 
@@ -45,9 +49,12 @@ Sau khi build Debug, trong PowerShell tại thư mục repo:
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File Tests\RunInternalAccountTests.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File Tests\RunInternalAccountTests.ps1 -Integration -Server '(localdb)\MSSQLLocalDB'
+powershell -NoProfile -ExecutionPolicy Bypass -File Tests\RunAccountProfileTests.ps1
 ```
 
 Lệnh thứ hai cần quyền tạo/xóa database thử nghiệm trên LocalDB và một phiên Windows desktop. Test tạo DB tên `KaraokePasswordTest_<id>`, chạy kiểm thử nghiệp vụ và form, rồi xóa **chỉ DB thử nghiệm đó**. Không chạy test tích hợp trên database thật. Test giao diện sẽ mở các cửa sổ trong thời gian ngắn.
+
+Lệnh thứ ba kiểm tra trang cá nhân và phân cấp Admin/Manager/Staff trên database thử nghiệm `KaraokeProfileTest_<id>`, sau đó xóa database thử nghiệm.
 
 Mở **Thanh toán** để xem/in hóa đơn bằng ReportViewer RDLC. Trong **Thống kê**, nút **Báo cáo** cho phép xem/in RDLC theo khoảng ngày hoặc xuất CSV. Máy chạy ứng dụng cần đủ các DLL NuGet trong thư mục build; không chỉ copy riêng `karaoke.exe`.
 

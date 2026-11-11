@@ -39,7 +39,9 @@ namespace karaoke
             if (role == null) return;
             Run(() => {
                 var assigned = service.GetPermissions(role.MaNhom); selected = role.MaNhom; name.Text = role.TenNhom;
-                name.ReadOnly = role.LaHeThong; permissions.Enabled = !role.LaHeThong;
+                bool manager = string.Equals(role.TenNhom, "Manager", StringComparison.OrdinalIgnoreCase);
+                name.ReadOnly = role.LaHeThong || manager;
+                permissions.Enabled = manager ? AuthService.IsAdmin(AuthService.RequireCurrentUser()) : !role.LaHeThong;
                 for (int i = 0; i < permissions.Items.Count; i++) permissions.SetItemChecked(i, assigned.Contains(((PermissionRecord)permissions.Items[i]).MaQuyen));
             });
         }
