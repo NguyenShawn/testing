@@ -15,6 +15,16 @@ class AdminUiTests
     static T Field<T>(object target, string name) where T : class
     { return target.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(target) as T; }
     static void Check(bool value, string label) { if (!value) throw new Exception(label); Console.WriteLine("PASS: " + label); }
+    static void WaitForBookingReload(DataGridView grid, object previousSource)
+    {
+        var wait = System.Diagnostics.Stopwatch.StartNew();
+        while (ReferenceEquals(grid.DataSource, previousSource) && wait.ElapsedMilliseconds < 3000)
+        {
+            Application.DoEvents();
+            System.Threading.Thread.Sleep(20);
+        }
+        Check(grid.DataSource != null && !ReferenceEquals(grid.DataSource, previousSource), "changing booking filters reloads automatically");
+    }
     static System.Collections.Generic.IEnumerable<Control> Descendants(Control root)
     { foreach (Control child in root.Controls) { yield return child; foreach (var nested in Descendants(child)) yield return nested; } }
     static void ShowAndCapture(Form form, string name, Action check)
@@ -60,14 +70,31 @@ class AdminUiTests
             ShowAndCapture(bookings, "booking-search", () => {
                 var grid = Field<DataGridView>(bookings, "dgvDanhSach");
                 var actions = Field<Panel>(bookings, "panelActions");
-                Check(grid.DataSource == null, "bookings are not loaded before search");
+                var allBookings = new BookingService().ListBookings();
+                Check(grid.DataSource != null && grid.Rows.Count == allBookings.Count, "all bookings load when the page opens");
                 Check(actions.Bottom <= grid.Top && Field<Button>(bookings, "btnThemDat").Visible, "booking actions are above the list");
-                Field<ComboBox>(bookings, "cbTrangThai").SelectedIndex = 1; Application.DoEvents();
-                Check(grid.DataSource == null, "changing filter does not search automatically");
-                Field<Button>(bookings, "btnTimKiem").PerformClick(); Application.DoEvents();
-                Check(grid.DataSource != null, "search displays bookings");
-                Field<Button>(bookings, "btnLamMoi").PerformClick(); Application.DoEvents();
-                Check(grid.DataSource == null, "reset clears search results");
+                Check(!Descendants(bookings).Any(c => c.Name == "btnTimKiem" || c.Name == "btnLamMoi"), "redundant booking search and reset buttons are removed");
+
+                var previousSource = grid.DataSource;
+                Field<ComboBox>(bookings, "cbTrangThai").SelectedIndex = 1;
+                WaitForBookingReload(grid, previousSource);
+                Check(grid.Rows.Count == allBookings.Count(b => b.TrangThai == "ChoNhan"), "status filter applies automatically");
+
+                previousSource = grid.DataSource;
+                Field<TextBox>(bookings, "txtTimKiem").Text = "NO_MATCH_" + Guid.NewGuid().ToString("N");
+                WaitForBookingReload(grid, previousSource);
+                Check(grid.Rows.Count == 0, "typing a nonmatching keyword clears the results");
+
+                previousSource = grid.DataSource;
+                Field<TextBox>(bookings, "txtTimKiem").Clear();
+                Field<ComboBox>(bookings, "cbTrangThai").SelectedIndex = 0;
+                WaitForBookingReload(grid, previousSource);
+                Check(grid.Rows.Count == allBookings.Count, "clearing the filters restores all bookings");
+
+                previousSource = grid.DataSource;
+                Field<CheckBox>(bookings, "chkLocNgay").Checked = true;
+                WaitForBookingReload(grid, previousSource);
+                Check(grid.Rows.Count == allBookings.Count(b => b.GioBatDauDuKien >= DateTime.Today && b.GioBatDauDuKien < DateTime.Today.AddDays(8)), "date filter applies automatically");
             });
             var orders = new FrmGoiDichVu();
             ShowAndCapture(orders, "room-picker", () => {

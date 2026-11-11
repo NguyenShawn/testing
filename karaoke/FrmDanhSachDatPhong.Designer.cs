@@ -15,11 +15,10 @@ namespace karaoke
 
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panelHeader = new System.Windows.Forms.Panel();
             this.lblTitle = new System.Windows.Forms.Label();
             this.panelFilter = new System.Windows.Forms.Panel();
-            this.btnLamMoi = new System.Windows.Forms.Button();
-            this.btnTimKiem = new System.Windows.Forms.Button();
             this.chkLocNgay = new System.Windows.Forms.CheckBox();
             this.dtpDenNgay = new System.Windows.Forms.DateTimePicker();
             this.labelDenNgay = new System.Windows.Forms.Label();
@@ -66,8 +65,6 @@ namespace karaoke
             // panelFilter
             // 
             this.panelFilter.BackColor = System.Drawing.Color.White;
-            this.panelFilter.Controls.Add(this.btnLamMoi);
-            this.panelFilter.Controls.Add(this.btnTimKiem);
             this.panelFilter.Controls.Add(this.chkLocNgay);
             this.panelFilter.Controls.Add(this.dtpDenNgay);
             this.panelFilter.Controls.Add(this.labelDenNgay);
@@ -82,40 +79,6 @@ namespace karaoke
             this.panelFilter.Name = "panelFilter";
             this.panelFilter.Size = new System.Drawing.Size(1000, 68);
             this.panelFilter.TabIndex = 1;
-            // 
-            // btnLamMoi
-            // 
-            this.btnLamMoi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLamMoi.BackColor = System.Drawing.Color.Gainsboro;
-            this.btnLamMoi.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnLamMoi.FlatAppearance.BorderSize = 0;
-            this.btnLamMoi.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLamMoi.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLamMoi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.btnLamMoi.Location = new System.Drawing.Point(905, 23);
-            this.btnLamMoi.Name = "btnLamMoi";
-            this.btnLamMoi.Size = new System.Drawing.Size(80, 28);
-            this.btnLamMoi.TabIndex = 10;
-            this.btnLamMoi.Text = "Làm mới";
-            this.btnLamMoi.UseVisualStyleBackColor = false;
-            this.btnLamMoi.Click += new System.EventHandler(this.btnLamMoi_Click);
-            // 
-            // btnTimKiem
-            // 
-            this.btnTimKiem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTimKiem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
-            this.btnTimKiem.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnTimKiem.FlatAppearance.BorderSize = 0;
-            this.btnTimKiem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTimKiem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnTimKiem.ForeColor = System.Drawing.Color.White;
-            this.btnTimKiem.Location = new System.Drawing.Point(815, 23);
-            this.btnTimKiem.Name = "btnTimKiem";
-            this.btnTimKiem.Size = new System.Drawing.Size(84, 28);
-            this.btnTimKiem.TabIndex = 9;
-            this.btnTimKiem.Text = "Tìm kiếm";
-            this.btnTimKiem.UseVisualStyleBackColor = false;
-            this.btnTimKiem.Click += new System.EventHandler(this.btnTimKiem_Click);
             // 
             // chkLocNgay
             // 
@@ -431,8 +394,6 @@ namespace karaoke
         private System.Windows.Forms.DateTimePicker dtpTuNgay;
         private System.Windows.Forms.Label labelDenNgay;
         private System.Windows.Forms.DateTimePicker dtpDenNgay;
-        private System.Windows.Forms.Button btnTimKiem;
-        private System.Windows.Forms.Button btnLamMoi;
         private System.Windows.Forms.DataGridView dgvDanhSach;
         private System.Windows.Forms.Panel panelActions;
         private System.Windows.Forms.Label lblTongSo;

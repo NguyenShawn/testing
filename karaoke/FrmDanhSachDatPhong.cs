@@ -10,7 +10,8 @@ namespace karaoke
     public partial class FrmDanhSachDatPhong : Form
     {
         private readonly BookingService bookingService = new BookingService();
-        private bool hasSearched;
+        private readonly Timer filterTimer;
+        private bool filtersReady;
 
         private class TrangThaiItem
         {
@@ -22,7 +23,13 @@ namespace karaoke
         public FrmDanhSachDatPhong()
         {
             InitializeComponent();
-            foreach (var button in new[] { btnTimKiem, btnLamMoi, btnThemDat, btnSuaDat, btnHuyDat, btnNhanPhong })
+            filterTimer = new Timer(components) { Interval = 300 };
+            filterTimer.Tick += (sender, args) => LoadBookings();
+            txtTimKiem.TextChanged += FilterControls_Changed;
+            cbTrangThai.SelectedIndexChanged += FilterControls_Changed;
+            dtpTuNgay.ValueChanged += FilterControls_Changed;
+            dtpDenNgay.ValueChanged += FilterControls_Changed;
+            foreach (var button in new[] { btnThemDat, btnSuaDat, btnHuyDat, btnNhanPhong })
             {
                 button.Resize += (sender, args) => ButtonActive.RoundButton((Button)sender);
                 ButtonActive.RoundButton(button);
@@ -44,7 +51,8 @@ namespace karaoke
             } catch (Exception ex) { MessageBox.Show(ex.Message); Close(); return; }
             InitGrid();
             InitFilterControls();
-            lblTongSo.Text = "Nhấn Tìm kiếm để xem danh sách đặt phòng.";
+            filtersReady = true;
+            LoadBookings();
         }
 
         private void InitGrid()
@@ -86,28 +94,25 @@ namespace karaoke
         {
             dtpTuNgay.Enabled = chkLocNgay.Checked;
             dtpDenNgay.Enabled = chkLocNgay.Checked;
+            FilterControls_Changed(sender, e);
         }
 
-        private void btnTimKiem_Click(object sender, EventArgs e)
+        private void FilterControls_Changed(object sender, EventArgs e)
         {
-            hasSearched = true;
-            LoadBookings();
-        }
-
-        private void btnLamMoi_Click(object sender, EventArgs e)
-        {
-            txtTimKiem.Clear();
-            cbTrangThai.SelectedIndex = 0;
-            chkLocNgay.Checked = false;
-            dtpTuNgay.Value = DateTime.Today;
-            dtpDenNgay.Value = DateTime.Today.AddDays(7);
-            hasSearched = false;
-            dgvDanhSach.DataSource = null;
-            lblTongSo.Text = "Nhấn Tìm kiếm để xem danh sách đặt phòng.";
+            if (!filtersReady) return;
+            filterTimer.Stop();
+            filterTimer.Start();
         }
 
         private void LoadBookings()
         {
+            filterTimer.Stop();
+            if (chkLocNgay.Checked && dtpTuNgay.Value.Date > dtpDenNgay.Value.Date)
+            {
+                dgvDanhSach.DataSource = null;
+                lblTongSo.Text = "Từ ngày phải nhỏ hơn hoặc bằng đến ngày.";
+                return;
+            }
             try
             {
                 var filter = new BookingFilter
@@ -152,7 +157,7 @@ namespace karaoke
             {
                 if (form.ShowDialog(this) == DialogResult.OK)
                 {
-                    if (hasSearched) LoadBookings();
+                    LoadBookings();
                 }
             }
         }
@@ -176,7 +181,7 @@ namespace karaoke
             {
                 if (form.ShowDialog(this) == DialogResult.OK)
                 {
-                    if (hasSearched) LoadBookings();
+                    LoadBookings();
                 }
             }
         }
@@ -209,7 +214,7 @@ namespace karaoke
             {
                 bookingService.CancelBooking(booking.MaDatPhong, "Hủy bởi người dùng");
                 MessageBox.Show("Hủy phiếu đặt phòng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                if (hasSearched) LoadBookings();
+                LoadBookings();
             }
             catch (Exception ex)
             {
@@ -251,7 +256,7 @@ namespace karaoke
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
                 );
-                if (hasSearched) LoadBookings();
+                LoadBookings();
             }
             catch (Exception ex)
             {
