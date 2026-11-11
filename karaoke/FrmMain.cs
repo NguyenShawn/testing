@@ -42,19 +42,22 @@ namespace karaoke
         }
 
         private void changePassword_Click(object sender, EventArgs e)
-        { using (var dialog = new FrmDoiMatKhau()) dialog.ShowDialog(this); }
+        { if (OpenChildForm(new FrmDoiMatKhau())) SetActiveSidebar(changePassword); }
         private void accountManagement_Click(object sender, EventArgs e)
-        { OpenAdminDialog("TAIKHOAN", "Tài khoản", () => new FrmQuanLyTaiKhoan()); }
+        { OpenAdminPage("TAIKHOAN", "Tài khoản", () => new FrmQuanLyTaiKhoan(), accountManagement); }
         private void staffManagement_Click(object sender, EventArgs e)
-        { OpenAdminDialog("NHANVIEN", "Nhân viên", () => new FrmQuanLyNhanVien()); }
+        { OpenAdminPage("NHANVIEN", "Nhân viên", () => new FrmQuanLyNhanVien(), staffManagement); }
         private void roomTypes_Click(object sender, EventArgs e)
-        { OpenAdminDialog("LOAIPHONG", "Loại phòng", () => new FrmQuanLyLoaiPhong()); }
+        { OpenAdminPage("LOAIPHONG", "Loại phòng", () => new FrmQuanLyLoaiPhong(), roomTypes); }
         private void roleManagement_Click(object sender, EventArgs e)
-        { OpenAdminDialog("NHOMQUYEN", "Nhóm quyền", () => new FrmQuanLyNhomQuyen()); }
-        private void OpenAdminDialog(string permission, string title, Func<Form> create)
+        { OpenAdminPage("NHOMQUYEN", "Nhóm quyền", () => new FrmQuanLyNhomQuyen(), roleManagement); }
+        private void OpenAdminPage(string permission, string title, Func<Form> create, Guna.UI2.WinForms.Guna2Button button)
         {
-            try { using (var db = new QuanLyKaraokeEntities()) AuthService.RequirePermission(db, permission);
-                using (var dialog = create()) dialog.ShowDialog(this); }
+            try
+            {
+                using (var db = new QuanLyKaraokeEntities()) AuthService.RequirePermission(db, permission);
+                if (OpenChildForm(create())) SetActiveSidebar(button);
+            }
             catch (Exception ex) { MessageBox.Show(ex.GetBaseException().Message, title); }
         }
 
@@ -217,14 +220,24 @@ namespace karaoke
             if (orderForm != null && !orderForm.ConfirmLeave()) { childForm.Dispose(); return false; }
             if (currentChildForm != null)
             {
-                currentChildForm.Close();
-                currentChildForm.Dispose();
+                var previousForm = currentChildForm;
+                currentChildForm = null;
+                previousForm.Close();
+                previousForm.Dispose();
             }
 
             panelDashboard.Visible = false;
             panelTrangChuHeader.Visible = false;
 
             currentChildForm = childForm;
+            childForm.FormClosed += (sender, e) =>
+            {
+                if (currentChildForm == childForm)
+                {
+                    currentChildForm = null;
+                    btnTrangChu_Click(this, EventArgs.Empty);
+                }
+            };
 
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
@@ -257,8 +270,10 @@ namespace karaoke
             SetActiveSidebar(btnTrangChu);
             if (currentChildForm != null)
             {
-                currentChildForm.Close();
-                currentChildForm.Dispose();
+                var previousForm = currentChildForm;
+                currentChildForm = null;
+                previousForm.Close();
+                previousForm.Dispose();
                 currentChildForm = null;
             }
 
@@ -318,7 +333,12 @@ namespace karaoke
                 btnDatPhong,
                 btnGoiDichVu,
                 btnThanhToan,
-                btnThongKe
+                btnThongKe,
+                changePassword,
+                accountManagement,
+                staffManagement,
+                roomTypes,
+                roleManagement
             );
         }
     }

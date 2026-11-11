@@ -15,12 +15,13 @@ namespace karaoke
         public FrmQuanLyTaiKhoan()
         {
             InitializeComponent();
-            ButtonActive.RoundButton(btnCreate); ButtonActive.RoundButton(btnToggle); ButtonActive.RoundButton(btnReset); ButtonActive.RoundButton(btnRefresh); ButtonActive.RoundButton(btnAssign);
+            ButtonActive.RoundButton(btnCreate); ButtonActive.RoundButton(btnToggle); ButtonActive.RoundButton(btnReset); ButtonActive.RoundButton(btnRefresh); ButtonActive.RoundButton(btnAssign); ButtonActive.RoundButton(btnDelete);
             Load += Form_Load;
         }
         private void Form_Load(object sender, EventArgs e) { if (LicenseManager.UsageMode != LicenseUsageMode.Designtime) RefreshData(); }
         private void Grid_CurrentCellChanged(object sender, EventArgs e) { SelectCurrentRole(); }
         private void btnCreate_Click(object sender, EventArgs e) { Create(); }
+        private void btnDelete_Click(object sender, EventArgs e) { DeleteAccount(); }
         private void btnToggle_Click(object sender, EventArgs e) { Toggle(); }
         private void btnReset_Click(object sender, EventArgs e) { ResetPassword(); }
         private void btnRefresh_Click(object sender, EventArgs e) { RefreshData(); }
@@ -55,6 +56,16 @@ namespace karaoke
                 if (staff == null) throw new InvalidOperationException("Vui lòng chọn nhân viên chưa có tài khoản.");
                 service.CreateStaffAccount(staff.MaNV, username.Text, newPassword.Text);
                 username.Clear(); newPassword.Clear(); RefreshData(); MessageBox.Show("Đã tạo tài khoản nhân viên.");
+            });
+        }
+        private void DeleteAccount()
+        {
+            Run(() => {
+                var row = Selected();
+                if (MessageBox.Show("Xóa tài khoản " + row.TenDangNhap + "? Hồ sơ nhân viên vẫn được giữ lại.", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+                service.DeleteStaffAccount(row.MaTK);
+                RefreshData();
+                MessageBox.Show("Đã xóa tài khoản nhân viên.");
             });
         }
         private void Toggle()
