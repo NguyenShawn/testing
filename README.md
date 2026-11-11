@@ -20,9 +20,19 @@ Có thể mở PowerShell **trên máy đang chạy ứng dụng**, tại thư m
 4. Nếu cần dữ liệu demo, chạy `karaoke/Sql/02_SampleData.sql` **trên database demo**, không chạy tùy tiện trên dữ liệu đang vận hành: script tạo phòng, phiên hát và hóa đơn mẫu.
 5. Mở ứng dụng, chọn **Nhân viên** để tạo nhân viên; trong **Tài khoản**, tạo tài khoản gắn với nhân viên đó và gán nhóm quyền phù hợp.
 
+## Đặt lại mật khẩu Admin
+
+Nếu quên mật khẩu tài khoản `admin` trên máy này, chạy tại thư mục repo:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\SetupLocalDb.ps1 -ResetAdminPassword
+```
+
+Lệnh đặt lại mật khẩu về `AdminKaraoke2026!`, xóa khóa do đăng nhập sai và vô hiệu hóa các phiên cũ. Nó không mở khóa tài khoản bị vô hiệu hóa hoặc đổi trạng thái nhân viên. Chỉ chạy khi cần khôi phục, vì mật khẩu mặc định được công khai; đổi mật khẩu ngay sau khi đăng nhập. Với instance khác, thêm `-Server 'ten-instance'`.
+
 ## Nâng cấp database cũ
 
-Sao lưu trước khi nâng cấp. Nếu database đã có đầy đủ bảng nghiệp vụ và các cột bảo mật, chọn đúng database `QuanLyKaraoke` trong SSMS rồi chạy `karaoke/Sql/04_PhanQuyen_NangCap.sql`. Script bổ sung bảng nhóm quyền và ánh xạ tài khoản hiện có, không đặt lại mật khẩu. Chạy lại không khôi phục các quyền đã bị quản trị viên chủ động bỏ.
+Sao lưu trước khi nâng cấp. Nếu database đã có đầy đủ bảng nghiệp vụ và các cột bảo mật, chọn đúng database `QuanLyKaraoke` trong SSMS rồi chạy toàn bộ `karaoke/Sql/04_PhanQuyen_NangCap.sql` (bỏ vùng bôi chọn trước khi chạy). Có thể thêm `USE QuanLyKaraoke;` và `GO` ở đầu file nếu muốn chỉ rõ database. Script bổ sung bảng nhóm quyền và ánh xạ tài khoản hiện có, không đặt lại mật khẩu. Chạy lại không khôi phục các quyền đã bị quản trị viên chủ động bỏ.
 
 Nếu database thiếu bảng nghiệp vụ hoặc các cột bảo mật, kiểm tra cấu trúc hiện có và chạy `Setup_QuanLyKaraoke.sql`. Script này tạo các thành phần còn thiếu, giữ bảng nhật ký cũ và không đổi Admin đã tồn tại. Nó không tự sửa các schema cũ có cấu trúc khác biệt; kiểm tra lỗi SQL trước khi chạy ứng dụng.
 
