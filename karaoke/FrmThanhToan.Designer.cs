@@ -29,6 +29,9 @@ namespace karaoke
             this.dgvPhongDangHat = new System.Windows.Forms.DataGridView();
             this.panelRightBilling = new System.Windows.Forms.Panel();
             this.grpKetToan = new System.Windows.Forms.GroupBox();
+            this.panelQRCode = new System.Windows.Forms.Panel();
+            this.picQRCode = new System.Windows.Forms.PictureBox();
+            this.lblQuetMaQR = new System.Windows.Forms.Label();
             this.lblTienThuaVal = new System.Windows.Forms.Label();
             this.lblTienThua = new System.Windows.Forms.Label();
             this.txtTienKhachDua = new System.Windows.Forms.TextBox();
@@ -77,6 +80,8 @@ namespace karaoke
             ((System.ComponentModel.ISupportInitialize)(this.dgvPhongDangHat)).BeginInit();
             this.panelRightBilling.SuspendLayout();
             this.grpKetToan.SuspendLayout();
+            this.panelQRCode.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picQRCode)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numGiamGia)).BeginInit();
             this.grpDichVu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDichVu)).BeginInit();
@@ -93,7 +98,7 @@ namespace karaoke
             this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelHeader.Location = new System.Drawing.Point(0, 0);
             this.panelHeader.Name = "panelHeader";
-            this.panelHeader.Size = new System.Drawing.Size(1024, 46);
+            this.panelHeader.Size = new System.Drawing.Size(1080, 46);
             this.panelHeader.TabIndex = 0;
             // 
             // lblHeader
@@ -116,7 +121,7 @@ namespace karaoke
             this.tabMain.Location = new System.Drawing.Point(0, 46);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(1024, 624);
+            this.tabMain.Size = new System.Drawing.Size(1080, 624);
             this.tabMain.TabIndex = 1;
             // 
             // tabThanhToan
@@ -125,7 +130,7 @@ namespace karaoke
             this.tabThanhToan.Location = new System.Drawing.Point(4, 26);
             this.tabThanhToan.Name = "tabThanhToan";
             this.tabThanhToan.Padding = new System.Windows.Forms.Padding(3);
-            this.tabThanhToan.Size = new System.Drawing.Size(1016, 594);
+            this.tabThanhToan.Size = new System.Drawing.Size(1072, 594);
             this.tabThanhToan.TabIndex = 0;
             this.tabThanhToan.Text = "  Thanh Toán Phòng  ";
             this.tabThanhToan.UseVisualStyleBackColor = true;
@@ -145,8 +150,8 @@ namespace karaoke
             // splitContainerMain.Panel2
             // 
             this.splitContainerMain.Panel2.Controls.Add(this.panelRightBilling);
-            this.splitContainerMain.Size = new System.Drawing.Size(1010, 588);
-            this.splitContainerMain.SplitterDistance = 330;
+            this.splitContainerMain.Size = new System.Drawing.Size(1066, 588);
+            this.splitContainerMain.SplitterDistance = 290;
             this.splitContainerMain.TabIndex = 0;
             // 
             // panelLeftHeader
@@ -157,7 +162,7 @@ namespace karaoke
             this.panelLeftHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelLeftHeader.Location = new System.Drawing.Point(0, 0);
             this.panelLeftHeader.Name = "panelLeftHeader";
-            this.panelLeftHeader.Size = new System.Drawing.Size(330, 42);
+            this.panelLeftHeader.Size = new System.Drawing.Size(290, 42);
             this.panelLeftHeader.TabIndex = 0;
             // 
             // btnLamMoiPhong
@@ -169,7 +174,7 @@ namespace karaoke
             this.btnLamMoiPhong.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLamMoiPhong.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnLamMoiPhong.ForeColor = System.Drawing.Color.White;
-            this.btnLamMoiPhong.Location = new System.Drawing.Point(235, 7);
+            this.btnLamMoiPhong.Location = new System.Drawing.Point(195, 7);
             this.btnLamMoiPhong.Name = "btnLamMoiPhong";
             this.btnLamMoiPhong.Size = new System.Drawing.Size(88, 28);
             this.btnLamMoiPhong.TabIndex = 1;
@@ -202,7 +207,7 @@ namespace karaoke
             this.dgvPhongDangHat.ReadOnly = true;
             this.dgvPhongDangHat.RowHeadersVisible = false;
             this.dgvPhongDangHat.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvPhongDangHat.Size = new System.Drawing.Size(330, 546);
+            this.dgvPhongDangHat.Size = new System.Drawing.Size(290, 546);
             this.dgvPhongDangHat.TabIndex = 1;
             this.dgvPhongDangHat.SelectionChanged += new System.EventHandler(this.dgvPhongDangHat_SelectionChanged);
             // 
@@ -216,11 +221,12 @@ namespace karaoke
             this.panelRightBilling.Location = new System.Drawing.Point(0, 0);
             this.panelRightBilling.Name = "panelRightBilling";
             this.panelRightBilling.Padding = new System.Windows.Forms.Padding(10);
-            this.panelRightBilling.Size = new System.Drawing.Size(676, 588);
+            this.panelRightBilling.Size = new System.Drawing.Size(772, 588);
             this.panelRightBilling.TabIndex = 0;
             // 
             // grpKetToan
             // 
+            this.grpKetToan.Controls.Add(this.panelQRCode);
             this.grpKetToan.Controls.Add(this.lblTienThuaVal);
             this.grpKetToan.Controls.Add(this.lblTienThua);
             this.grpKetToan.Controls.Add(this.txtTienKhachDua);
@@ -240,19 +246,53 @@ namespace karaoke
             this.grpKetToan.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpKetToan.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.grpKetToan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
-            this.grpKetToan.Location = new System.Drawing.Point(10, 360);
+            this.grpKetToan.Location = new System.Drawing.Point(10, 320);
+            this.grpKetToan.MinimumSize = new System.Drawing.Size(740, 255);
             this.grpKetToan.Name = "grpKetToan";
-            this.grpKetToan.Size = new System.Drawing.Size(656, 218);
+            this.grpKetToan.Size = new System.Drawing.Size(752, 258);
             this.grpKetToan.TabIndex = 2;
             this.grpKetToan.TabStop = false;
             this.grpKetToan.Text = "KẾT TOÁN THANH TOÁN";
+            // 
+            // panelQRCode
+            // 
+            this.panelQRCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+            this.panelQRCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelQRCode.Controls.Add(this.picQRCode);
+            this.panelQRCode.Controls.Add(this.lblQuetMaQR);
+            this.panelQRCode.Location = new System.Drawing.Point(520, 18);
+            this.panelQRCode.Name = "panelQRCode";
+            this.panelQRCode.Size = new System.Drawing.Size(220, 232);
+            this.panelQRCode.TabIndex = 16;
+            this.panelQRCode.Visible = false;
+            // 
+            // picQRCode
+            // 
+            this.picQRCode.BackColor = System.Drawing.Color.White;
+            this.picQRCode.Location = new System.Drawing.Point(9, 4);
+            this.picQRCode.Name = "picQRCode";
+            this.picQRCode.Size = new System.Drawing.Size(200, 200);
+            this.picQRCode.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picQRCode.TabIndex = 0;
+            this.picQRCode.TabStop = false;
+            // 
+            // lblQuetMaQR
+            // 
+            this.lblQuetMaQR.Font = new System.Drawing.Font("Segoe UI", 8.75F, System.Drawing.FontStyle.Bold);
+            this.lblQuetMaQR.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
+            this.lblQuetMaQR.Location = new System.Drawing.Point(2, 206);
+            this.lblQuetMaQR.Name = "lblQuetMaQR";
+            this.lblQuetMaQR.Size = new System.Drawing.Size(214, 22);
+            this.lblQuetMaQR.TabIndex = 1;
+            this.lblQuetMaQR.Text = "Quét mã để thanh toán nhanh";
+            this.lblQuetMaQR.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblTienThuaVal
             // 
             this.lblTienThuaVal.AutoSize = true;
             this.lblTienThuaVal.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.lblTienThuaVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(88)))), ((int)(((byte)(12)))));
-            this.lblTienThuaVal.Location = new System.Drawing.Point(445, 115);
+            this.lblTienThuaVal.Location = new System.Drawing.Point(375, 115);
             this.lblTienThuaVal.Name = "lblTienThuaVal";
             this.lblTienThuaVal.Size = new System.Drawing.Size(35, 20);
             this.lblTienThuaVal.TabIndex = 15;
@@ -263,7 +303,7 @@ namespace karaoke
             this.lblTienThua.AutoSize = true;
             this.lblTienThua.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblTienThua.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
-            this.lblTienThua.Location = new System.Drawing.Point(325, 117);
+            this.lblTienThua.Location = new System.Drawing.Point(265, 117);
             this.lblTienThua.Name = "lblTienThua";
             this.lblTienThua.Size = new System.Drawing.Size(101, 17);
             this.lblTienThua.TabIndex = 14;
@@ -272,9 +312,9 @@ namespace karaoke
             // txtTienKhachDua
             // 
             this.txtTienKhachDua.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtTienKhachDua.Location = new System.Drawing.Point(445, 75);
+            this.txtTienKhachDua.Location = new System.Drawing.Point(375, 75);
             this.txtTienKhachDua.Name = "txtTienKhachDua";
-            this.txtTienKhachDua.Size = new System.Drawing.Size(190, 25);
+            this.txtTienKhachDua.Size = new System.Drawing.Size(135, 25);
             this.txtTienKhachDua.TabIndex = 13;
             this.txtTienKhachDua.TextChanged += new System.EventHandler(this.txtTienKhachDua_TextChanged);
             // 
@@ -283,7 +323,7 @@ namespace karaoke
             this.lblTienKhachDua.AutoSize = true;
             this.lblTienKhachDua.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblTienKhachDua.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
-            this.lblTienKhachDua.Location = new System.Drawing.Point(325, 78);
+            this.lblTienKhachDua.Location = new System.Drawing.Point(265, 78);
             this.lblTienKhachDua.Name = "lblTienKhachDua";
             this.lblTienKhachDua.Size = new System.Drawing.Size(100, 17);
             this.lblTienKhachDua.TabIndex = 12;
@@ -291,16 +331,15 @@ namespace karaoke
             // 
             // btnInHoaDon
             // 
-            this.btnInHoaDon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnInHoaDon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.btnInHoaDon.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnInHoaDon.FlatAppearance.BorderSize = 0;
             this.btnInHoaDon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnInHoaDon.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnInHoaDon.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnInHoaDon.ForeColor = System.Drawing.Color.White;
-            this.btnInHoaDon.Location = new System.Drawing.Point(328, 160);
+            this.btnInHoaDon.Location = new System.Drawing.Point(265, 185);
             this.btnInHoaDon.Name = "btnInHoaDon";
-            this.btnInHoaDon.Size = new System.Drawing.Size(130, 42);
+            this.btnInHoaDon.Size = new System.Drawing.Size(112, 42);
             this.btnInHoaDon.TabIndex = 11;
             this.btnInHoaDon.Text = "Xem Mẫu In";
             this.btnInHoaDon.UseVisualStyleBackColor = false;
@@ -308,16 +347,15 @@ namespace karaoke
             // 
             // btnThanhToan
             // 
-            this.btnThanhToan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnThanhToan.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
             this.btnThanhToan.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnThanhToan.FlatAppearance.BorderSize = 0;
             this.btnThanhToan.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnThanhToan.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
+            this.btnThanhToan.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnThanhToan.ForeColor = System.Drawing.Color.White;
-            this.btnThanhToan.Location = new System.Drawing.Point(468, 160);
+            this.btnThanhToan.Location = new System.Drawing.Point(385, 185);
             this.btnThanhToan.Name = "btnThanhToan";
-            this.btnThanhToan.Size = new System.Drawing.Size(175, 42);
+            this.btnThanhToan.Size = new System.Drawing.Size(125, 42);
             this.btnThanhToan.TabIndex = 10;
             this.btnThanhToan.Text = "THANH TOÁN";
             this.btnThanhToan.UseVisualStyleBackColor = false;
@@ -330,19 +368,19 @@ namespace karaoke
             this.cboPhuongThuc.FormattingEnabled = true;
             this.cboPhuongThuc.Items.AddRange(new object[] {
             "Tiền mặt",
-            "Chuyển khoản",
-            "Thẻ ngân hàng"});
-            this.cboPhuongThuc.Location = new System.Drawing.Point(445, 34);
+            "Chuyển khoản"});
+            this.cboPhuongThuc.Location = new System.Drawing.Point(375, 34);
             this.cboPhuongThuc.Name = "cboPhuongThuc";
-            this.cboPhuongThuc.Size = new System.Drawing.Size(190, 25);
+            this.cboPhuongThuc.Size = new System.Drawing.Size(135, 25);
             this.cboPhuongThuc.TabIndex = 9;
+            this.cboPhuongThuc.SelectedIndexChanged += new System.EventHandler(this.cboPhuongThuc_SelectedIndexChanged);
             // 
             // lblPhuongThuc
             // 
             this.lblPhuongThuc.AutoSize = true;
             this.lblPhuongThuc.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblPhuongThuc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
-            this.lblPhuongThuc.Location = new System.Drawing.Point(325, 37);
+            this.lblPhuongThuc.Location = new System.Drawing.Point(265, 37);
             this.lblPhuongThuc.Name = "lblPhuongThuc";
             this.lblPhuongThuc.Size = new System.Drawing.Size(107, 17);
             this.lblPhuongThuc.TabIndex = 8;
@@ -353,7 +391,7 @@ namespace karaoke
             this.lblThanhTienVal.AutoSize = true;
             this.lblThanhTienVal.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.lblThanhTienVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
-            this.lblThanhTienVal.Location = new System.Drawing.Point(135, 145);
+            this.lblThanhTienVal.Location = new System.Drawing.Point(125, 148);
             this.lblThanhTienVal.Name = "lblThanhTienVal";
             this.lblThanhTienVal.Size = new System.Drawing.Size(46, 25);
             this.lblThanhTienVal.TabIndex = 7;
@@ -364,7 +402,7 @@ namespace karaoke
             this.lblThanhTien.AutoSize = true;
             this.lblThanhTien.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.lblThanhTien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblThanhTien.Location = new System.Drawing.Point(15, 148);
+            this.lblThanhTien.Location = new System.Drawing.Point(15, 151);
             this.lblThanhTien.Name = "lblThanhTien";
             this.lblThanhTien.Size = new System.Drawing.Size(107, 20);
             this.lblThanhTien.TabIndex = 6;
@@ -378,14 +416,14 @@ namespace karaoke
             0,
             0,
             0});
-            this.numGiamGia.Location = new System.Drawing.Point(138, 105);
+            this.numGiamGia.Location = new System.Drawing.Point(125, 105);
             this.numGiamGia.Maximum = new decimal(new int[] {
             100000000,
             0,
             0,
             0});
             this.numGiamGia.Name = "numGiamGia";
-            this.numGiamGia.Size = new System.Drawing.Size(140, 24);
+            this.numGiamGia.Size = new System.Drawing.Size(120, 24);
             this.numGiamGia.TabIndex = 5;
             this.numGiamGia.ThousandsSeparator = true;
             this.numGiamGia.ValueChanged += new System.EventHandler(this.numGiamGia_ValueChanged);
@@ -406,7 +444,7 @@ namespace karaoke
             this.lblSumTienDVVal.AutoSize = true;
             this.lblSumTienDVVal.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblSumTienDVVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblSumTienDVVal.Location = new System.Drawing.Point(135, 72);
+            this.lblSumTienDVVal.Location = new System.Drawing.Point(125, 72);
             this.lblSumTienDVVal.Name = "lblSumTienDVVal";
             this.lblSumTienDVVal.Size = new System.Drawing.Size(32, 19);
             this.lblSumTienDVVal.TabIndex = 3;
@@ -428,7 +466,7 @@ namespace karaoke
             this.lblSumTienPhongVal.AutoSize = true;
             this.lblSumTienPhongVal.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblSumTienPhongVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblSumTienPhongVal.Location = new System.Drawing.Point(135, 37);
+            this.lblSumTienPhongVal.Location = new System.Drawing.Point(125, 37);
             this.lblSumTienPhongVal.Name = "lblSumTienPhongVal";
             this.lblSumTienPhongVal.Size = new System.Drawing.Size(32, 19);
             this.lblSumTienPhongVal.TabIndex = 1;
@@ -452,9 +490,9 @@ namespace karaoke
             this.grpDichVu.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpDichVu.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.grpDichVu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
-            this.grpDichVu.Location = new System.Drawing.Point(10, 135);
+            this.grpDichVu.Location = new System.Drawing.Point(10, 125);
             this.grpDichVu.Name = "grpDichVu";
-            this.grpDichVu.Size = new System.Drawing.Size(656, 225);
+            this.grpDichVu.Size = new System.Drawing.Size(752, 195);
             this.grpDichVu.TabIndex = 1;
             this.grpDichVu.TabStop = false;
             this.grpDichVu.Text = "DỊCH VỤ ĐÃ SỬ DỤNG";
@@ -465,7 +503,7 @@ namespace karaoke
             this.lblTongTienDVGrid.AutoSize = true;
             this.lblTongTienDVGrid.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblTongTienDVGrid.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblTongTienDVGrid.Location = new System.Drawing.Point(450, 203);
+            this.lblTongTienDVGrid.Location = new System.Drawing.Point(546, 173);
             this.lblTongTienDVGrid.Name = "lblTongTienDVGrid";
             this.lblTongTienDVGrid.Size = new System.Drawing.Size(142, 17);
             this.lblTongTienDVGrid.TabIndex = 1;
@@ -486,7 +524,7 @@ namespace karaoke
             this.dgvDichVu.ReadOnly = true;
             this.dgvDichVu.RowHeadersVisible = false;
             this.dgvDichVu.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvDichVu.Size = new System.Drawing.Size(640, 175);
+            this.dgvDichVu.Size = new System.Drawing.Size(736, 145);
             this.dgvDichVu.TabIndex = 0;
             // 
             // grpThongTinPhong
@@ -502,7 +540,7 @@ namespace karaoke
             this.grpThongTinPhong.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
             this.grpThongTinPhong.Location = new System.Drawing.Point(10, 10);
             this.grpThongTinPhong.Name = "grpThongTinPhong";
-            this.grpThongTinPhong.Size = new System.Drawing.Size(656, 125);
+            this.grpThongTinPhong.Size = new System.Drawing.Size(752, 115);
             this.grpThongTinPhong.TabIndex = 0;
             this.grpThongTinPhong.TabStop = false;
             this.grpThongTinPhong.Text = "THÔNG TIN PHÒNG HÁT";
@@ -715,7 +753,7 @@ namespace karaoke
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1024, 670);
+            this.ClientSize = new System.Drawing.Size(1080, 670);
             this.Controls.Add(this.tabMain);
             this.Controls.Add(this.panelHeader);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -735,6 +773,8 @@ namespace karaoke
             this.panelRightBilling.ResumeLayout(false);
             this.grpKetToan.ResumeLayout(false);
             this.grpKetToan.PerformLayout();
+            this.panelQRCode.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picQRCode)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numGiamGia)).EndInit();
             this.grpDichVu.ResumeLayout(false);
             this.grpDichVu.PerformLayout();
@@ -896,6 +936,9 @@ namespace karaoke
         private System.Windows.Forms.TextBox txtTienKhachDua;
         private System.Windows.Forms.Label lblTienThua;
         private System.Windows.Forms.Label lblTienThuaVal;
+        private System.Windows.Forms.Panel panelQRCode;
+        private System.Windows.Forms.PictureBox picQRCode;
+        private System.Windows.Forms.Label lblQuetMaQR;
         private System.Windows.Forms.TabPage tabLichSu;
         private System.Windows.Forms.Panel panelLichSuFilter;
         private System.Windows.Forms.Label lblTuNgay;
