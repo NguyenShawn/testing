@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Data.Entity;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -137,15 +138,30 @@ namespace karaoke.Services
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                var actor = AuthService.RequirePersonnelPermission(db, "TAIKHOAN");
-                var account = db.TAIKHOANs.SingleOrDefault(t => t.MaTK == accountId);
-                if (account == null || account.VaiTro != "NhanVien") throw new InvalidOperationException("Chỉ xóa được tài khoản nhân viên.");
-                if (actor.MaTK == accountId) throw new InvalidOperationException("Không thể xóa tài khoản đang đăng nhập.");
-                RoleService.EnsureCanManageAccount(db, actor, accountId);
-                db.Database.ExecuteSqlCommand("DELETE FROM dbo.TAIKHOAN_NHOMQUYEN WHERE MaTK = @p0", accountId);
-                db.TAIKHOANs.Remove(account);
-                db.SaveChanges();
-                tx.Commit();
+                try
+                {
+                    var actor = AuthService.RequirePersonnelPermission(db, "TAIKHOAN");
+                    var account = db.TAIKHOANs.SingleOrDefault(t => t.MaTK == accountId);
+                    if (account == null || account.VaiTro != "NhanVien") throw new InvalidOperationException("Chỉ xóa được tài khoản nhân viên.");
+                    if (actor.MaTK == accountId) throw new InvalidOperationException("Không thể xóa tài khoản đang đăng nhập.");
+                    RoleService.EnsureCanManageAccount(db, actor, accountId);
+
+                    using (RoleContext roles = RoleService.Open(db))
+                    {
+                        var accountRoles = roles.AccountRoles.Where(ar => ar.MaTK == accountId).ToList();
+                        roles.AccountRoles.RemoveRange(accountRoles);
+                        roles.SaveChanges();
+                    }
+
+                    db.TAIKHOANs.Remove(account);
+                    db.SaveChanges();
+                    tx.Commit();
+                }
+                catch
+                {
+                    tx.Rollback();
+                    throw;
+                }
             }
         }
 

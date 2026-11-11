@@ -39,6 +39,7 @@ namespace karaoke.Services
     {
         static RoleContext() { Database.SetInitializer<RoleContext>(null); }
         public RoleContext(DbConnection connection) : base(connection, false) { }
+        public RoleContext(DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection) { }
         public DbSet<RoleRecord> Roles { get; set; }
         public DbSet<PermissionRecord> Permissions { get; set; }
         public DbSet<RolePermissionRecord> RolePermissions { get; set; }
@@ -95,9 +96,9 @@ namespace karaoke.Services
             }
         }
 
-        private static RoleContext Open(QuanLyKaraokeEntities db)
+        internal static RoleContext Open(QuanLyKaraokeEntities db)
         {
-            var roles = new RoleContext(db.Database.Connection);
+            var roles = new RoleContext(db.Database.Connection, false);
             if (db.Database.CurrentTransaction != null) roles.Database.UseTransaction(db.Database.CurrentTransaction.UnderlyingTransaction);
             return roles;
         }
