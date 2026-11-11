@@ -12,6 +12,7 @@ namespace karaoke
         {
             InitializeComponent();
             ButtonActive.RoundButton(save); ButtonActive.RoundButton(cancel);
+            cancel.Click += (sender, e) => Close();
         }
 
         private void Save_Click(object sender, EventArgs e)

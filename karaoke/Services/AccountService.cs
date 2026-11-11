@@ -89,6 +89,23 @@ namespace karaoke.Services
             }
         }
 
+        public void DeleteStaffAccount(int accountId)
+        {
+            using (var db = new QuanLyKaraokeEntities())
+            using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
+            {
+                var actor = AuthService.RequirePermission(db, "TAIKHOAN");
+                var account = db.TAIKHOANs.SingleOrDefault(t => t.MaTK == accountId);
+                if (account == null || account.VaiTro != "NhanVien") throw new InvalidOperationException("Chỉ xóa được tài khoản nhân viên.");
+                if (actor.MaTK == accountId) throw new InvalidOperationException("Không thể xóa tài khoản đang đăng nhập.");
+                RoleService.EnsureCanManageAccount(db, actor, accountId);
+                db.Database.ExecuteSqlCommand("DELETE FROM dbo.TAIKHOAN_NHOMQUYEN WHERE MaTK = @p0", accountId);
+                db.TAIKHOANs.Remove(account);
+                db.SaveChanges();
+                tx.Commit();
+            }
+        }
+
         public void ResetStaffPassword(int accountId, string administratorPassword, string newPassword)
         {
             ValidatePassword(newPassword);
