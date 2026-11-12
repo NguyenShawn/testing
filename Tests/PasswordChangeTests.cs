@@ -109,9 +109,9 @@ class PasswordChangeTests
             try { payments.CompletePayment(flowSession, 0, "Tiền mặt"); } catch (InvalidOperationException) { denied = true; }
             Check(denied, "cannot charge same session twice");
             var staffService = new StaffService();
-            staffService.Save("ADDED", "Nhân viên thử", "0901234567", "Phục vụ", true, true);
+            staffService.Save("ADDED", "Nhân viên thử", "0901234567", "Nhân viên", true, true);
             Check(staffService.List().Any(n => n.MaNV == "ADDED" && n.TrangThai == "Đang làm việc"), "admin creates employee");
-            staffService.Save("ADDED", "Tên cập nhật", "0901234567", "Phục vụ", false, false);
+            staffService.Save("ADDED", "Tên cập nhật", "0901234567", "Nhân viên", false, false);
             Check(staffService.List().Any(n => n.MaNV == "ADDED" && n.TrangThai == "Đã nghỉ việc"), "employee can be deactivated without deletion");
             denied = false;
             try { staffService.Save("TESTADMIN", "Admin", "", "Admin", false, false); } catch (InvalidOperationException) { denied = true; }

@@ -12,11 +12,12 @@ namespace karaoke
             this.id = new System.Windows.Forms.TextBox();
             this.name = new System.Windows.Forms.TextBox();
             this.phone = new System.Windows.Forms.TextBox();
-            this.position = new System.Windows.Forms.TextBox();
+            this.position = new System.Windows.Forms.ComboBox();
             this.lbl_id = new System.Windows.Forms.Label();
             this.lbl_name = new System.Windows.Forms.Label();
             this.lbl_phone = new System.Windows.Forms.Label();
             this.lbl_position = new System.Windows.Forms.Label();
+            this.lblPositionHint = new System.Windows.Forms.Label();
             this.btnNew = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnReload = new System.Windows.Forms.Button();
@@ -43,7 +44,11 @@ namespace karaoke
             this.fields.Controls.Add(this.lbl_phone); this.fields.Controls.Add(this.phone);
             this.lbl_position.Name = "lbl_position"; this.lbl_position.Text = "Chức vụ"; this.lbl_position.AutoSize = true; this.lbl_position.Location = new System.Drawing.Point(544, 12);
             this.position.Name = "position"; this.position.Location = new System.Drawing.Point(544, 34); this.position.Size = new System.Drawing.Size(170, 23);
+            this.position.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList; this.position.DropDownWidth = 260;
+            this.position.SelectedIndexChanged += new System.EventHandler(this.Position_SelectedIndexChanged);
             this.fields.Controls.Add(this.lbl_position); this.fields.Controls.Add(this.position);
+            this.lblPositionHint.Name = "lblPositionHint"; this.lblPositionHint.Location = new System.Drawing.Point(18, 62); this.lblPositionHint.Size = new System.Drawing.Size(820, 20);
+            this.lblPositionHint.ForeColor = System.Drawing.Color.FromArgb(153, 72, 0); this.lblPositionHint.AutoEllipsis = true; this.fields.Controls.Add(this.lblPositionHint);
             this.working.Name = "working"; this.working.Text = "Đang làm việc"; this.working.Checked = true; this.working.AutoSize = true; this.working.Location = new System.Drawing.Point(728, 36); this.fields.Controls.Add(this.working);
             this.btnNew.Name = "btnNew"; this.btnNew.Text = "Thêm mới"; this.btnNew.Location = new System.Drawing.Point(18, 88); this.btnNew.Size = new System.Drawing.Size(118, 34);
             this.btnNew.FlatStyle = System.Windows.Forms.FlatStyle.Flat; this.btnNew.BackColor = System.Drawing.Color.FromArgb(22, 101, 52); this.btnNew.ForeColor = System.Drawing.Color.White; this.btnNew.Click += new System.EventHandler(this.btnNew_Click); this.fields.Controls.Add(this.btnNew);
@@ -70,7 +75,8 @@ namespace karaoke
         private System.Windows.Forms.TextBox id;
         private System.Windows.Forms.TextBox name;
         private System.Windows.Forms.TextBox phone;
-        private System.Windows.Forms.TextBox position;
+        private System.Windows.Forms.ComboBox position;
+        private System.Windows.Forms.Label lblPositionHint;
         private System.Windows.Forms.Label lbl_id;
         private System.Windows.Forms.Label lbl_name;
         private System.Windows.Forms.Label lbl_phone;

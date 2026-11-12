@@ -12,6 +12,7 @@ class AccountProfileTests
 {
     static void Check(bool ok, string label) { if (!ok) throw new Exception(label); Console.WriteLine("PASS: " + label); }
     static void Denied(Action action, string label) { try { action(); } catch (UnauthorizedAccessException) { Check(true, label); return; } throw new Exception("Not denied: " + label); }
+    static void Invalid(Action action, string label) { try { action(); } catch (ArgumentException) { Check(true, label); return; } throw new Exception("Not rejected: " + label); }
     static T Field<T>(object o, string name) where T : class { return (T)o.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(o); }
     [STAThread] static int Main()
     {
@@ -25,19 +26,39 @@ class AccountProfileTests
             roles.EnsureManagerRole(); roles.EnsureManagerRole();
             var manager = roles.List().Single(r => r.TenNhom == "Manager");
             Check(manager.LaHeThong && roles.GetPermissions(manager.MaNhom).Contains("TAIKHOAN") && roles.GetPermissions(manager.MaNhom).Contains("NHANVIEN"), "manager exists with staff management rights");
-            staff.Save("P_MGR1", "Manager Một", "", "Quản lý", true, true);
-            staff.Save("P_MGR2", "Manager Hai", "", "Quản lý", true, true);
-            staff.Save("P_STAFF", "Staff Một", "", "Nhân viên", true, true);
+            Check(staff.ListPositions().SequenceEqual(roles.List().Select(r => r.TenNhom)), "positions use all current group names including Admin and Manager");
+            Invalid(() => staff.Save("P_INVALID", "Không hợp lệ", "", "abc", true, true), "unknown position rejected when creating staff");
+            Check(!staff.List().Any(s => s.MaNV == "P_INVALID"), "invalid position does not create a partial staff record");
+            staff.Save("P_MGR1", "Manager Một", "", "Manager", true, true);
+            staff.Save("P_MGR2", "Manager Hai", "", "Manager", true, true);
+            staff.Save("P_STAFF", "Staff Một", "", " nhân viên ", true, true);
+            Check(staff.List().Single(s => s.MaNV == "P_STAFF").ChucVu == "Nhân viên", "position spelling is saved using the canonical group name");
+            Invalid(() => staff.Save("P_STAFF", "Không được lưu", "", "abc", true, false), "unknown position rejected when updating staff");
+            Check(staff.List().Single(s => s.MaNV == "P_STAFF").HoTen == "Staff Một", "invalid update leaves the staff profile intact");
             staff.Save("P_VIP", "Staff báo cáo", "", "Nhân viên", true, true);
             int m1 = accounts.CreateStaffAccount("P_MGR1", "profile_m1", "Password123");
             int m2 = accounts.CreateStaffAccount("P_MGR2", "profile_m2", "Password123");
             int s1 = accounts.CreateStaffAccount("P_STAFF", "profile_staff", "Password123");
             int vip = accounts.CreateStaffAccount("P_VIP", "profile_vip", "Password123");
+            int? staffRole = roles.GetAccountRole(s1);
+            staff.Save("P_STAFF", "Staff Một", "", "Admin", true, false);
+            Check(roles.GetAccountRole(s1) == staffRole && accounts.List().Single(a => a.MaTK == s1).VaiTro == "NhanVien", "changing a position does not grant account permissions");
+            staff.Save("P_STAFF", "Staff Một", "", "Nhân viên", true, false);
             int reportingRole = roles.Save(null, "Staff báo cáo", new[] { "THONGKE" });
+            Check(staff.ListPositions().Contains("Staff báo cáo"), "new group names appear in available positions");
+            staff.Save("P_VIP", "Staff báo cáo", "", "Staff báo cáo", true, false);
+            Check(staff.List().Single(s => s.MaNV == "P_VIP").ChucVu == "Staff báo cáo", "custom group name accepted as a position");
+            int removedRole = roles.Save(null, "Chức vụ tạm", new string[0]);
+            roles.Delete(removedRole);
+            Invalid(() => staff.Save("P_INVALID", "Không hợp lệ", "", "Chức vụ tạm", true, true), "removed group cannot be submitted from a stale position list");
             roles.AssignStaffRole(vip, reportingRole);
             roles.AssignStaffRole(m1, manager.MaNhom); roles.AssignStaffRole(m2, manager.MaNhom);
+            Check(auth.DangNhap("profile_m1", "Password123"), "manager login before group management is granted");
+            Denied(() => roles.List(), "default manager cannot manage group permissions");
+            Check(staff.ListPositions().Contains("Manager") && staff.ListPositions().Contains("Nhân viên"), "staff managers can read position choices without group management permission");
+            Check(auth.DangNhap("admin", "AdminKaraoke2026!"), "admin login after position access check");
             roles.Save(manager.MaNhom, "Manager", new[] { "PHONG_XEM", "DICHVU_XEM", "DATPHONG", "GOIDICHVU", "THANHTOAN", "NHANVIEN", "TAIKHOAN", "NHOMQUYEN" });
-            staff.Save("P_MGR2", "Manager Hai đã cập nhật", "", "Quản lý", true, false);
+            staff.Save("P_MGR2", "Manager Hai đã cập nhật", "", "Manager", true, false);
             Check(staff.List().Any(x => x.MaNV == "P_MGR2" && x.HoTen == "Manager Hai đã cập nhật"), "admin can edit manager record");
             var adminProfile = accounts.GetOwnProfile();
             Check(adminProfile.NhomQuyen == "Admin" && adminProfile.Quyen.Contains("Quản lý tài khoản"), "admin profile shows effective permissions");
@@ -78,7 +99,7 @@ class AccountProfileTests
             Denied(() => accounts.ResetStaffPassword(m2, "Password123", "AnotherPassword123"), "manager cannot reset another manager password");
             Denied(() => accounts.SetStaffStatus(m2, false), "manager cannot lock another manager");
             Denied(() => accounts.DeleteStaffAccount(m2), "manager cannot delete another manager");
-            Denied(() => staff.Save("P_MGR2", "Đổi trái phép", "", "Quản lý", true, false), "manager cannot edit another manager's staff record");
+            Denied(() => staff.Save("P_MGR2", "Đổi trái phép", "", "Manager", true, false), "manager cannot edit another manager's staff record");
             Denied(() => roles.AssignStaffRole(s1, manager.MaNhom), "manager cannot promote staff to manager");
             Denied(() => roles.AssignStaffRole(m2, roles.ListForAssignment().Single(r => r.TenNhom == "Nhân viên").MaNhom), "manager cannot demote another manager");
             Check(auth.DangNhap("profile_staff", "Password123"), "staff login");
@@ -87,7 +108,8 @@ class AccountProfileTests
             accounts.UpdateOwnName("Staff tự sửa");
             Check(accounts.GetOwnProfile().HoTen == "Staff tự sửa", "staff can edit own name");
             Denied(() => accounts.SetStaffStatus(m1, false), "staff cannot manage manager");
-            Denied(() => staff.Save("P_MGR1", "Không hợp lệ", "", "Quản lý", true, false), "staff cannot edit manager");
+            Denied(() => staff.Save("P_MGR1", "Không hợp lệ", "", "Manager", true, false), "staff cannot edit manager");
+            Denied(() => staff.ListPositions(), "staff cannot read personnel position choices");
             var main = new FrmMain();
             main.Show(); Application.DoEvents();
             var personal = Field<Guna.UI2.WinForms.Guna2Button>(main, "personalAccount");

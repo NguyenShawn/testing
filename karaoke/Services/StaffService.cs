@@ -9,6 +9,17 @@ namespace karaoke.Services
 {
     public sealed class StaffService
     {
+        public List<string> ListPositions()
+        {
+            using (var db = new QuanLyKaraokeEntities())
+            {
+                // Staff managers may read position names without managing group permissions.
+                AuthService.RequirePersonnelPermission(db, "NHANVIEN");
+                using (var roles = RoleService.Open(db))
+                    return roles.Roles.AsNoTracking().OrderBy(r => r.TenNhom).Select(r => r.TenNhom).ToList();
+            }
+        }
+
         public List<NHANVIEN> List()
         {
             using (var db = new QuanLyKaraokeEntities())
@@ -30,7 +41,9 @@ namespace karaoke.Services
             id = (id ?? "").Trim(); name = (name ?? "").Trim();
             phone = (phone ?? "").Trim(); position = (position ?? "").Trim();
             if (!Regex.IsMatch(id, @"\A[a-zA-Z0-9_-]{1,20}\z")) throw new ArgumentException("Mã nhân viên chỉ gồm chữ, số, gạch ngang hoặc gạch dưới; tối đa 20 ký tự.");
-            if (name.Length == 0 || name.Length > 100 || position.Length == 0 || position.Length > 50) throw new ArgumentException("Kiểm tra họ tên và chức vụ.");
+            if (name.Length == 0 || name.Length > 100) throw new ArgumentException("Họ tên phải có từ 1 đến 100 ký tự.");
+            if (position.Length == 0) throw new ArgumentException("Vui lòng chọn chức vụ trong danh sách nhóm quyền.");
+            if (position.Length > 50) throw new ArgumentException("Chức vụ không được vượt quá 50 ký tự.");
             if (phone.Length != 0 && !Regex.IsMatch(phone, @"\A[0-9+]{8,15}\z")) throw new ArgumentException("Số điện thoại phải có 8–15 chữ số hoặc dấu +.");
             using (var db = new QuanLyKaraokeEntities())
             using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
@@ -46,6 +59,13 @@ namespace karaoke.Services
                     if (existingAccount != null && existingAccount.VaiTro == "Admin") throw new UnauthorizedAccessException("Không thể thay đổi hồ sơ Admin.");
                     if (existingAccount != null) RoleService.EnsureCanManageAccount(db, admin, existingAccount.MaTK);
                 }
+                using (var roles = RoleService.Open(db))
+                {
+                    var positions = roles.Roles.AsNoTracking().Select(r => r.TenNhom).ToList();
+                    position = positions.FirstOrDefault(p => string.Equals(p, position, StringComparison.OrdinalIgnoreCase));
+                    if (position == null) throw new ArgumentException("Chức vụ không còn hợp lệ. Vui lòng làm mới và chọn chức vụ trong danh sách nhóm quyền.");
+                }
+                // A position is a profile label; account permissions are assigned separately.
                 if (create) { staff = new NHANVIEN { MaNV = id }; db.NHANVIENs.Add(staff); }
                 string newStatus = working ? "Đang làm việc" : "Đã nghỉ việc";
                 if (!create && staff.TrangThai != newStatus)
